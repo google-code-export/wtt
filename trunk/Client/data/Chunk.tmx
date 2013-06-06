@@ -1,0 +1,1023 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="TS" tilewidth="64" tileheight="64">
+  <image source="sprite/TileSet.png" trans="ff00ff" width="640" height="384"/>
+ </tileset>
+ <layer name="Main" width="20" height="20">
+  <data encoding="base64">
+   HwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAB8AAAAfAAAAHwAAAA==
+  </data>
+ </layer>
+ <layer name="Transp" width="20" height="20">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiAAAAIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAAAAAAAiAAAAIQAAACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAjAAAAIwAAACEAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIgAAACIAAAAAAAAAIwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhAAAAIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAA==
+  </data>
+ </layer>
+ <objectgroup name="Villagers" width="20" height="20">
+  <object x="354" y="78" height="2"/>
+  <object name="Unit" x="378" y="106" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object x="558" y="526" height="2"/>
+  <object x="-124" y="-14"/>
+  <object name="Unit" x="93" y="93" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="174" y="122" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="187" y="126" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="215" y="136" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="329" y="186" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="288" y="203" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="24" y="22" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="217" y="32" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="214" y="32" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="213" y="32" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="152" y="27" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="107" y="41" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="76" y="74" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="47" y="128" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="53" y="178" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="83" y="214" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="145" y="215" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="160" y="191" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="222" y="188" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="259" y="151" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="277" y="107" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="253" y="81" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="230" y="72" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="328" y="30" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="347" y="64" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="338" y="119" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="340" y="154" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="394" y="158" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="424" y="92" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="430" y="53" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="471" y="154" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="410" y="237" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="319" y="273" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="215" y="266" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="125" y="252" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="63" y="260" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="39" y="263" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="53" y="315" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="114" y="319" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="156" y="304" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="175" y="259" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="234" y="239" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="261" y="281" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="275" y="313" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="339" y="314" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="365" y="260" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="355" y="220" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="438" y="194" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="433" y="178" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="422" y="148" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="381" y="130" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="359" y="104" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="320" y="82" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="296" y="68" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="275" y="25" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="286" y="102" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="310" y="161" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="285" y="200" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="240" y="252" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="275" y="272" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="259" y="231" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="182" y="192" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="124" y="158" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="105" y="125" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="142" y="68" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="190" y="48" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="173" y="26" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="102" y="134" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="51" y="95" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="11" y="67" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="-9" y="186" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="6" y="240" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="18" y="329" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="39" y="388" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="125" y="344" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="205" y="340" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="259" y="342" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="355" y="342" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="440" y="316" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="475" y="274" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="488" y="222" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="488" y="140" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="453" y="60" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="442" y="39" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="372" y="11" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="349" y="-3" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="415" y="295" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="397" y="305" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="335" y="293" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="296" y="264" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="268" y="198" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="222" y="130" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="206" y="101" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="162" y="127" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="160" y="132" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="150" y="229" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="134" y="258" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="107" y="283" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="90" y="296" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="71" y="230" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="58" y="193" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="38" y="176" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="32" y="134" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="30" y="97" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="176" y="56" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="313" y="52" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="350" y="40" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="422" y="24" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="444" y="-1" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="484" y="2" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="512" y="37" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="508" y="116" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="500" y="125" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="483" y="113" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="479" y="66" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="507" y="66" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="561" y="140" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="555" y="201" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="535" y="269" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="536" y="294" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="519" y="324" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="458" y="375" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="421" y="384" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="376" y="370" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="367" y="353" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="309" y="334" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="285" y="348" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="250" y="357" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="188" y="362" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="119" y="362" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="67" y="364" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="60" y="347" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="100" y="311" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="122" y="273" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="140" y="232" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="163" y="209" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="186" y="216" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="202" y="222" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="215" y="234" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="224" y="179" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="201" y="166" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="185" y="164" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="171" y="163" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="243" y="126" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="265" y="114" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="238" y="103" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="196" y="85" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="185" y="107" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="155" y="106" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="134" y="106" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="139" y="148" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="128" y="187" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="109" y="218" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="319" y="133" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="327" y="177" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="369" y="198" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="398" y="204" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="403" y="217" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="404" y="276" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="393" y="286" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="367" y="287" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="318" y="232" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="298" y="216" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="404" y="236" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="444" y="241" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+  <object name="Unit" x="462" y="224" width="34" height="30">
+   <properties>
+    <property name="image" value="farmer"/>
+    <property name="spritewidth" value="14"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

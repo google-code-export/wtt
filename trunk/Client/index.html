@@ -1,0 +1,65 @@
+<!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <title>WTT: Way of The Temple</title>
+</head>
+<!-- LEIA E BAIXE ->>> http://renderhjs.net/shoebox/ -->
+<body bgcolor="black" color='white' style="margin:0; padding:0">
+    <div id="divLogin">
+        <br /><br />>
+        <ul style="text-align:center;">
+            <li> Username<input type="text" id="username"> </input></li>
+            <li> Password<input type="text" id="password"> </input></li>
+            <li> <input type="button" id="go" value="Sign In" onclick='go();'/></li>
+        </ul>
+    </div>
+        <script type="text/javascript" src="socket.js"></script>
+        <script type="text/javascript" src="lib/jq.js"></script>
+        <script type="text/javascript" src="lib/jstorage.js"></script>
+		<script type="text/javascript" src="lib/Melon.js"></script>
+        <script type="text/javascript" src="Screens/PlayScreen.js"></script>
+        <script type="text/javascript" src="Screens/TitleScreen.js"></script>
+        <script type="text/javascript" src="Entity/Unit.js"></script>
+        <script type="text/javascript" src="Resources.js"></script>
+        <script type="text/javascript" src="App.js"></script>
+        <script type="text/javascript" src="Screens/ActionMenu.js"></script>
+        <script type="text/javascript" src="Screens/ResourcesHUD.js"></script>
+		<script type="text/javascript" src="Screens/BuildMenu.js"></script>
+        <script type="text/javascript" src="Screens/BuildArea.js"></script>
+        <script type="text/javascript">
+
+            var socket;
+            window.onReady(function onReady() {
+                $.jStorage.flush();
+                socket = io.connect('http://199.115.231.229');
+                socket.on('loginok', function (data) {
+                    //alert("loguei com uid "+data.userId+" e sessionId "+data.sessionId);
+                    var d0 = data[0][0];
+                    console.log("loggin in with userId "+d0.userId +" and session id "+d0.sessionId);
+                    $.jStorage.set("userData", d0);
+                    //$.jStorage.get("userData").sessionId;
+                    $("#divLogin").hide();
+                    jsApp.onload();
+                });
+                socket.on('message', function(data) {
+                   alert(data.msg);
+                });
+                //////// DEBUG MODE
+                //$("#divLogin").hide();
+                //$.jStorage.set("userData", {userId: 4, sessionId:34});
+                //jsApp.onload();
+            });
+
+            function go(){
+               socket = io.connect('http://199.115.231.229');
+               var user =  $("#username").val();
+               var pass = $("#password").val();
+               socket.emit("login",  { p1:user,p2:pass });
+            }
+
+
+        </script>
+    </center>
+</body>
+</html>
