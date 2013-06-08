@@ -5,7 +5,7 @@ var app = require('http').createServer(handler)
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : '108.170.35.55',
+  host     : '199.115.231.229:8080',
   user     : 'root',
   password : 'wololo',
   database : 'Jogo'
