@@ -24,7 +24,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         //getting the resources by websockets
         jsApp.destroy("onResourcesUpdate"); //Destroying websockets event before create a new one
         jsApp.send("onResourcesUpdate", jsApp.getUserSession()); //
-        var socket = io.connect('http://199.115.231.229');
+        var socket = io.connect('http://108.170.35.55');
         socket.on('onResourcesUpdate', function(data) {
             $.each(data, function(i, obj) {
                 if(i>0)

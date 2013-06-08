@@ -28,11 +28,15 @@ var g_resources =
     ];
 
 	var C = {
+        chunkSize : 20,
 		tiles : {
 			stone1 : 43, stone2 : 44, stone3: 45,
+            wood1 : 32, wood2 : 33, wood3: 34,
+            iron1: 35, iron2:36,iron3:37,
+            grass: 30,sand:31, sea:41
 		},
 		buildings : {
-			house1 : 1,
+			house1 : 1
 		}
 	
 	}

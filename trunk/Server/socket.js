@@ -1,12 +1,13 @@
+
 var app = require('http').createServer(handler)
   , io = require('socket.io').listen(app)
   , fs = require('fs')
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : '127.0.0.1',
+  host     : '108.170.35.55',
   user     : 'root',
-  password : 'dqm50vnc',
+  password : 'wololo',
   database : 'Jogo'
 });
 
@@ -56,9 +57,6 @@ io.sockets.on('connection', function (socket) {
       connection.query("CALL `getResources`('"+data.idUser+"')",function(err, rows, fields){
           if(rows.length==undefined || rows.length==0)
               socket.emit("message", {msg:"Player not found!"});
-          //else
-          //console.log(rows[0].wood);
-          //var result = {"wood" :rows[0]. , "stone" : rows[0].stone, "iron" : rows[0].iron, "gold": rows[0].gold, "food": rows[0].food};
           socket.emit("onResourcesUpdate", rows);
      });
   });
@@ -71,9 +69,6 @@ io.sockets.on('connection', function (socket) {
         connection.query("CALL `possibleBuildings`("+data.userId+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0)
                 socket.emit("message", {msg:"Player not found!"});
-            //else
-            //console.log(rows[0].wood);
-            //var result = {"wood" :rows[0]. , "stone" : rows[0].stone, "iron" : rows[0].iron, "gold": rows[0].gold, "food": rows[0].food};
             socket.emit("onListBuilding", rows);
         });
     });

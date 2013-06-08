@@ -4,14 +4,14 @@ var jsApp	=
 {
     // Initialize the jsApp
 
-    socket : io.connect('http://199.115.231.229'),
+    socket : io.connect('http://108.170.35.55'),
 
     getUserData : function() {
       return $.jStorage.get("userData");
     },
 
     getSocket : function() {
-        return  io.connect('http://199.115.231.229');
+        return  io.connect('http://108.170.35.55');
     },
 
     send: function(title, obj) {
