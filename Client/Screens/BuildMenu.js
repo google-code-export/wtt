@@ -33,7 +33,7 @@ jsApp.BuildMenu = me.Renderable.extend({
         var iniX = this.pos.x + 5;
         var iniY = this.pos.y + 50;
         while(ct--) {
-            var canBuild = buildList[ct];
+            var infoBuild = buildList[ct];
             var button = new me.Rect(
                 new me.Vector2d(
                     iniX,
@@ -50,10 +50,10 @@ jsApp.BuildMenu = me.Renderable.extend({
             // FALTA ALGUMA COISA AQUI
             button.icon.animationpause = true;
             button.icon.animationspeed = 0;
-            button.info = canBuild;
-            console.log(canBuild.idTile);
-            console.log(canBuild.wood);
-            button.icon.setAnimationFrame(canBuild.idTile);
+            button.info = infoBuild;
+            console.log(infoBuild.idTile);
+            console.log(infoBuild.wood);
+            button.icon.setAnimationFrame(infoBuild.idTile);
             this.options.push(button);
             iniX += 70;
         }
@@ -105,6 +105,17 @@ jsApp.BuildMenu = me.Renderable.extend({
             // if i clicked the menu
             if(this.buildMenuRect != undefined) {
                 if (this.buildMenuRect.containsPoint(me.input.touches[0])) {
+                    while(ct--) {
+                        if(this.options[ct].button.contains(me.input.touches[0])){
+                            ///////// PUT THE HUD INTO THE SCREEN
+                            this.building = new jsApp.BuildArea("mousedown",this.options[ct]);// creating a new instance of the class BuildArea
+                            me.game.add(this.building,1000);// adding this to the screen
+                            gameHandler.activeHuds.buildingArea = this.building;
+                            me.game.remove(this); //removing the build hud
+                            me.game.sort(); // "printing" all this into the screen
+
+                        }
+                    }
                     // if i clicked the "BUILD" button
                     /*
                     if(this.houseRect.containsPoint(me.input.touches[0])) {
@@ -116,12 +127,7 @@ jsApp.BuildMenu = me.Renderable.extend({
                         if( (PlayerCoin<200) || (PlayerWood<50) || (PlayerStone<50)){
                             alert("You Dont Have Enough Resources!");
                         }else{
-                            ///////// PUT THE HUD INTO THE SCREEN
-                            this.building = new jsApp.BuildArea();// creating a new instance of the class BuildArea
-                            me.game.add(this.building,1000);// adding this to the screen
-                            gameHandler.activeHuds.buildingArea = this.building;
-                            me.game.remove(this); //removing the build hud
-                            me.game.sort(); // "printing" all this into the screen
+
                         }
                     }
                     */

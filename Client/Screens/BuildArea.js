@@ -1,6 +1,27 @@
 jsApp.BuildArea = me.Renderable.extend({
-    "init" : function init(clickFun) {
+    "init" : function init(clickFun,infoBuild) {
+        var socket  = jsApp.getSocket();
+        socket.on("onConstruct",function(data){
+            var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
+            var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+            var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
+            var building = gameHandler.activeHuds.buildingArea.infoBuild;
+
+            buildLayer.setTile(tileIs.x,tileIs.y,building.idTile);//changing the tile
+            //updating the resources
+            gameHandler.activeHuds["resourceHud"].GoldValue -= building.gold;
+            gameHandler.activeHuds["resourceHud"].StoneValue -= building.stone;
+            gameHandler.activeHuds["resourceHud"].WoodValue -= building.wood;
+            //
+            me.game.remove(gameHandler.activeHuds.buildingArea);// removing the hud layer of the construction
+            me.game.remove(this,true);
+
+            me.game.sort();
+        });
+
 		this.clickFunction = clickFun; //here we create the variable to use the mouse events, needed.
+        this.infoBuild = infoBuild;
+        this.infoBuild.idVillage = 1;// NEED TO SEE THIS BETTER! MULTI-VILLAGES PROBLEM
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40); //This is here we define the position in the screen
         this.floating = true;
         this.isPersistent = true;
@@ -15,6 +36,8 @@ jsApp.BuildArea = me.Renderable.extend({
         this.sizeY = 1;
 		
 		this.clickFunction = undefined;
+
+
 		
 		me.input.registerMouseEvent("mousemove", me.game.viewport, (function(e) {
             //the event publish it's to bind functions on mouse events
@@ -34,19 +57,10 @@ jsApp.BuildArea = me.Renderable.extend({
 		}).bind(this);
 		
 		this.mouseDown = (function () {
-			var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
-			var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
-			buildLayer.setTile(tileIs.x,tileIs.y,C.buildings.house1);//changing the tile
-			me.game.remove(gameHandler.activeHuds.buildingArea);// removing the hud layer of the construction
-			me.game.remove(this,true);
+            gameHandler.activeHuds.buildingArea.infoBuild.x = me.input.touches[0].x;
+            gameHandler.activeHuds.buildingArea.infoBuild.y = me.input.touches[0].y;
 
-            //updating the resources
-            gameHandler.activeHuds["resourceHud"].GoldValue -= 200;
-            gameHandler.activeHuds["resourceHud"].StoneValue -= 50;
-            gameHandler.activeHuds["resourceHud"].WoodValue -= 50;
-            //
-            me.game.sort();
+            socket.send("onConstruct",gameHandler.activeHuds.buildingArea.infoBuild);
 		}).bind(this);
 
 

@@ -36,7 +36,11 @@ var g_resources =
             grass: 30,sand:31, sea:41
 		},
 		buildings : {
-			house1 : 1
+			house1 : 0,
+            archery1: 1,
+            archery2: 2,
+            barracks1:10
+
 		}
 	
 	}

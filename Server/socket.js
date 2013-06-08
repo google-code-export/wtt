@@ -72,7 +72,24 @@ io.sockets.on('connection', function (socket) {
             socket.emit("onListBuilding", rows);
         });
     });
+
+    //////////////////////////
+    // onConstruct          //
+    //////////////////////////
+    socket.on('onConstruct', function(data) {
+        console.log("verifying and building idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
+        connection.query("CALL `moneytoBuildings`",function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:rows.Msg});
+            }else{
+                socket.emit("onConstruct", rows);
+            }
+        });
+    });
+
 });
+
+
 
 
 console.log("Way of The Temple SuperDumper Server running beautifully on port 8080");
