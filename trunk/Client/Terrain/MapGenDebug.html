@@ -1,0 +1,110 @@
+<html>
+<head>
+    <script type="text/javascript" src="../Resources.js"></script>
+    <script type="text/javascript" src="Generator.js"></script>
+    <script type="text/javascript" src="Map/Chunk.js"></script>
+    <script type="text/javascript" src="Map/Map.js"></script>
+    <script type="application/javascript">
+
+        function init() {
+            var canvas = document.getElementById("canvas");
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                ctx.strokeStyle = "green";
+                var map = generateMap();
+               renderMap(ctx, map);
+                drawGrid(ctx);
+                console.log("READY");
+            }
+        }
+
+        var mapSize = 20;
+
+        function generateMap() {
+            Generator.debugMapArray = new Array(mapSize);
+            for(var x = 0 ; x < mapSize ; x++) {
+                Generator.debugMapArray[x] = new Array(mapSize);
+                for(var y = 0 ; y < mapSize ; y++) {
+                   // console.log("will gen "+x+ " " + y);
+                    Generator.saveChunk(Generator.generateChunk("newbie",x,y));
+                }
+            }
+            return Generator.debugMapArray;
+        }
+
+        var tilesInChunk = 20;
+
+        function renderMap(ctx, map) {
+            var color = "red";
+            // for each chunk
+            for(var x = 0 ; x < mapSize ; x++) {
+                for(var y = 0 ; y < mapSize ; y++) {
+                    // for each tile in chunk
+                    for(var xx = 0 ; xx < tilesInChunk ; xx++) {
+                        for(var yy = 0 ; yy < tilesInChunk ; yy++) {
+                            var tileId = Generator.map["x"+x+"y"+y].chunkTiles[xx][yy];
+                            if(tileId== C.tiles.grass)
+                                color = "green";
+                            else if(tileId== C.tiles.stone3)
+                                color = "gray";
+                            else if(tileId== C.tiles.wood3)
+                                color = "brown";
+                            else if(tileId== C.tiles.iron3)
+                                color = "white";
+                            else if(tileId== C.tiles.sand)
+                                color = "yellow";
+                            drawTile(ctx,x*tilesInChunk+xx, y*tilesInChunk+yy, color)
+                        }
+                    }
+
+                }
+            }
+        }
+
+        function drawChunk(ctx, chunk) {
+
+        }
+
+
+
+        function drawTile(ctx, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x,y,1,1);
+        }
+
+        function drawGrid(ctx) {
+            ctx.strokeStyle = "black";
+
+            var size =  tilesInChunk;
+
+            var lines = 0;
+            var columns = 0;
+            var iX = 0;
+            var iY = 0;
+            while(columns < mapSize) {
+
+                    ctx.beginPath();
+                    ctx.moveTo(iX, 0);
+                    ctx.lineTo(iX, mapSize*tilesInChunk);
+                    ctx.stroke();
+                    iX += tilesInChunk;
+                    columns++;
+             }
+
+
+            while(lines < mapSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, iY);
+                ctx.lineTo(mapSize*tilesInChunk, iY);
+                ctx.stroke();
+                iY += tilesInChunk;
+                lines++;
+            }
+
+        }
+    </script>
+</head>
+<body onload="init();" style="margin:0; padding:0" >
+<canvas id="canvas" width="900" height="500"></canvas><br>
+</body>
+</html>
