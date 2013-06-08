@@ -13,7 +13,6 @@ var TitleScreen = me.ScreenObject.extend(
 
         onResetEvent: function()
         {
-
             if (this.title == null)
             {
                 this.title = me.loader.getImage("Title");
