@@ -105,8 +105,9 @@ jsApp.BuildMenu = me.Renderable.extend({
             // if i clicked the menu
             if(this.buildMenuRect != undefined) {
                 if (this.buildMenuRect.containsPoint(me.input.touches[0])) {
+                    var ct = this.options.length;
                     while(ct--) {
-                        if(this.options[ct].button.contains(me.input.touches[0])){
+                        if(this.options[ct].containsPoint(me.input.touches[0])){
                             ///////// PUT THE HUD INTO THE SCREEN
                             this.building = new jsApp.BuildArea("mousedown",this.options[ct]);// creating a new instance of the class BuildArea
                             me.game.add(this.building,1000);// adding this to the screen

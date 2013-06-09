@@ -5,9 +5,9 @@ var app = require('http').createServer(handler)
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : '199.115.231.229:8080',
+  host     : '127.0.0.1',
   user     : 'root',
-  password : 'wololo',
+  password : 'dqm50vnc',
   database : 'Jogo'
 });
 
@@ -34,6 +34,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('login', function (data) {
 		console.log("logging user "+data.p1+" with passw "+data.p2);
 		connection.query("call Auth('"+data.p1+"','"+data.p2+"');", function(err, rows, fields) {
+            console.log(err);
             if(err) throw err;
 			if(rows==undefined || rows.length==undefined || rows.length==0)
 				socket.emit("message", {msg:"Wrong username and/or Passworde!"});
@@ -43,7 +44,7 @@ io.sockets.on('connection', function (socket) {
                 } else {
 
 				    socket.emit("loginok", rows);
-                    //console.log("Loggin "+rows[1].userId+" with sid "+rows[1].sessionId);
+                    console.log("Loggin "+rows[1].userId+" with sid "+rows[1].sessionId);
                 }
 		});
   });
@@ -76,17 +77,20 @@ io.sockets.on('connection', function (socket) {
     //////////////////////////
     // onConstruct          //
     //////////////////////////
-    socket.on('onConstruct', function(data) {
+   socket.on('onConstruct', function(data) {
         console.log("verifying and building idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
         connection.query("CALL `moneytoBuildings`",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
-                socket.emit("message", {msg:rows.Msg});
+                socket.emit("message", {msg:"ERROR:"+ err});
             }else{
+                if(rows[0].msg != undefined) {
+                    socket.emit("message", {msg:rows[0].msg});
+                } else {
                 socket.emit("onConstruct", rows);
+                }
             }
         });
     });
-
 });
 
 
