@@ -60,7 +60,6 @@ jsApp.ActionMenu = me.Renderable.extend({
         this.houseRect.buttonText = "House";
 
         jsApp.getSocket().on("onListBuilding", function(data) {
-            //alert(buildings[0].wood);
             this.buildMenu = new jsApp.BuildMenu(data[0]);
             gameHandler.activeHuds.buildMenu = this;
             me.game.add(this.buildMenu,1000);

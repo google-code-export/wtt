@@ -79,21 +79,20 @@ io.sockets.on('connection', function (socket) {
     //////////////////////////
    socket.on('onConstruct', function(data) {
         console.log("verifying and building idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
-        connection.query("CALL `moneytoBuildings`",function(err, rows, fields){
+        connection.query("CALL `moneytoBuildings`("+data.idVillage+","+data.idBuilding+","+data.x+","+data.y+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                if(rows[0].msg != undefined) {
-                    socket.emit("message", {msg:rows[0].msg});
+				console.log("result: "+rows[0].Msg);
+                if(rows[0].Msg == undefined) {
+					socket.emit("onConstruct", rows);
                 } else {
-                socket.emit("onConstruct", rows);
+					socket.emit("message", {msg: rows[0].Msg});
                 }
             }
         });
     });
 });
-
-
 
 
 console.log("Way of The Temple SuperDumper Server running beautifully on port 8080");
