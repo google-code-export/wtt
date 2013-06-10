@@ -51,34 +51,10 @@ jsApp.BuildMenu = me.Renderable.extend({
             button.icon.animationpause = true;
             button.icon.animationspeed = 0;
             button.info = infoBuild;
-            console.log(infoBuild.idTile);
-            console.log(infoBuild.wood);
             button.icon.setAnimationFrame(infoBuild.idTile);
             this.options.push(button);
             iniX += 70;
         }
-
-        /*
-        this.houseRect = new me.Rect(
-            new me.Vector2d(
-                this.pos.x +5,
-                this.pos.y+50
-             ),
-             60, 30
-        );
-        //this.houseRect.buttonText = "House";
-        //adding the image property
-        this.houseRect.icon = new me.AnimationSheet(
-            0, 0,
-            me.loader.getImage("TileSet"),
-            64, 64
-        );
-        this.houseRect.icon.floating = true;
-        // FALTA ALGUMA COISA AQUI
-        this.houseRect.icon.animationpause = true;
-        this.houseRect.icon.animationspeed = 0;
-        this.houseRect.icon.setAnimationFrame(0);
-        */
 
         // BACK
 		// Me.Rect(x,y,Witdh,Height)
@@ -111,27 +87,13 @@ jsApp.BuildMenu = me.Renderable.extend({
                             ///////// PUT THE HUD INTO THE SCREEN
                             this.building = new jsApp.BuildArea("mousedown",this.options[ct]);// creating a new instance of the class BuildArea
                             me.game.add(this.building,1000);// adding this to the screen
-                            gameHandler.activeHuds.buildingArea = this.building;
+                            gameHandler.activeHuds.buildingArea = this.options[ct];
                             me.game.remove(this); //removing the build hud
                             me.game.sort(); // "printing" all this into the screen
 
                         }
                     }
-                    // if i clicked the "BUILD" button
-                    /*
-                    if(this.houseRect.containsPoint(me.input.touches[0])) {
-                        //Verifying if the player have enough resources to build
-                        var PlayerCoin  =  gameHandler.activeHuds["resourceHud"].GoldValue;
-                        var PlayerWood  =  gameHandler.activeHuds["resourceHud"].WoodValue;
-                        var PlayerStone =  gameHandler.activeHuds["resourceHud"].StoneValue;
-
-                        if( (PlayerCoin<200) || (PlayerWood<50) || (PlayerStone<50)){
-                            alert("You Dont Have Enough Resources!");
-                        }else{
-
-                        }
-                    }
-                    */
+					
                     if(this.backRect.containsPoint(me.input.touches[0])) {
                         ///////// PUT THE HUD INTO THE SCREEN
                         // game.add(object, z) --> Z it's to defines who is in front of who. Bigger values means top positions
@@ -149,8 +111,6 @@ jsApp.BuildMenu = me.Renderable.extend({
                 var ct = this.options.length;
                 while(ct--){
                     if(this.options[ct].containsPoint(me.input.touches[0])) {
-
-                        //alert(this.options[ct].info.Descricao);
                     }
                 }
             }
