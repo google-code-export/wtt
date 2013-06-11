@@ -8,13 +8,16 @@ jsApp.BuildArea = me.Renderable.extend({
 		//constructing and updating resourcesHUD//
 		//
         socket.on("onConstruct", function(data){
-			var building = gameHandler.activeHuds.buildingArea;													
-			console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.info.x+" y:"+building.info.y+" idTile:"+building.info.idTile);
-            buildLayer.setTile(building.info.x,building.info.y,building.info.idTile);//changing the tile
+			var building = gameHandler.activeHuds.buildingArea;	
+			var idTile = building.info.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+			console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.info.x+" y:"+building.info.y+" idTile:"+idTile);
+			
+            buildLayer.setTile(building.info.x,building.info.y,idTile);//changing the tile
 			
             //updating the resources
 			jsApp.destroy("onResourcesUpdate"); //Destroying websockets event before create a new one
 			jsApp.send("onResourcesUpdate", jsApp.getUserSession()); //
+			//NEED TO SEE THIS BETTER!
 			gameHandler.activeHuds["resourceHud"].GoldValue -= building.info.gold;
             gameHandler.activeHuds["resourceHud"].StoneValue -= building.info.stone;
             gameHandler.activeHuds["resourceHud"].WoodValue -= building.info.wood;
