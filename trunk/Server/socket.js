@@ -83,12 +83,16 @@ io.sockets.on('connection', function (socket) {
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-				console.log("result: "+rows[0].Msg);
-                if(rows[0].Msg == undefined) {
+				var count = rows.length;
+				while(count--){
+					console.log("result["+count+"]: "+rows[count].Msg+" vila:"+rows[count].Vila+" X:"+rows[count].X+" Y:"+rows[count].Y);
+				}
+				socket.emit("onConstruct", rows);
+                /*if(rows[1].Msg == "Done") {
 					socket.emit("onConstruct", rows);
                 } else {
-					socket.emit("message", {msg: rows[0].Msg});
-                }
+					socket.emit("message", {msg: rows[1].Msg});
+                }*/
             }
         });
     });

@@ -67,11 +67,8 @@ jsApp.BuildMenu = me.Renderable.extend({
         );
         this.backRect.buttonColor = "red";
         this.backRect.buttonText = "X";
-
-
-        //this.mainOptions.push(this.backRect);//including buttons on the array
-        this.options.push(this.backRect);
-        //this.options = this.mainOptions;
+		
+		
         this.font = new me.Font("verdana", 14, "lime", "right");
         this.titleFont = new me.Font("verdana", 18, "white", "right");
         this.font.textBaseline = "bottom";
