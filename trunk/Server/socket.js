@@ -79,14 +79,10 @@ io.sockets.on('connection', function (socket) {
     //////////////////////////
    socket.on('onConstruct', function(data) {
         console.log("verifying and building idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
-        connection.query("CALL `moneytoBuildings`("+data.idVillage+","+data.idBuilding+","+data.x+","+data.y+")",function(err, rows, fields){
+        connection.query("CALL `makeBuildings`("+data.idVillage+","+data.x+","+data.y+","+data.idBuilding+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-				var count = rows.length;
-				while(count--){
-					console.log("result["+count+"]: "+rows[count].Msg+" vila:"+rows[count].Vila+" X:"+rows[count].X+" Y:"+rows[count].Y);
-				}
 				socket.emit("onConstruct", rows);
                 /*if(rows[1].Msg == "Done") {
 					socket.emit("onConstruct", rows);
@@ -109,7 +105,8 @@ io.sockets.on('connection', function (socket) {
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-				var count = fields.length;
+                socket.emit("onBuildingSelect",rows);
+				/*var count = fields.length;
 				    for (var i in rows) {
 						console.log("results["+i+"]"+rows[i].wood);
 					}
@@ -118,7 +115,7 @@ io.sockets.on('connection', function (socket) {
 					socket.emit("onBuildingSelect", {Description: rows[1].Description, idBuilding: rows[1].idBuilding, wood: rows[1].wood, stone: rows[1].stone, iron: rows[1].iron, gold: rows[1].gold});
                 }else {
 					socket.emit("message", {msg: rows[1].Msg});
-                }
+                }*/
 			}
 		});
 	});

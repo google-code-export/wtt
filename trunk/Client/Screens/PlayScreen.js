@@ -3,14 +3,22 @@ PlayScreen = me.ScreenObject.extend(
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
 			jsApp.destroy("onBuildingSelect");
-			
+             //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			socket.on('onBuildingSelect', function(data) {
-				console.log("Description:"+data.Description+" idBuilding:"+data.idBuilding+" wood:"+data.wood+" stone:"+data.stone+" iron:"+data.iron+" gold:"+data.gold);
-				gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(data);
-				me.game.add(gameHandler.activeHuds.buildingHUD, 2000);
-				me.game.sort();
-			});
-			
+                //console.log("Description:"+data[1].Description+" idBuilding:"+data[2].idBuilding+" wood:"+data[2].wood+" stone:"+data[2].stone+" iron:"+data[2].iron+" gold:"+data[2].gold);
+                 console.log("data:"+data);
+                $.each(data, function(i, obj) {
+                    if(i>0)
+                        return false;
+                    else{
+                        console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
+                        gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
+                        me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
+                        me.game.sort();
+                    }
+                });
+            });
+			//
             this.parent();
 			
             /////////////////
@@ -27,20 +35,36 @@ PlayScreen = me.ScreenObject.extend(
                     ~~me.input.touches[0].x,
                     ~~me.input.touches[0].y
                 );
+
+                //IT'S NOT WORKING! NEED TO VERIFY
+                //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
+                if(gameHandler.activeHuds.buildingHUD != undefined){
+                    if(gameHandler.activeHuds.buildingHUD.containsPoint(me.input.touches[0])){
+                        alert("hey!");
+                    }else{
+                        //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
+                        me.game.remove(gameHandler.activeHuds.buildingHUD,true);
+                        gameHandler.activeHuds.buildingHUD = undefined;
+                        me.game.sort();
+                        //
+                    }
+                }
+                //
+
+                //JUST DO IT IF ANY HUD IT'S NOT ON THE SCREEN
 				if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
-					//me.game.remove(this.buildHUD,true);
-					//gameHandler.activeHuds.buildingHUD = undefined;
-					
+
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
 					var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);//buildLayer.getTileId(tileIs.x, tileIs.y);// getting the current tileid we've clicked on
 					
 					if(tileid != null){
-						idVillage = 1; // -> NEED TO SEE THIS BETTER!
+						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
 						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
 					}
 					console.log("tileid:"+tileid);
 				}
+                //
 				        
             }).bind(this));
 
@@ -50,7 +74,7 @@ PlayScreen = me.ScreenObject.extend(
             }).bind(this));
 
             me.input.registerMouseEvent("mousemove", me.game.viewport, (function (e) {
-                if (this.mousedown) {
+                if (this.mousedown == true) {
 
                     var pos = new me.Vector2d(
                         ~~me.input.touches[0].x,

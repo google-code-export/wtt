@@ -30,7 +30,6 @@ jsApp.ResourcesHUD = me.Renderable.extend({
                 if(i>0)
                     return false;
                 else{
-                    //alert(obj[i].meat);
                     gameHandler.activeHuds["resourceHud"].WoodValue  = obj[i].wood;
                     gameHandler.activeHuds["resourceHud"].StoneValue = obj[i].stone;
                     gameHandler.activeHuds["resourceHud"].FoodValue  = obj[i].food;
