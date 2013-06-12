@@ -5,13 +5,14 @@
     <ignored path="Estrategia.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/App.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1369274767569" ignored="false" />
-    <file path="/PlayScreen.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1369313317588" ignored="false" />
+    <file path="/PlayScreen.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1371061853831" ignored="false" />
     <file path="/ResourcesHUD.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1370722652265" ignored="false" />
     <file path="/index.html" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1369312349462" ignored="false" />
-    <file path="/BuildArea.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1370730897431" ignored="false" />
+    <file path="/BuildArea.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1371042078655" ignored="false" />
     <file path="/BuildMenu.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1370733397254" ignored="false" />
     <file path="/Resources.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1370724512788" ignored="false" />
-    <file path="/socket.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1370732662506" ignored="false" />
+    <file path="/socket.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1371041055152" ignored="false" />
+    <file path="/BuildingHUD.js" changelist="1542f931-62a1-4243-a0ff-cecb49b1b99b" time="1371062512620" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +35,7 @@
       <file leaf-file-name="App.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="35" selection-start="1439" selection-end="1439" vertical-scroll-proportion="0.0">
+            <state line="61" column="35" selection-start="1542" selection-end="1542" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -43,25 +44,34 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="27" selection-start="2674" selection-end="2674" vertical-scroll-proportion="-17.884615">
+            <state line="54" column="27" selection-start="2746" selection-end="2746" vertical-scroll-proportion="-19.846153">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BuildArea.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BuildArea.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildArea.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="46" selection-start="1790" selection-end="1790" vertical-scroll-proportion="1.0292969">
+            <state line="15" column="55" selection-start="695" selection-end="695" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BuildMenu.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="BuildingHUD.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Client/Screens/BuildingHUD.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="47" selection-start="359" selection-end="359" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BuildMenu.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="109" column="57" selection-start="3608" selection-end="3608" vertical-scroll-proportion="0.0">
+            <state line="181" column="72" selection-start="6521" selection-end="6521" vertical-scroll-proportion="1.3">
               <folding />
             </state>
           </provider>
@@ -70,16 +80,7 @@
       <file leaf-file-name="PlayScreen.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/PlayScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="33.372547">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="socket.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Client/socket.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="24" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0">
+            <state line="37" column="0" selection-start="1803" selection-end="1803" vertical-scroll-proportion="13.6">
               <folding />
             </state>
           </provider>
@@ -88,7 +89,7 @@
       <file leaf-file-name="Resources.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Resources.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="38" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
+            <state line="46" column="5" selection-start="1470" selection-end="1470" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -97,7 +98,7 @@
       <file leaf-file-name="ActionMenu.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="26" selection-start="1283" selection-end="1283" vertical-scroll-proportion="0.0">
+            <state line="108" column="0" selection-start="3712" selection-end="3960" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -106,7 +107,7 @@
       <file leaf-file-name="ResourcesHUD.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/ResourcesHUD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="0" selection-start="876" selection-end="973" vertical-scroll-proportion="0.0">
+            <state line="59" column="62" selection-start="2275" selection-end="2276" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -115,7 +116,7 @@
       <file leaf-file-name="socket.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/socket.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="90" column="33" selection-start="3098" selection-end="3098" vertical-scroll-proportion="0.0">
+            <state line="123" column="19" selection-start="4522" selection-end="4522" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -131,7 +132,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/Client/Entity/Unit.js" />
         <option value="$PROJECT_DIR$/Server/Config.js" />
         <option value="$PROJECT_DIR$/Server/Buildings.js" />
         <option value="$PROJECT_DIR$/Client/Screens/ActionMenu.js" />
@@ -139,14 +139,15 @@
         <option value="$PROJECT_DIR$/Client/Screens/TitleScreen.js" />
         <option value="$PROJECT_DIR$/Client/jq.js" />
         <option value="$PROJECT_DIR$/Client/socket.js" />
-        <option value="$PROJECT_DIR$/Client/Screens/PlayScreen.js" />
         <option value="$PROJECT_DIR$/Client/index.html" />
         <option value="$PROJECT_DIR$/Client/App.js" />
-        <option value="$PROJECT_DIR$/Client/Screens/ResourcesHUD.js" />
         <option value="$PROJECT_DIR$/Client/Resources.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/BuildMenu.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/ResourcesHUD.js" />
         <option value="$PROJECT_DIR$/Client/Screens/BuildArea.js" />
         <option value="$PROJECT_DIR$/Server/socket.js" />
-        <option value="$PROJECT_DIR$/Client/Screens/BuildMenu.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/PlayScreen.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/BuildingHUD.js" />
       </list>
     </option>
   </component>
@@ -180,20 +181,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Estrategia">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -256,6 +243,20 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="Screens" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="Estrategia">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -323,7 +324,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1365" height="728" extended-state="0" />
+    <frame x="0" y="0" width="1365" height="728" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -332,14 +333,14 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25414783" sideWeight="0.6003401" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="SVN Repositories" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32900944" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="SVN Repositories" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32900944" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18849449" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39965987" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -406,11 +407,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Client/Entity/Unit.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="29" selection-start="600" selection-end="600" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Client/data/sprite/font.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -423,9 +419,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/Config.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="88" selection-start="14" selection-end="14" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="2" column="88" selection-start="14" selection-end="14" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/jq.js">
@@ -442,72 +436,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/PlayScreen.js">
+    <entry file="file://$PROJECT_DIR$/Client/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="33.372547">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="26" selection-start="1283" selection-end="1283" vertical-scroll-proportion="0.0">
+        <state line="61" column="35" selection-start="1542" selection-end="1542" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="27" selection-start="2674" selection-end="2674" vertical-scroll-proportion="-17.884615">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Resources.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="38" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="35" selection-start="1439" selection-end="1439" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/ResourcesHUD.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="0" selection-start="876" selection-end="973" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="109" column="57" selection-start="3608" selection-end="3608" vertical-scroll-proportion="0.0">
+        <state line="54" column="27" selection-start="2746" selection-end="2746" vertical-scroll-proportion="-19.846153">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/socket.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="24" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0">
+        <state line="14" column="24" selection-start="372" selection-end="372" vertical-scroll-proportion="0.033203125">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server/socket.js">
+    <entry file="file://$PROJECT_DIR$/Client/Resources.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="33" selection-start="3098" selection-end="3098" vertical-scroll-proportion="0.0">
+        <state line="46" column="5" selection-start="1470" selection-end="1470" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/ResourcesHUD.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="62" selection-start="2275" selection-end="2276" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/Screens/BuildArea.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="46" selection-start="1790" selection-end="1790" vertical-scroll-proportion="1.0292969">
+        <state line="15" column="55" selection-start="695" selection-end="695" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="108" column="0" selection-start="3712" selection-end="3960" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server/socket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="123" column="19" selection-start="4522" selection-end="4522" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/PlayScreen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="0" selection-start="1803" selection-end="1803" vertical-scroll-proportion="13.6">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildingHUD.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="47" selection-start="359" selection-end="359" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="181" column="72" selection-start="6521" selection-end="6521" vertical-scroll-proportion="1.3">
           <folding />
         </state>
       </provider>
