@@ -37,27 +37,6 @@ jsApp.ActionMenu = me.Renderable.extend({
         );
         this.buildRect.buttonText = "Build";
 
-        // BACK
-		// Me.Rect(x,y,Witdh,Height)
-        this.backRect = new me.Rect(
-            new me.Vector2d(
-                this.pos.x +5,
-                this.pos.y+5
-            ),
-            50, 30
-        );
-        this.backRect.buttonText = "House";
-
-        // HOUSE
-		// Me.Rect(x,y,Witdh,Height)
-        this.houseRect = new me.Rect(
-            new me.Vector2d(
-                this.pos.x +5,
-                this.pos.y+5
-            ),
-            50, 30
-        );
-        this.houseRect.buttonText = "House";
 
         jsApp.getSocket().on("onListBuilding", function(data) {
             this.buildMenu = new jsApp.BuildMenu(data[0]);

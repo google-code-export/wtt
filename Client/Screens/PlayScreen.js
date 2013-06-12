@@ -1,7 +1,18 @@
 PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
+			var socket = jsApp.getSocket();
+			jsApp.destroy("onBuildingSelect");
+			
+			socket.on('onBuildingSelect', function(data) {
+				console.log("Description:"+data.Description+" idBuilding:"+data.idBuilding+" wood:"+data.wood+" stone:"+data.stone+" iron:"+data.iron+" gold:"+data.gold);
+				gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(data);
+				me.game.add(gameHandler.activeHuds.buildingHUD, 2000);
+				me.game.sort();
+			});
+			
             this.parent();
+			
             /////////////////
             // GAME CAMERA //
             /////////////////
@@ -10,17 +21,27 @@ PlayScreen = me.ScreenObject.extend(
             this.mousemove = new me.Vector2d();
             this.mousedelta = new me.Vector2d();
 
-            //gameHandler.playScreen = this;
-
             me.input.registerMouseEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(
                     ~~me.input.touches[0].x,
                     ~~me.input.touches[0].y
                 );
-
-                var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
-
+				if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
+					//me.game.remove(this.buildHUD,true);
+					//gameHandler.activeHuds.buildingHUD = undefined;
+					
+					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
+					var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);//buildLayer.getTileId(tileIs.x, tileIs.y);// getting the current tileid we've clicked on
+					
+					if(tileid != null){
+						idVillage = 1; // -> NEED TO SEE THIS BETTER!
+						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
+					}
+					console.log("tileid:"+tileid);
+				}
+				        
             }).bind(this));
 
             me.input.registerMouseEvent("mouseup", me.game.viewport, (function (e) {

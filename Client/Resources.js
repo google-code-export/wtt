@@ -4,8 +4,9 @@ var g_resources =
         {name: "TileSet",	type: "image",	src: "data/sprite/TileSet.png"},
 
         // IMAGES //
-        {name: "Title",	type: "image",	src: "data/sprite/Title.png"},
-
+        {name: "Title"   ,	type: "image",	src: "data/sprite/Title.png"},
+		{name: "BuildImg",	type: "image",	src: "data/sprite/build.png"},
+		
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},
 
