@@ -24,6 +24,7 @@ jsApp.BuildArea = me.Renderable.extend({
             //
 			
             me.game.remove(gameHandler.activeHuds.buildingArea,true);// removing the hud layer of the construction
+			gameHandler.activeHuds.buildingArea = undefined;
             me.game.sort();
         });
 		

@@ -96,6 +96,33 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
+					/*while(count--){
+					console.log("result["+count+"]: "+fields[count].Msg+" Description:"+fields[count].Description+" idBuilding:"+fields[count].idBuilding+" wood:"+fields[count].wood+" stone:"+fields[count].stone+" iron:"+fields[count].iron+" gold:"+fields[count].gold);
+					
+				}*/
+	//////////////////////////
+    // onBuildingSelect     //
+    //////////////////////////
+	socket.on('onBuildingSelect', function(data) {
+		console.log("Verifying if the building exist on : idVillage->"+data.idVillage+" X->"+data.X+" Y->"+data.Y);
+		connection.query("CALL `upgradeBuildView`("+data.idVillage+","+data.X+","+data.Y+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+				var count = fields.length;
+				    for (var i in rows) {
+						console.log("results["+i+"]"+rows[i].wood);
+					}
+
+				if(rows[1].Msg == undefined) {
+					socket.emit("onBuildingSelect", {Description: rows[1].Description, idBuilding: rows[1].idBuilding, wood: rows[1].wood, stone: rows[1].stone, iron: rows[1].iron, gold: rows[1].gold});
+                }else {
+					socket.emit("message", {msg: rows[1].Msg});
+                }
+			}
+		});
+	});
+	////////////
 });
 
 

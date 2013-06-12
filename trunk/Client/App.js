@@ -86,6 +86,9 @@ var jsApp	=
 
 var gameHandler =  {
 	activeHuds : {
+		buildMenu : undefined,
+		buildingArea : undefined,
+		buildingHUD: undefined
 	}
 }
 
