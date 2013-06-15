@@ -2,7 +2,10 @@ PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
+            var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
 			jsApp.destroy("onBuildingSelect");
+            jsApp.destroy("onListVillageBuildings");
+
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			socket.on('onBuildingSelect', function(data) {
                 //console.log("Description:"+data[1].Description+" idBuilding:"+data[2].idBuilding+" wood:"+data[2].wood+" stone:"+data[2].stone+" iron:"+data[2].iron+" gold:"+data[2].gold);
@@ -19,6 +22,25 @@ PlayScreen = me.ScreenObject.extend(
                 });
             });
 			//
+
+            //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
+            socket.on("onListVillageBuildings", function(data){
+                var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
+                for (var i in data[0]){
+                    if (i!=0){
+                        var idTile = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+                        var x      = data[0][i].posX;
+                        var y      = data[0][i].posY;
+                        buildLayer.setTile(x,y,idTile);//changing the tile
+                    }
+                }
+
+            });
+
+            socket.emit("onListVillageBuildings", idVillage);
+            //
+
+
             this.parent();
 			
             /////////////////
