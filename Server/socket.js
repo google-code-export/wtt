@@ -120,6 +120,38 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 	////////////
+
+    ////////////////////////////
+    // onListVillageBuildings //
+    ////////////////////////////
+    socket.on('onListVillageBuildings', function(data){
+        console.log("Listing Buildings from idVillage:"+data);
+        connection.query("CALL `getVillageBuilding`("+data+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListVillageBuildings",rows);
+            }
+        });
+    });
+    /////////////////////////
+
+    ////////////////////////////
+    // onListVillages //////////
+    ////////////////////////////
+    socket.on('onListVillages', function(data){
+        console.log("Listing Villages from userId:"+data.userId);
+        connection.query("CALL `getUserVillages`("+data.userId+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListVillages",rows);
+            }
+        });
+    });
+    /////////////////////////
+
+
 });
 
 
