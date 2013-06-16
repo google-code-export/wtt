@@ -7,17 +7,20 @@ PlayScreen = me.ScreenObject.extend(
             jsApp.destroy("onListVillageBuildings");
 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
-			socket.on('onBuildingSelect', function(data) {
+			 socket.on('onBuildingSelect', function(data) {
                 //console.log("Description:"+data[1].Description+" idBuilding:"+data[2].idBuilding+" wood:"+data[2].wood+" stone:"+data[2].stone+" iron:"+data[2].iron+" gold:"+data[2].gold);
                  console.log("data:"+data);
-                $.each(data, function(i, obj) {
+                 $.each(data, function(i, obj) {
                     if(i>0)
                         return false;
                     else{
-                        console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
-                        gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
-                        me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
-                        me.game.sort();
+                        if(gameHandler.activeHuds.buildingHUD==undefined) {
+                            console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
+                            gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
+                            me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
+                            me.game.sort();
+                        }
+
                     }
                 });
             });
@@ -42,7 +45,6 @@ PlayScreen = me.ScreenObject.extend(
 
 
             this.parent();
-			
             /////////////////
             // GAME CAMERA //
             /////////////////
@@ -58,11 +60,12 @@ PlayScreen = me.ScreenObject.extend(
                     ~~me.input.touches[0].y
                 );
 
-                //IT'S NOT WORKING! NEED TO VERIFY
+                jsApp.simpleDialog("wololoeeeeiro");
+
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
-                    if(gameHandler.activeHuds.buildingHUD.containsPoint(me.input.touches[0])){
-                        alert("hey!");
+                    if(gameHandler.activeHuds.buildingHUD.rectangle.containsPoint(me.input.touches[0])){
+
                     }else{
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);
@@ -71,20 +74,20 @@ PlayScreen = me.ScreenObject.extend(
                         //
                     }
                 }
-                //
+
 
                 //JUST DO IT IF ANY HUD IT'S NOT ON THE SCREEN
 				if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
 
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
-					var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);//buildLayer.getTileId(tileIs.x, tileIs.y);// getting the current tileid we've clicked on
-					
+                   // console.log(me.input.touches[0]);
+					var tileid = buildLayer.getTileId(me.input.touches[0].x+me.game.viewport.pos.x, me.input.touches[0].y+me.game.viewport.pos.y);//buildLayer.getTileId(tileIs.x, tileIs.y);// getting the current tileid we've clicked on
+                    //var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);
 					if(tileid != null){
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
 						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
 					}
-					console.log("tileid:"+tileid);
 				}
                 //
 				        

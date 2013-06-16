@@ -16,7 +16,7 @@ jsApp.BuildArea = me.Renderable.extend({
                         alert(obj[i].Msg);
                     }else{
                         console.log("result["+i+"]: "+obj[i].Msg);
-                        var building = gameHandler.activeHuds.buildingArea;
+                        var building = infoBuild;
                         var idTile = building.info.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.info.x+" y:"+building.info.y+" idTile:"+idTile);
 
@@ -79,7 +79,7 @@ jsApp.BuildArea = me.Renderable.extend({
 		
 		this.mouseDown = (function () {
             //TAKING ALL THE DATA TO SEND TO SERVER
-		    var building = gameHandler.activeHuds.buildingArea;
+		    var building = infoBuild;
 			var buildPos = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
 			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
             building.info.x = buildPos.x;
