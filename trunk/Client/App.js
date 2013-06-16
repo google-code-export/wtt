@@ -33,6 +33,20 @@ var jsApp	=
 
     },
 
+    simpleDialog : function(msg)
+    {
+
+       var msgTeste = "Hallow ! This is a !" + "#"+
+                "message text system simmilar to the !" + "#" +
+                "old good gameboy !" + "#" +
+                "this prototype is just this" + "#" +
+                "wololo :D" + "#" +
+                "but ive made a simple battle appresentation" + "#" +
+                "lez run it !" + "#";
+        me.game.addHUD(30,gameH-80,260,64);
+        me.game.HUD.addItem("caixaTexto", new ChatDialog(0,0, msgTeste,"Testando 123", undefined));
+        me.game.sort();
+    },
     // this method is called when the app is initialized
     onload: function()
     {

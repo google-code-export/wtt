@@ -19,7 +19,15 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
         gameHandler.activeHuds["buildingHUD"] = this;
-		
+
+        this.rectangle = new me.Rect(
+            new me.Vector2d(
+                0,
+                gameH-128
+            )
+            ,gameW,128
+        )
+
 		//////////////////////////
         // BUILDING INFORMATION //
         //////////////////////////
@@ -33,7 +41,11 @@ jsApp.BuildingHUD = me.Renderable.extend({
             (gameW/3), 128
         );
         var titletext = undefined;
-        if(this.msg == undefined){titletext = infoBuild.basicDescription;}else{titletext = infoBuild.Description;}
+        if(this.msg == undefined){
+            titletext = infoBuild.basicDescription;
+        } else {
+            titletext = infoBuild.Description;
+        }
         this.DescRect.TitleText = titletext.toUpperCase();
         this.DescRect.buildDesc = "THIS IS A BUILDING.";
         ////////
@@ -66,12 +78,14 @@ jsApp.BuildingHUD = me.Renderable.extend({
     draw : function (context)
     {
         var iX = 20;
-		context.globalAlpha = 1;
+		context.globalAlpha = 0.7;
         context.fillStyle = "#00066";
 
         //BUILDING RECTS//
         context.fillRect(0,gameH-128,gameW, 128);
-		context.drawImage(this.Buildimage, this.pos.x, this.pos.y)
+        context.globalAlpha = 1;
+
+		context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
         //
 
        //DESCRIPTION RECT//

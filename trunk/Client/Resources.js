@@ -6,7 +6,9 @@ var g_resources =
         // IMAGES //
         {name: "Title"   ,	type: "image",	src: "data/sprite/Title.png"},
 		{name: "BuildImg",	type: "image",	src: "data/sprite/build.png"},
-		
+        {name: "WoodTexture" ,type: "image",  src: "data/sprite/woodtexture.png"  },
+
+
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},
 

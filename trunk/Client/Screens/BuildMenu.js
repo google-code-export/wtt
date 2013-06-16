@@ -65,8 +65,15 @@ jsApp.BuildMenu = me.Renderable.extend({
             ),
             30, 30
         );
+
         this.backRect.buttonColor = "red";
         this.backRect.buttonText = "X";
+        this.backRect.hasClickFunction = true;
+        this.backRect.clickFunction = function(instance) {
+             me.game.remove(instance,true);
+             me.game.sort();
+        };
+        this.options.push(this.backRect);
 		
 		
         this.font = new me.Font("verdana", 14, "lime", "right");
@@ -81,22 +88,25 @@ jsApp.BuildMenu = me.Renderable.extend({
                     var ct = this.options.length;
                     while(ct--) {
                         if(this.options[ct].containsPoint(me.input.touches[0])){
-                            ///////// PUT THE HUD INTO THE SCREEN
-                            this.building = new jsApp.BuildArea("mousedown",this.options[ct]);// creating a new instance of the class BuildArea
-                            me.game.add(this.building,1000);// adding this to the screen
-                            gameHandler.activeHuds.buildingArea = this.options[ct];
-                            me.game.remove(this); //removing the build hud
-                            me.game.sort(); // "printing" all this into the screen
+                            // if the option has no click function it must be a building !
+                            if(this.options[ct].hasClickFunction == undefined) {
+                                //simply make the selector to build it
+                                this.building = new jsApp.BuildArea("mousedown",this.options[ct]);// creating a new instance of the class BuildArea
+                                me.game.add(this.building,1000);// adding this to the screen
+                                //gameHandler.activeHuds.buildingArea = this.options[ct];
+                                //gameHandler.activeHuds.buildingArea = this.building;
+                                me.game.remove(this); //removing the build hud
+                                me.game.sort();       // "printing" all this into the screen
+                            } else {
+                                this.options[ct].clickFunction(this);
+                            }
+
+
 
                         }
                     }
 					
-                    if(this.backRect.containsPoint(me.input.touches[0])) {
-                        ///////// PUT THE HUD INTO THE SCREEN
-                        // game.add(object, z) --> Z it's to defines who is in front of who. Bigger values means top positions
-                        me.game.remove(this,true);
-                        me.game.sort();
-                    }
+
                 }
             }
 		}.bind(this));
