@@ -78,7 +78,7 @@ PlayScreen = me.ScreenObject.extend(
                         me.game.sort();
                         //
                     }
-                }else if(gameHandler.activeHuds.actionMenu != undefined) {
+                }else if(gameHandler.activeHuds.actionMenu != undefined && gameHandler.activeHuds.actionMenu.menuRect.containsPoint(me.input.touches[0])) {
                     var menu = gameHandler.activeHuds.actionMenu;
                     // if i clicked the menu
                     if(menu.menuRect != undefined) {
