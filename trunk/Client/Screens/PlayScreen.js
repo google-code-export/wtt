@@ -3,9 +3,11 @@ PlayScreen = me.ScreenObject.extend(
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
             var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
+			//Destroying websockets event before create a new one
 			jsApp.destroy("onBuildingSelect");
             jsApp.destroy("onListVillageBuildings");
-
+			jsApp.destroy("onRequestUpdate");
+			
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 socket.on('onBuildingSelect', function(data) {
                 //console.log("Description:"+data[1].Description+" idBuilding:"+data[2].idBuilding+" wood:"+data[2].wood+" stone:"+data[2].stone+" iron:"+data[2].iron+" gold:"+data[2].gold);
@@ -30,10 +32,11 @@ PlayScreen = me.ScreenObject.extend(
             socket.on("onListVillageBuildings", function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
                 for (var i in data[0]){
-                    if (i!=0){
+                    if (i!="remove"){
                         var idTile = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         var x      = data[0][i].posX;
                         var y      = data[0][i].posY;
+						console.log("i:"+i+" x:"+x+" y:"+y+" idtile:"+idTile);
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
                 }
@@ -60,12 +63,15 @@ PlayScreen = me.ScreenObject.extend(
                     ~~me.input.touches[0].y
                 );
 
-                jsApp.simpleDialog("wololoeeeeiro");
+                //jsApp.simpleDialog("wololoeeeeiro");
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
                     if(gameHandler.activeHuds.buildingHUD.rectangle.containsPoint(me.input.touches[0])){
-
+						console.log("wololo1");
+						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPoint(me.input.touches[0])){
+							console.log("wololo2");
+						}
                     }else{
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);

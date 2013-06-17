@@ -84,18 +84,10 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
 				socket.emit("onConstruct", rows);
-                /*if(rows[1].Msg == "Done") {
-					socket.emit("onConstruct", rows);
-                } else {
-					socket.emit("message", {msg: rows[1].Msg});
-                }*/
             }
         });
     });
-					/*while(count--){
-					console.log("result["+count+"]: "+fields[count].Msg+" Description:"+fields[count].Description+" idBuilding:"+fields[count].idBuilding+" wood:"+fields[count].wood+" stone:"+fields[count].stone+" iron:"+fields[count].iron+" gold:"+fields[count].gold);
-					
-				}*/
+
 	//////////////////////////
     // onBuildingSelect     //
     //////////////////////////
@@ -106,16 +98,6 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onBuildingSelect",rows);
-				/*var count = fields.length;
-				    for (var i in rows) {
-						console.log("results["+i+"]"+rows[i].wood);
-					}
-
-				if(rows[1].Msg == undefined) {
-					socket.emit("onBuildingSelect", {Description: rows[1].Description, idBuilding: rows[1].idBuilding, wood: rows[1].wood, stone: rows[1].stone, iron: rows[1].iron, gold: rows[1].gold});
-                }else {
-					socket.emit("message", {msg: rows[1].Msg});
-                }*/
 			}
 		});
 	});
@@ -146,6 +128,21 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onListVillages",rows);
+            }
+        });
+    });
+    /////////////////////////
+	
+	////////////////////////////
+    // onRequestUpdate //////////
+    ////////////////////////////
+    socket.on('onRequestUpdate', function(data){
+        console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.X+" y:"+data.Y);
+        connection.query("CALL `upgradeBuildings`("+data.idVillage+","+data.idBuilding+","+data.X+","+data.Y+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onRequestUpdate",rows);
             }
         });
     });
