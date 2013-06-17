@@ -1,5 +1,8 @@
 jsApp.BuildingHUD = me.Renderable.extend({
     "init" : function init(infoBuild) {
+        var socket  = jsApp.getSocket();
+
+		this.mouseAction = undefined;
         this.parent(new me.Vector2d(0,gameH-128,gameW,128));// position on the screen
         this.floating = true;
         this.isPersistent = true;
@@ -19,7 +22,15 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
         gameHandler.activeHuds["buildingHUD"] = this;
-
+		
+		//////////////////////////////////////////
+		//UPDATING CONSTRUCTIONS AND RESOURCES //
+		////////////////////////////////////////
+        socket.on("onRequestUpdate", function(data){
+			
+		});
+		////////////
+		
         this.rectangle = new me.Rect(
             new me.Vector2d(
                 0,
@@ -73,12 +84,14 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.buttonfont = new me.Font("verdana", 14, "lime", "right");
         this.buttonfont.textBaseline = "bottom";
         ////////
+		
+
 	},
 	
     draw : function (context)
     {
         var iX = 20;
-		context.globalAlpha = 0.7;
+		context.globalAlpha = 0.9;
         context.fillStyle = "#00066";
 
         //BUILDING RECTS//
@@ -130,7 +143,9 @@ jsApp.BuildingHUD = me.Renderable.extend({
     },
 
     "destroy" : function() {
-
+		me.input.releaseMouseEvent("mousedown", this);
+		me.input.releaseMouseEvent("mouseup", this);
+		me.input.releaseMouseEvent("mousemove", this);
     }
 
 });

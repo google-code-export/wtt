@@ -1,20 +1,12 @@
 <!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<html xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
-    <title>WTT: Way of The Temple</title>
-</head>
-<!-- LEIA E BAIXE ->>> http://renderhjs.net/shoebox/ -->
-<body bgcolor="black" color='white' style="margin:0; padding:0">
-    <div id="divLogin">
-        <br /><br />>
-        <ul style="text-align:center;">
-            <li> Username<input type="text" id="username"> </input></li>
-            <li> Password<input type="text" id="password"> </input></li>
-            <li> <input type="button" id="go" value="Sign In" onclick='go();'/></li>
-        </ul>
-    </div>
-        <script type="text/javascript" src="socket.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>WTT: Way of The Temple</title>
+        <meta name="keywords" content=""    />
+        <meta name="description" content="" />
+        <link   rel="stylesheet" href="css/styles.css"      type="text/css" media="screen" />
+		<script type="text/javascript" src="socket.js"></script>
         <script type="text/javascript" src="lib/jq.js"></script>
         <script type="text/javascript" src="lib/jstorage.js"></script>
 		<script type="text/javascript" src="lib/Melon.js"></script>
@@ -29,8 +21,10 @@
 		<script type="text/javascript" src="Screens/BuildMenu.js"></script>
         <script type="text/javascript" src="Screens/BuildArea.js"></script>
 		<script type="text/javascript" src="Screens/BuildingHUD.js"></script>
-        <script type="text/javascript">
-
+    </head>
+	
+    <body background="css/chinesetemple1.jpg" bgcolor="#333333">
+		<script>
             var socket;
             window.onReady(function onReady() {
                 $.jStorage.flush();
@@ -42,6 +36,8 @@
                     $.jStorage.set("userData", d0);
                     //$.jStorage.get("userData").sessionId;
                     $("#divLogin").hide();
+					$("#footer_bot").hide();
+					//$("#logo").hide();
                     jsApp.onload();
                 });
                 socket.on('message', function(data) {
@@ -59,9 +55,35 @@
                var pass = $("#password").val();
                socket.emit("login",  { p1:user,p2:pass });
             }
-
-
-        </script>
-    </center>
-</body>
+		</script>
+    	<div id="grad_bg">&nbsp;</div>
+		<div id="wrap">	
+			<div id="logo">
+				<h1><a href="#"><img src="css/logo.png"/></a></h1>
+			</div> <!-- FIM ID = LOGO -->
+			<br><br>
+			<div id="content_bg">
+				<div id="header" height="320">
+					<div id="wrapper" align="center">
+					<br><br><br><br>
+						<div id="screen"></div>
+					    <div id="divLogin" class="login-form">
+							<br /><br />
+							<h1>Go into your Kingdom</h1>
+							<input type="text" name="username" id="username" placeholder="username">
+							<input type="password" name="password" id="password" placeholder="password">
+							<input type="button" id="go" value="Sign In" onclick='go();'>
+						</div>
+					</div><!-- FIM ID = WRAPPER -->
+					
+				</div><!-- FIM ID = HEADER -->	
+				<br><br><br><br>		
+			</div> <!-- FIM ID = CONTENT BD -->
+			
+			<div id="footer_bot">
+				<p>Copyright  2013. <!-- Do not remove -->Designed by <a href="#">Ryba</a>, coded by <a href="#">Ryba</a><!-- end --></p>
+		        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="http://validator.w3.org/check/referer" title="This page validates as XHTML 1.0 Transitional"><abbr title="eXtensible HyperText Markup Language">XHTML</abbr></a> | <a href="http://jigsaw.w3.org/css-validator/check/referer" title="This page validates as CSS"><abbr title="Cascading Style Sheets">CSS</abbr></a></p>
+			</div>
+		</div> <!-- FIM ID = WRAP -->
+    </body>
 </html>
