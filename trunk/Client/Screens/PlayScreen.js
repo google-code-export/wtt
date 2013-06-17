@@ -22,7 +22,6 @@ PlayScreen = me.ScreenObject.extend(
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
                             me.game.sort();
                         }
-
                     }
                 });
             });
