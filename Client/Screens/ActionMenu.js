@@ -5,6 +5,7 @@ jsApp.ActionMenu = me.Renderable.extend({
         this.floating = true;
         this.isPersistent = true;
 		this.mouseAction = undefined;
+        gameHandler.activeHuds.actionMenu = this;
         // options that are displayed on the screen
         this.options = new Array();
 
@@ -50,35 +51,17 @@ jsApp.ActionMenu = me.Renderable.extend({
         this.font = new me.Font("verdana", 14, "lime", "right");
         this.font.textBaseline = "bottom";
 
-        this.mouseDown = function() {
-            // if i clicked the menu
-            if(this.menuRect != undefined) {
-                if (this.menuRect.containsPoint(me.input.touches[0])) {
-                    // if i clicked the "BUILD" button
-                    if(this.buildRect.containsPoint(me.input.touches[0])) {
-                        ///////// PUT THE HUD INTO THE SCREEN
-                        // game.add(object, z)
-                        if(gameHandler.activeHuds.buildMenu!=undefined)
-                            return;
-                        jsApp.send("onListBuilding", jsApp.getUserData());
-                        //if(gameHandler.activeHuds.buildMenu!=undefined)
-                        //    return;
-                        //this.buildMenu = new jsApp.BuildMenu();
-                        //gameHandler.activeHuds.buildMenu = this;
-                        //me.game.add(this.buildMenu,1000);
-                        //me.game.sort();
-                    }
-                }
-            }
-        }.bind(this);
+        //this.mouseDown = function() {
+        //
+       // }.bind(this);
 
 
 
-        me.input.registerMouseEvent("mouseup", this,function(){
-            me.event.publish("clickMenu");
-		}.bind(this));
+       // me.input.registerMouseEvent("mouseup", this,function(){
+       //     me.event.publish("clickMenu");
+		//}.bind(this));
 
-        me.event.subscribe("clickMenu", this.mouseDown);
+       // me.event.subscribe("clickMenu", this.mouseDown);
 
     },
 

@@ -44,7 +44,7 @@
       <file leaf-file-name="PlayScreen.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client/Screens/PlayScreen.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="68" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.3478261">
+            <state line="101" column="17" selection-start="5028" selection-end="5028" vertical-scroll-proportion="0.6304348">
               <folding />
             </state>
           </provider>
@@ -77,15 +77,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Resources.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Client/Resources.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="75" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ResourcesHUD.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/ResourcesHUD.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -98,7 +89,7 @@
       <file leaf-file-name="BuildMenu.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="36" selection-start="1154" selection-end="1163" vertical-scroll-proportion="0.0">
+            <state line="104" column="22" selection-start="2580" selection-end="3855" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -107,7 +98,7 @@
       <file leaf-file-name="BuildingHUD.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildingHUD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="139" column="168" selection-start="5174" selection-end="5174" vertical-scroll-proportion="0.0">
+            <state line="42" column="0" selection-start="1394" selection-end="1394" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -117,6 +108,15 @@
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildArea.js">
           <provider selected="true" editor-type-id="text-editor">
             <state line="75" column="59" selection-start="3729" selection-end="3729" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ActionMenu.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="63" column="9" selection-start="1872" selection-end="1872" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -132,7 +132,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/Client/Screens/ActionMenu.js" />
         <option value="$PROJECT_DIR$/Client/Animations/TileImage.js" />
         <option value="$PROJECT_DIR$/Client/Screens/TitleScreen.js" />
         <option value="$PROJECT_DIR$/Client/jq.js" />
@@ -147,6 +146,7 @@
         <option value="$PROJECT_DIR$/Client/Screens/SimpleDialog.js" />
         <option value="$PROJECT_DIR$/Client/css/styles.css" />
         <option value="$PROJECT_DIR$/Client/Screens/BuildingHUD.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/ActionMenu.js" />
         <option value="$PROJECT_DIR$/Client/Screens/PlayScreen.js" />
       </list>
     </option>
@@ -455,30 +455,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="0" selection-start="3712" selection-end="3960" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Server/socket.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="152" column="0" selection-start="5449" selection-end="5449" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="36" selection-start="1154" selection-end="1163" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildArea.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="59" selection-start="3729" selection-end="3729" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -493,13 +472,6 @@
     <entry file="file://$PROJECT_DIR$/Client/App.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="38" column="7" selection-start="661" selection-end="661" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/SimpleDialog.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="180" column="31" selection-start="7601" selection-end="7601" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -525,16 +497,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="104" column="22" selection-start="2580" selection-end="3855" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Client/Screens/BuildingHUD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="168" selection-start="5174" selection-end="5174" vertical-scroll-proportion="0.0">
+        <state line="42" column="0" selection-start="1394" selection-end="1394" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildArea.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="59" selection-start="3729" selection-end="3729" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/ActionMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="63" column="9" selection-start="1872" selection-end="1872" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/SimpleDialog.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="180" column="31" selection-start="7601" selection-end="7601" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Client/Screens/PlayScreen.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="68" selection-start="3158" selection-end="3158" vertical-scroll-proportion="0.3478261">
+        <state line="101" column="17" selection-start="5028" selection-end="5028" vertical-scroll-proportion="0.6304348">
           <folding />
         </state>
       </provider>
