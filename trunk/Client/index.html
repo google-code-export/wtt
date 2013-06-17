@@ -23,7 +23,7 @@
 		<script type="text/javascript" src="Screens/BuildingHUD.js"></script>
     </head>
 	
-    <body background="css/chinesetemple1.jpg" bgcolor="#333333">
+    <body background="css/chinesetemple1.jpg" bgcolor="#333333" style="margin:0;padding:0">
 		<script>
             var socket;
             window.onReady(function onReady() {
@@ -37,6 +37,7 @@
                     //$.jStorage.get("userData").sessionId;
                     $("#divLogin").hide();
 					$("#footer_bot").hide();
+                    $("#logo").hide();
 					//$("#logo").hide();
                     jsApp.onload();
                 });
@@ -60,13 +61,16 @@
 		<div id="wrap">	
 			<div id="logo">
 				<h1><a href="#"><img src="css/logo.png"/></a></h1>
+                <br><br>
+
 			</div> <!-- FIM ID = LOGO -->
-			<br><br>
+
 			<div id="content_bg">
 				<div id="header" height="320">
 					<div id="wrapper" align="center">
-					<br><br><br><br>
+
 						<div id="screen"></div>
+                        <br><br><br><br><br>
 					    <div id="divLogin" class="login-form">
 							<br /><br />
 							<h1>Go into your Kingdom</h1>
