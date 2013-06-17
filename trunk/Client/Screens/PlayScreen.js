@@ -78,11 +78,30 @@ PlayScreen = me.ScreenObject.extend(
                         me.game.sort();
                         //
                     }
+                }else if(gameHandler.activeHuds.actionMenu != undefined) {
+                    var menu = gameHandler.activeHuds.actionMenu;
+                    // if i clicked the menu
+                    if(menu.menuRect != undefined) {
+                        if (menu.menuRect.containsPoint(me.input.touches[0])) {
+                            // if i clicked the "BUILD" button
+                            if(menu.buildRect.containsPoint(me.input.touches[0])) {
+                                ///////// PUT THE HUD INTO THE SCREEN
+                                // game.add(object, z)
+                                if(gameHandler.activeHuds.buildMenu!=undefined)
+                                    return;
+                                jsApp.send("onListBuilding", jsApp.getUserData());
+                                //if(gameHandler.activeHuds.buildMenu!=undefined)
+                                //    return;
+                                //this.buildMenu = new jsApp.BuildMenu();
+                                //gameHandler.activeHuds.buildMenu = this;
+                                //me.game.add(this.buildMenu,1000);
+                                //me.game.sort();
+                            }
+                        }
+                    }
                 }
-
-
                 //JUST DO IT IF ANY HUD IT'S NOT ON THE SCREEN
-				if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
+				else if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
 
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
