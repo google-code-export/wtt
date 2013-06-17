@@ -21,14 +21,16 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
-        gameHandler.activeHuds["buildingHUD"] = this;
+        gameHandler.activeHuds.buildingHUD = this;
 		
 		//////////////////////////////////////////
 		//UPDATING CONSTRUCTIONS AND RESOURCES //
 		////////////////////////////////////////
-        socket.on("onRequestUpdate", function(data){
+
+        // caquinha
+        //socket.on("onRequestUpdate", function(data){
 			
-		});
+		//});
 		////////////
 		
         this.rectangle = new me.Rect(
@@ -136,16 +138,23 @@ jsApp.BuildingHUD = me.Renderable.extend({
             context.fillStyle = "#585858";
             context.fillRect(this.buildRect.pos.x, this.buildRect.pos.y, this.buildRect.width, this.buildRect.height);
             this.buttonfont.draw(context, this.buildRect.buttonText, this.buildRect.pos.x + this.buildRect.width - 8, this.buildRect.pos.y + this.buildRect.height - 8);
-
-            //
         }
-        //
+
     },
 
     "destroy" : function() {
+        gameHandler.activeHuds.buildingHUD = undefined;
 		me.input.releaseMouseEvent("mousedown", this);
 		me.input.releaseMouseEvent("mouseup", this);
 		me.input.releaseMouseEvent("mousemove", this);
+        this.Woodimage  = undefined;
+        this.Stoneimage = undefined;
+        this.Ironimage  = undefined;
+        this.Meatimage  = undefined;
+        this.Coinimage  = undefined;
+        this.Buildimage = undefined;
+        alert("yihuuu desaloquei recursos da hud e sou feliz");
+        // o certo eh guardar as img dinamicamente em algum lugar e só ir buscando elas
     }
 
 });

@@ -67,10 +67,9 @@ PlayScreen = me.ScreenObject.extend(
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
-                    if(gameHandler.activeHuds.buildingHUD.rectangle.containsPoint(me.input.touches[0])){
-						console.log("wololo1");
+                    if(gameHandler.activeHuds.buildingHUD.UPRect.containsPoint(me.input.touches[0])){
+						console.log("cliquei no update");
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPoint(me.input.touches[0])){
-							console.log("wololo2");
 						}
                     }else{
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
