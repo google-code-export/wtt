@@ -13,6 +13,12 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.FoodValue  = infoBuild.food;
         this.IronValue  = infoBuild.iron;
         this.GoldValue  = infoBuild.gold;
+		this.idBuilding = infoBuild.idBuilding;
+		this.idTile		= infoBuild.idTile;
+		this.posX		= infoBuild.posX;
+		this.posY		= infoBuild.posY;
+		this.idVillage	= 1; //---> Need to see this better
+		
 
         this.font = new me.BitmapFont("BaseFont", 16);
         this.Woodimage  = me.loader.getImage("Wood") ;
@@ -153,7 +159,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Meatimage  = undefined;
         this.Coinimage  = undefined;
         this.Buildimage = undefined;
-        alert("yihuuu desaloquei recursos da hud e sou feliz");
         // o certo eh guardar as img dinamicamente em algum lugar e só ir buscando elas
     }
 
