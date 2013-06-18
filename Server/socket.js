@@ -137,8 +137,8 @@ io.sockets.on('connection', function (socket) {
     // onRequestUpdate //////////
     ////////////////////////////
     socket.on('onRequestUpdate', function(data){
-        console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.X+" y:"+data.Y);
-        connection.query("CALL `upgradeBuildings`("+data.idVillage+","+data.idBuilding+","+data.X+","+data.Y+")", function(err, rows, fields){
+        console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.posX+" y:"+data.posY);
+        connection.query("CALL `updateBuildings`("+data.idVillage+","+data.idBuilding+","+data.posX+","+data.posY+")", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
