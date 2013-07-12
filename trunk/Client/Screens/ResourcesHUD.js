@@ -20,10 +20,8 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
         gameHandler.activeHuds["resourceHud"] = this;
-
-        //getting the resources by websockets
         jsApp.destroy("onResourcesUpdate"); //Destroying websockets event before create a new one
-        jsApp.send("onResourcesUpdate", jsApp.getUserSession()); //
+        jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
         var socket = jsApp.getSocket();//io.connect('http://199.115.231.229');
         socket.on('onResourcesUpdate', function(data) {
             $.each(data, function(i, obj) {
@@ -39,6 +37,10 @@ jsApp.ResourcesHUD = me.Renderable.extend({
             });
 
         });
+
+        //getting the resources by websockets
+
+        console.log(jsApp.getUserData());
     },
 
     distance : 60,

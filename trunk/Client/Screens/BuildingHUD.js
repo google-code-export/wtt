@@ -29,16 +29,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
 		this.Buildimage = me.loader.getImage("BuildImg");
         gameHandler.activeHuds.buildingHUD = this;
 		
-		//////////////////////////////////////////
-		//UPDATING CONSTRUCTIONS AND RESOURCES //
-		////////////////////////////////////////
-
-        // caquinha
-        //socket.on("onRequestUpdate", function(data){
-			
-		//});
-		////////////
-		
         this.rectangle = new me.Rect(
             new me.Vector2d(
                 0,

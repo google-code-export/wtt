@@ -36,15 +36,8 @@ var jsApp	=
     simpleDialog : function(msg)
     {
 
-       var msgTeste = "Hallow ! This is a !" + "#"+
-                "message text system simmilar to the !" + "#" +
-                "old good gameboy !" + "#" +
-                "this prototype is just this" + "#" +
-                "wololo :D" + "#" +
-                "but ive made a simple battle appresentation" + "#" +
-                "lez run it !" + "#";
-        me.game.addHUD(30,gameH-80,260,64);
-        me.game.HUD.addItem("caixaTexto", new ChatDialog(0,0, msgTeste,"Testando 123", undefined));
+        me.game.addHUD(gameW/2,gameH/2,260,64);
+        me.game.HUD.addItem("caixaTexto", new ChatDialog(0,0, msg,"Message:", undefined));
         me.game.sort();
     },
     // this method is called when the app is initialized
@@ -57,7 +50,7 @@ var jsApp	=
         me.sys.preRender = false; // NEED TO BE FALSE TO CHANGE THE TILES IN MAP!
         me.sys.useNativeAnimFrame = true; // Be fastest!
         me.sys.stopOnAudioError = false;
-        if (!me.video.init("screen", gameW, gameH, undefined, "auto", true))
+        if (!me.video.init("screen", gameW, gameH, undefined,"auto", true))
         {
             alert("Sorry but your browser does not support html 5 canvas.");
             return;
