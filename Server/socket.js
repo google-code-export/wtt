@@ -54,8 +54,8 @@ io.sockets.on('connection', function (socket) {
   // onResourcesUpdate       //
   //////////////////////////
   socket.on('onResourcesUpdate', function(data) {
-      console.log("getting resources from idUser ="+data.idUser);
-      connection.query("CALL `getResources`('"+data.idUser+"')",function(err, rows, fields){
+      console.log("getting resources from idUser ="+data.userId);
+      connection.query("CALL `getResources`('"+data.userId+"')",function(err, rows, fields){
           if(rows.length==undefined || rows.length==0)
               socket.emit("message", {msg:"Player not found!"});
           socket.emit("onResourcesUpdate", rows);

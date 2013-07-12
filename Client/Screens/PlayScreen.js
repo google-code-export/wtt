@@ -11,13 +11,11 @@ PlayScreen = me.ScreenObject.extend(
 			 //HERE WE UPDATE AND CHANGE THE TILE IN THE RIGHT POSITION
 			 socket.on("onRequestUpdate",function(data){
 				var infobuild = gameHandler.activeHuds.buildingHUD;
-				console.log(data);
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(data[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var idTile = infobuild.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
-					console.log(infobuild);
 					//NEED TO SEE THIS BETTER!
 					//updating the resources
 					gameHandler.activeHuds["resourceHud"].GoldValue -= infobuild.GoldValue;
@@ -26,12 +24,14 @@ PlayScreen = me.ScreenObject.extend(
 					gameHandler.activeHuds["resourceHud"].IronValue -= infobuild.IronValue;
 					//
 				}else{
-					alert(data.Msg);
+					alert(data[0][0].Msg);
 				}
+                 me.game.remove(gameHandler.activeHuds.buildingHUD,true);
+                 gameHandler.activeHuds.buildingHUD = undefined;
+                 me.game.sort();
 			 });
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 socket.on('onBuildingSelect', function(data) {
-                 console.log(data);
                  $.each(data, function(i, obj) {
                     if(i>0)
                         return false;
@@ -39,7 +39,6 @@ PlayScreen = me.ScreenObject.extend(
                         if(gameHandler.activeHuds.buildingHUD==undefined) {
                             //console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
                             gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
-							console.log(gameHandler.activeHuds.buildingHUD.posX);
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
                             me.game.sort();
                         }
@@ -88,10 +87,9 @@ PlayScreen = me.ScreenObject.extend(
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPoint(me.input.touches[0])){
-						var infobuild = gameHandler.activeHuds.buildingHUD;
-						console.log(infobuild);
-						//console.log("updating building x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
-						socket.emit("onRequestUpdate",infobuild);
+						var updatebuild = gameHandler.activeHuds.buildingHUD;
+						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
+						socket.emit("onRequestUpdate",{"idVillage" : updatebuild.idVillage, "idBuilding" : updatebuild.idBuilding, "posX": updatebuild.posX, "posY" : updatebuild.posY});
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPoint(me.input.touches[0])){
 						}
                     }else{
