@@ -2,11 +2,14 @@ var Generator = {
 
     debugMapArray : undefined,
 
+    map : {},
     LEFT : 4,
     RIGHT : 6,
     UP : 8,
     DOWN : 2,
 
+
+    // A PARTE DE SPREAD BIOME (ESPALHAR DESERTOS, LAGOS ETC) NÃO ESTÀ FEITA !
     chance : function (pct) {
       return Math.random()*100 < pct;
     },
@@ -117,11 +120,11 @@ var Generator = {
                 var loc = nearby[ct];
                 if(loc.x <0 || loc.x >= 20 || loc.y < 0 ||loc.y >= 20) {
 
-                    // has not been generated yet
-                    if(otherChunk==undefined) {
-                        loc.id = tile;
-                        this.addDebtTile(chunk,loc);
-                    }
+                  // has not been generated yet
+                  //  if(otherChunk==undefined) {
+                  //      loc.id = tile;
+                  //      this.addDebtTile(chunk,loc);
+                  //  }
                 }
                 else
                     chunk.chunkTiles[loc.x][loc.y] = tile;
@@ -167,9 +170,6 @@ var Generator = {
         chunk.y = cy;
         return chunk;
     },
-
-
-
 
     // 4 8 6 2
     randomFace : function() {

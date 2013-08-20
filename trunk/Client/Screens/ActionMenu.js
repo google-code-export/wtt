@@ -36,9 +36,8 @@ jsApp.ActionMenu = me.Renderable.extend({
              ),
              50, 30
         );
+
         this.buildRect.buttonText = "Build";
-
-
         jsApp.getSocket().on("onListBuilding", function(data) {
             this.buildMenu = new jsApp.BuildMenu(data[0]);
             gameHandler.activeHuds.buildMenu = this;
