@@ -12,7 +12,7 @@
                 var ctx = canvas.getContext("2d");
                 ctx.strokeStyle = "green";
                 var map = generateMap();
-               renderMap(ctx, map);
+                renderMap(ctx, map);
                 drawGrid(ctx);
                 console.log("READY");
             }
@@ -20,13 +20,16 @@
 
         var mapSize = 20;
 
+        // METODO DE TESTES FORÇANDO GERAÇÃO
         function generateMap() {
             Generator.debugMapArray = new Array(mapSize);
             for(var x = 0 ; x < mapSize ; x++) {
                 Generator.debugMapArray[x] = new Array(mapSize);
                 for(var y = 0 ; y < mapSize ; y++) {
                    // console.log("will gen "+x+ " " + y);
-                    Generator.saveChunk(Generator.generateChunk("newbie",x,y));
+                    var newChunk = Generator.generateChunk("newbie",x,y);
+                    console.log(newChunk);
+                    Generator.saveChunk(newChunk);
                 }
             }
             return Generator.debugMapArray;
@@ -34,6 +37,7 @@
 
         var tilesInChunk = 20;
 
+        // PA DESENHA O MAPITCHA
         function renderMap(ctx, map) {
             var color = "red";
             // for each chunk
@@ -64,8 +68,6 @@
         function drawChunk(ctx, chunk) {
 
         }
-
-
 
         function drawTile(ctx, x, y, color) {
             ctx.fillStyle = color;
