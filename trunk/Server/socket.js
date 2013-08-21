@@ -83,7 +83,7 @@ io.sockets.on('connection', function (socket) {
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-				socket.emit("onConstruct", rows);
+				socket.emit("onConstruct", rows, data);
             }
         });
     });
@@ -147,8 +147,7 @@ io.sockets.on('connection', function (socket) {
         });
     });
     /////////////////////////
-
-
+	
 });
 
 

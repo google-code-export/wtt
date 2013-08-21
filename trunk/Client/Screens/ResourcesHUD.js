@@ -20,27 +20,9 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
         gameHandler.activeHuds["resourceHud"] = this;
-        jsApp.destroy("onResourcesUpdate"); //Destroying websockets event before create a new one
+		
         jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
-        var socket = jsApp.getSocket();//io.connect('http://199.115.231.229');
-        socket.on('onResourcesUpdate', function(data) {
-            $.each(data, function(i, obj) {
-                if(i>0)
-                    return false;
-                else{
-                    gameHandler.activeHuds["resourceHud"].WoodValue  = obj[i].wood;
-                    gameHandler.activeHuds["resourceHud"].StoneValue = obj[i].stone;
-                    gameHandler.activeHuds["resourceHud"].FoodValue  = obj[i].food;
-                    gameHandler.activeHuds["resourceHud"].IronValue  = obj[i].iron;
-                    gameHandler.activeHuds["resourceHud"].GoldValue  = obj[i].gold;
-                }
-            });
 
-        });
-
-        //getting the resources by websockets
-
-        console.log(jsApp.getUserData());
     },
 
     distance : 60,
