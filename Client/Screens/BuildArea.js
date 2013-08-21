@@ -1,44 +1,6 @@
 jsApp.BuildArea = me.Renderable.extend({
     "init" : function init(clickFun,infoBuild) {
-		jsApp.destroy("onConstruct");//Destroying websockets event before create a new one
-        var socket  = jsApp.getSocket();
         var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-		
-		//////////////////////////////////////////
-		//constructing and updating resourcesHUD//
-		//
-        socket.on("onConstruct", function(data){
-            $.each(data, function(i, obj) {
-                if(i>0)
-                    return false;
-                else{
-                    if(obj[i].Msg != "Done"){
-                        alert(obj[i].Msg);
-                    }else{
-                        console.log("result["+i+"]: "+obj[i].Msg);
-                        var building = infoBuild;
-                        var idTile = building.info.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
-                        console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.info.x+" y:"+building.info.y+" idTile:"+idTile);
-
-                        buildLayer.setTile(building.info.x,building.info.y,idTile);//changing the tile
-
-                        //NEED TO SEE THIS BETTER!
-                        //updating the resources
-                        //jsApp.destroy("onResourcesUpdate"); //Destroying websockets event before create a new one
-                        //jsApp.send("onResourcesUpdate", jsApp.getUserSession()); //
-                        gameHandler.activeHuds["resourceHud"].GoldValue -= building.info.gold;
-                        gameHandler.activeHuds["resourceHud"].StoneValue -= building.info.stone;
-                        gameHandler.activeHuds["resourceHud"].WoodValue -= building.info.wood;
-                        //
-
-                        me.game.remove(gameHandler.activeHuds.buildingArea,true);// removing the hud layer of the construction
-                        gameHandler.activeHuds.buildingArea = undefined;
-                        me.game.sort();
-                    }
-                }
-
-            });
-        });
 		
 		this.clickFunction = clickFun; //here we create the variable to use the mouse events, needed.
         this.info = infoBuild;
@@ -82,10 +44,13 @@ jsApp.BuildArea = me.Renderable.extend({
 		    var building = infoBuild;
 			var buildPos = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
 			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
-            building.info.x = buildPos.x;
-            building.info.y = buildPos.y;
-			console.log("idVillage:"+building.idVillage+" idBuilding:"+building.info.idBuilding+" x:"+building.info.x+" y:"+building.info.y);
-            socket.emit("onConstruct", {idVillage: building.idVillage, idBuilding: building.info.idBuilding, x: building.info.x, y: building.info.y});
+			var type = "onConstruct";
+            building.x = buildPos.x;
+            building.y = buildPos.y;
+			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
+			console.log("FROM Build Area --- idVillage:"+building.idVillage+" idBuilding:"+building.idBuilding+" x:"+building.x+" y:"+building.y+" buildTimer:"+building.buildTimer);
+			buildLayer.setTile(buildPos.x,buildPos.y,22);//changing the tile for the construction zone
+			jsApp.timeScheduler(type,building);// sending the construction to the scheduler.
 			me.game.remove(this,true);
 		}).bind(this);
 

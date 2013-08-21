@@ -1,12 +1,15 @@
-PlayScreen = me.ScreenObject.extend(
+var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
             var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
+			
 			//Destroying websockets event before create a new one
 			jsApp.destroy("onBuildingSelect");
             jsApp.destroy("onListVillageBuildings");
 			jsApp.destroy("onRequestUpdate");
+			jsApp.destroy("onConstruct");
+			jsApp.destroy("onResourcesUpdate");
 			
 			 //HERE WE UPDATE AND CHANGE THE TILE IN THE RIGHT POSITION
 			 socket.on("onRequestUpdate",function(data){
@@ -16,12 +19,9 @@ PlayScreen = me.ScreenObject.extend(
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var idTile = infobuild.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
-					//NEED TO SEE THIS BETTER!
+					
 					//updating the resources
-					gameHandler.activeHuds["resourceHud"].GoldValue -= infobuild.GoldValue;
-					gameHandler.activeHuds["resourceHud"].StoneValue -= infobuild.StoneValue;
-					gameHandler.activeHuds["resourceHud"].WoodValue -= infobuild.WoodValue;
-					gameHandler.activeHuds["resourceHud"].IronValue -= infobuild.IronValue;
+					jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
 					//
 				}else{
 					alert(data[0][0].Msg);
@@ -64,8 +64,58 @@ PlayScreen = me.ScreenObject.extend(
 
             socket.emit("onListVillageBuildings", idVillage);
             //
+			
+			//////////////////////////////////////////
+			//constructing and updating resourcesHUD//
+			//
+			socket.on("onConstruct", function(rows, data){
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(obj[i].Msg != "Done"){
+							alert(obj[i].Msg);
+						}else{
+							console.log("result["+i+"]: "+obj[i].Msg);
+							var building = data;
+							var idTile = building.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 
+							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
 
+							//updating the resources
+							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
+
+							me.game.remove(gameHandler.activeHuds.buildingArea,true);// removing the hud layer of the construction
+							gameHandler.activeHuds.buildingArea = undefined;
+							me.game.sort();
+						}
+					}
+
+				});
+			});
+			////////////////////////////////////
+			
+			
+			///////////////////////////////////////
+			//getting the resources by websockets//
+			socket.on('onResourcesUpdate', function(data) {
+				$.each(data, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						gameHandler.activeHuds["resourceHud"].WoodValue  = obj[i].wood;
+						gameHandler.activeHuds["resourceHud"].StoneValue = obj[i].stone;
+						gameHandler.activeHuds["resourceHud"].FoodValue  = obj[i].food;
+						gameHandler.activeHuds["resourceHud"].IronValue  = obj[i].iron;
+						gameHandler.activeHuds["resourceHud"].GoldValue  = obj[i].gold;
+					}
+				});
+
+			});
+			/////////////////////////////////////////
+      
             this.parent();
             /////////////////
             // GAME CAMERA //
@@ -81,8 +131,6 @@ PlayScreen = me.ScreenObject.extend(
                     ~~me.input.touches[0].x,
                     ~~me.input.touches[0].y
                 );
-
-                //jsApp.simpleDialog("wololoeeeeiro");
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
@@ -121,7 +169,7 @@ PlayScreen = me.ScreenObject.extend(
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
 					var tileid = buildLayer.getTileId(me.input.touches[0].x+me.game.viewport.pos.x, me.input.touches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
-					if(tileid != null){
+					if((tileid != null) && (tileid != 22)){ // 22 it's for the construction tile
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
 						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
 					}
@@ -185,7 +233,7 @@ PlayScreen = me.ScreenObject.extend(
                 // Reset mousedelta
                 this.mousedelta.setZero();
             }
-
+			//jsApp.tick();
             // call superclass constructor
             this.parent();
             return true;

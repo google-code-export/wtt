@@ -3,7 +3,7 @@ gameH = 600;
 var jsApp	=
 {
     // Initialize the jsApp
-
+	
     socket : io.connect('http://199.115.231.229'),
 
     getUserData : function() {
@@ -40,6 +40,50 @@ var jsApp	=
         me.game.HUD.addItem("caixaTexto", new ChatDialog(0,0, msg,"Message:", undefined));
         me.game.sort();
     },
+	
+	//THIS IS THE TIMER SCHEDULER TO ADD IN THE ROUTINE THE THINGS THAT ARE PENDING
+	timeScheduler : function(type,data)
+	{
+		var systemtime = jsApp.getSystemDate();
+		var time = jsApp.timeToMs(data.buildTimer);
+		
+		console.log("IM ON APP.JS --- idVillage:"+data.idVillage+" idBuilding:"+data.idBuilding+" x:"+data.x+" y:"+data.y+" buildTimer:"+data.buildTimer);
+		console.log("time : "+systemtime);
+		
+		setTimeout(function(){socket.emit(type, data);},time);
+
+		/*var timer = new jsApp.Timer();					  
+		// add a tween to change the object pos.y variable to 200 in 3 seconds
+		tween = new me.Tween(timer.pos).to({y: 100}, time);
+		tween.easing(Easing.Linear.EaseNone);
+		tween.start();*/
+
+		
+		
+	},
+	
+	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS
+	getSystemDate : function() 
+	{
+	  now = new Date();
+	  year = "" + now.getFullYear();
+	  month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
+	  day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
+	  hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+	  minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+	  second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+	  return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+	},
+	
+	//THIS IS NEEDED TO HAVE THE RIGHT TIME IN MS TO SEND IT TO THE SCHEDULER
+	timeToMs : function(time)
+	{
+		var hms = time;   // your input string
+		var a = hms.split(':'); // split it at the colons
+		var ms = ((((+a[0]) * 60) * 60) + ((+a[1]) * 60) + (+a[2]))*1000; 
+		return ms;
+	},
+	
     // this method is called when the app is initialized
     onload: function()
     {

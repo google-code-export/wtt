@@ -52,10 +52,11 @@ jsApp.BuildingHUD = me.Renderable.extend({
         var titletext = undefined;
         if(this.msg == undefined){
             titletext = infoBuild.basicDescription;
+			this.DescRect.TitleText = titletext.toUpperCase();
         } else {
             titletext = infoBuild.Description;
+			this.DescRect.TitleText = titletext.toUpperCase();
         }
-        this.DescRect.TitleText = titletext.toUpperCase();
         this.DescRect.buildDesc = "THIS IS A BUILDING.";
         ////////
 
