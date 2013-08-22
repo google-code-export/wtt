@@ -120,7 +120,7 @@ var jsApp	=
         me.state.change(me.state.PLAY);
     },
 
-	 getTileForPixels : function(px,py) {
+	 getPixelsForTile : function(px,py) {
 		    var x =  Math.floor(px);
             var y =  Math.floor(py);
             var imX = Math.floor((x+ me.game.viewport.pos.x)/64);
@@ -131,8 +131,20 @@ var jsApp	=
 				x : imX,
 				y : imY
 			};
-	}
+	},
 
+    getTileForPixels : function(px,py) {
+        var x =  Math.floor(px);
+        var y =  Math.floor(py);
+        var imX = Math.floor((x*64)+me.game.viewport.pos.x);
+        var imY = Math.floor((y*64)+me.game.viewport.pos.y);
+        //var fx =  imX*64;
+        //var fy = imY*64;
+        return {
+            x : imX,
+            y : imY
+        };
+    }
 };
 
 var gameHandler =  {

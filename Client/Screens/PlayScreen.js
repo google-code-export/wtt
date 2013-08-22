@@ -14,18 +14,18 @@ var PlayScreen = me.ScreenObject.extend(
 			 //HERE WE SEND THE UPDATE REQUEST
 			 socket.on("onRequestUpdate",function(rows, data){
 				var infobuild = data;
-				console.log(infobuild);
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
-				if(data[0][0].Msg == "Done"){
+				if(rows[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var idTile = 22; // NEED TO SEE THIS BETTER VERY QUICK!
 					var time = infobuild.buildTimer;
+                    var pixelIs = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
 					//
-					var progressBar = new jsApp.Timer((time/1000));// creating a new instance of the class BuildArea
-					me.game.add(progressBar,1000);// adding this to the screen
+					var progressBar = new jsApp.Timer(time,pixelIs);// creating a new instance of the class Timer
+					me.game.add(progressBar,1100);// adding this to the screen
 					jsApp.timeScheduler("onUpdateCheck",infobuild);// sending the construction to the scheduler.
 					
 				}else{
@@ -102,11 +102,12 @@ var PlayScreen = me.ScreenObject.extend(
 							var building = data;
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							var time = jsApp.timeToMs(data.buildTimer);
+                            var pixelIs = jsApp.getTileForPixels(building.x,building.y);
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 22");
 							
 							buildLayer.setTile(building.x,building.y,22);//changing the tile for the construction zone
-							var progressBar = new jsApp.Timer((time/1000));// creating a new instance of the class BuildArea
-							me.game.add(progressBar,1000);// adding this to the screen
+							var progressBar = new jsApp.Timer(time,pixelIs);// creating a new instance of the class Timer
+							me.game.add(progressBar,1100);// adding this to the screen
 							jsApp.timeScheduler("onConstructCheck",building);// sending the construction to the scheduler.
 
 							//updating the resources
@@ -186,7 +187,7 @@ var PlayScreen = me.ScreenObject.extend(
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPoint(me.input.touches[0])){
-						var updatebuild = gameHandler.activeHuds.buildingHUD;
+						var updatebuild = gameHandler.activeHuds.buildingHUD.upInfo;
 						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
 						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPoint(me.input.touches[0])){
@@ -218,7 +219,7 @@ var PlayScreen = me.ScreenObject.extend(
 				else if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
 
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
+					var tileIs = jsApp.getPixelsForTile(me.input.touches[0].x, me.input.touches[0].y);
 					var tileid = buildLayer.getTileId(me.input.touches[0].x+me.game.viewport.pos.x, me.input.touches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					if((tileid != null) && (tileid != 22)){ // 22 it's for the construction tile
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
