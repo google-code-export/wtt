@@ -11,18 +11,23 @@ var PlayScreen = me.ScreenObject.extend(
 			jsApp.destroy("onConstruct");
 			jsApp.destroy("onResourcesUpdate");
 			
-			 //HERE WE UPDATE AND CHANGE THE TILE IN THE RIGHT POSITION
-			 socket.on("onRequestUpdate",function(data){
-				var infobuild = gameHandler.activeHuds.buildingHUD;
+			 //HERE WE SEND THE UPDATE REQUEST
+			 socket.on("onRequestUpdate",function(rows, data){
+				var infobuild = data;
+				console.log(infobuild);
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(data[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var idTile = infobuild.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+					var idTile = 22; // NEED TO SEE THIS BETTER VERY QUICK!
+					var time = infobuild.buildTimer;
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
-					
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
 					//
+					var progressBar = new jsApp.Timer((time/1000));// creating a new instance of the class BuildArea
+					me.game.add(progressBar,1000);// adding this to the screen
+					jsApp.timeScheduler("onUpdateCheck",infobuild);// sending the construction to the scheduler.
+					
 				}else{
 					alert(data[0][0].Msg);
 				}
@@ -30,6 +35,23 @@ var PlayScreen = me.ScreenObject.extend(
                  gameHandler.activeHuds.buildingHUD = undefined;
                  me.game.sort();
 			 });
+			 
+			 //CHECKING IF THE UPDATE ALREADY IS DONE
+			 socket.on("onUpdateCheck",function(rows, data){
+				var infobuild = data;
+				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
+				if(rows[0][0].Msg == "Done"){
+					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+					var idTile = infobuidl.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
+				}else{
+					alert(rows[0][0].Msg);
+				}
+				
+			 });
+			 //
+			 
+			 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 socket.on('onBuildingSelect', function(data) {
                  $.each(data, function(i, obj) {
@@ -66,9 +88,45 @@ var PlayScreen = me.ScreenObject.extend(
             //
 			
 			//////////////////////////////////////////
+			//Request Construction//
+			//
+			socket.on("onConstructRequest", function(rows, data){
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(obj[i].Msg != "Done"){
+							alert(obj[i].Msg);
+						}else{
+							console.log("result["+i+"]: "+obj[i].Msg);
+							var building = data;
+							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+							var time = jsApp.timeToMs(data.buildTimer);
+							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 22");
+							
+							buildLayer.setTile(building.x,building.y,22);//changing the tile for the construction zone
+							var progressBar = new jsApp.Timer((time/1000));// creating a new instance of the class BuildArea
+							me.game.add(progressBar,1000);// adding this to the screen
+							jsApp.timeScheduler("onConstructCheck",building);// sending the construction to the scheduler.
+
+							//updating the resources
+							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
+
+							me.game.remove(gameHandler.activeHuds.buildingArea,true);// removing the hud layer of the construction
+							gameHandler.activeHuds.buildingArea = undefined;
+							me.game.sort();
+						}
+					}
+
+				});
+			});
+			//////////////////////////////////////////
+			
+			
+			//////////////////////////////////////////
 			//constructing and updating resourcesHUD//
 			//
-			socket.on("onConstruct", function(rows, data){
+			socket.on("onConstructCheck", function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -83,13 +141,6 @@ var PlayScreen = me.ScreenObject.extend(
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
-
-							//updating the resources
-							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
-
-							me.game.remove(gameHandler.activeHuds.buildingArea,true);// removing the hud layer of the construction
-							gameHandler.activeHuds.buildingArea = undefined;
-							me.game.sort();
 						}
 					}
 
@@ -137,7 +188,7 @@ var PlayScreen = me.ScreenObject.extend(
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPoint(me.input.touches[0])){
 						var updatebuild = gameHandler.activeHuds.buildingHUD;
 						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
-						socket.emit("onRequestUpdate",{"idVillage" : updatebuild.idVillage, "idBuilding" : updatebuild.idBuilding, "posX": updatebuild.posX, "posY" : updatebuild.posY});
+						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPoint(me.input.touches[0])){
 						}
                     }else{
@@ -233,7 +284,7 @@ var PlayScreen = me.ScreenObject.extend(
                 // Reset mousedelta
                 this.mousedelta.setZero();
             }
-			//jsApp.tick();
+
             // call superclass constructor
             this.parent();
             return true;

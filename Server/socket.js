@@ -75,18 +75,33 @@ io.sockets.on('connection', function (socket) {
     });
 
     //////////////////////////
-    // onConstruct          //
+    // onConstructRequest   //
     //////////////////////////
-   socket.on('onConstruct', function(data) {
+   socket.on('onConstructRequest', function(data) {
         console.log("verifying and building idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
         connection.query("CALL `makeBuildings`("+data.idVillage+","+data.x+","+data.y+","+data.idBuilding+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-				socket.emit("onConstruct", rows, data);
+				socket.emit("onConstructRequest", rows, data);
             }
         });
     });
+	
+    //////////////////////////
+    // onConstructCheck     //
+    //////////////////////////
+   socket.on('onConstructCheck', function(data) {
+        console.log("verifying if building its finished idBuilding="+ data.idBuilding +" idVillage=" + data.idVillage + " posx =" + data.x + " posy ="+ data.y);
+        connection.query("CALL `TimeCheck`("+data.idVillage+","+data.x+","+data.y+")",function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+				socket.emit("onConstructCheck", rows, data);
+            }
+        });
+    });
+
 
 	//////////////////////////
     // onBuildingSelect     //
@@ -142,7 +157,22 @@ io.sockets.on('connection', function (socket) {
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onRequestUpdate",rows);
+                socket.emit("onRequestUpdate",rows, data);
+            }
+        });
+    });
+    /////////////////////////
+	
+	////////////////////////////
+    // onCheckUpdate //////////
+    ////////////////////////////
+    socket.on('onCheckUpdate', function(data){
+        console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.posX+" y:"+data.posY);
+        connection.query("CALL `TimeCheck`("+data.idVillage+","+data.posX+","+data.posY+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCheckUpdate",rows, data);
             }
         });
     });

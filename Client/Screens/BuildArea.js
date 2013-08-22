@@ -44,14 +44,11 @@ jsApp.BuildArea = me.Renderable.extend({
 		    var building = infoBuild;
 			var buildPos = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
 			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
-			var type = "onConstruct";
             building.x = buildPos.x;
             building.y = buildPos.y;
 			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
 			console.log("FROM Build Area --- idVillage:"+building.idVillage+" idBuilding:"+building.idBuilding+" x:"+building.x+" y:"+building.y+" buildTimer:"+building.buildTimer);
-			buildLayer.setTile(buildPos.x,buildPos.y,22);//changing the tile for the construction zone
-			jsApp.timeScheduler(type,building);// sending the construction to the scheduler.
-			me.game.remove(this,true);
+			socket.emit("onConstructRequest", building);
 		}).bind(this);
 
 
