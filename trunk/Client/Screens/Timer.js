@@ -1,31 +1,22 @@
 jsApp.Timer = me.Renderable.extend({
 
-	init : function init(time)
+	init : function init(time,pixelIs)
 	{
-		var BarW = 0;
-		var timePass = 0;
-		var timeTotal = time
-		this.parent(new me.Vector2d(0,gameH-128,(5*32),32));// position on the screen
+		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y,0,8));// position on the screen
         this.floating = true;
-        this.isPersistent = true;
-		this.pos.y = 0
-		/*while(time--){
-			timePass = 	timePass + 1;
-			
-			var progressPercent = (100*timePass)/timeTotal;
-			BarW = ((5*32)*progressPercent)/100;
-			update();
-		
-		}*/
-						  
+        this.isPersistent = false;
+        this.pixely = pixelIs.y;
+        this.pixelx = pixelIs.x;
+		console.log("i added the tween");
+        this.pos.y = 0;
+        console.log(this.pos);
+        console.log(time);
 		// add a tween to change the object pos.y variable to 200 in 3 seconds
-		var tween = new me.Tween(this.pos.y).to({y: (5*32)}, time).onComplete(function()
+		var tween = new me.Tween(this.pos).to({y: (64)}, time).onComplete(function ()
 																		{
 																			me.game.remove(this,true);
 																			me.game.sort();
-																			tween.stop();
 																		});
-		tween.easing(me.Tween.Easing.Linear.EaseNone);
 		tween.start();
 		
 	},
@@ -35,20 +26,21 @@ jsApp.Timer = me.Renderable.extend({
 	{
 		// Transparent background
         var alpha = context.globalAlpha;
-        context.globalAlpha = 0.1;
+        context.globalAlpha = 1;
         context.fillStyle = "blue";
-        context.fillRect(0, gameH-128,this.pos.y,32);
+        context.fillRect(this.pixelx, this.pixely,this.pos.y,8);
+        context.globalAlpha = alpha;
 	},
 	
 	"update" : function update()
 	{
-		return this.visible;	
+		return true;
 	
 	},
 	
 	destroy : function()
 	{
-		
+	    this.parent();
 	}
 
 });

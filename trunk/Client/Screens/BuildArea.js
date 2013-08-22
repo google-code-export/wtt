@@ -32,9 +32,9 @@ jsApp.BuildArea = me.Renderable.extend({
 		this.mouseMove = (function() {
             //This code it's to fix the bug in case we move the screen during a construction
             //because we cant have a construction in the middle of a tile
-            //the getTileForPixels it's the function that returns the exact tile
+            //the getPixelsForTile it's the function that returns the exact tile
             //based in the pixel position of the mouse (me.input.touches[0].x, me.input.touches[0].y)
-			var tileIs = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
+			var tileIs = jsApp.getPixelsForTile(me.input.touches[0].x, me.input.touches[0].y);
 			this.x = tileIs.x * 64 - me.game.viewport.pos.x;
 			this.y = tileIs.y * 64 - me.game.viewport.pos.y;
 		}).bind(this);
@@ -42,13 +42,15 @@ jsApp.BuildArea = me.Renderable.extend({
 		this.mouseDown = (function () {
             //TAKING ALL THE DATA TO SEND TO SERVER
 		    var building = infoBuild;
-			var buildPos = jsApp.getTileForPixels(me.input.touches[0].x, me.input.touches[0].y);
+			var buildPos = jsApp.getPixelsForTile(me.input.touches[0].x, me.input.touches[0].y);
 			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
             building.x = buildPos.x;
             building.y = buildPos.y;
 			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
 			console.log("FROM Build Area --- idVillage:"+building.idVillage+" idBuilding:"+building.idBuilding+" x:"+building.x+" y:"+building.y+" buildTimer:"+building.buildTimer);
 			socket.emit("onConstructRequest", building);
+            me.game.remove(this,true);
+            me.game.sort();
 		}).bind(this);
 
 
@@ -78,5 +80,6 @@ jsApp.BuildArea = me.Renderable.extend({
         context.globalAlpha = 0.1;
         context.fillStyle = "blue";
         context.fillRect(this.x, this.y,this.sizeX * 64, this.sizeY * 64);
+        context.globalAlpha = alpha;
     }
 });
