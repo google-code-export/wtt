@@ -4,14 +4,15 @@ var jsApp	=
 {
     // Initialize the jsApp
 	
-    socket : io.connect('http://199.115.231.229'),
-
+    //socket : io.connect('http://199.115.231.229'),
+	socket : io.connect('http://9.18.223.222'),
     getUserData : function() {
       return $.jStorage.get("userData");
     },
 
     getSocket : function() {
-        return  io.connect('http://199.115.231.229');
+        //return  io.connect('http://199.115.231.229');9.18.223.222
+		return  io.connect('http://9.18.223.222');
     },
 
     send: function(title, obj) {
@@ -125,8 +126,6 @@ var jsApp	=
             var y =  Math.floor(py);
             var imX = Math.floor((x+ me.game.viewport.pos.x)/64);
             var imY = Math.floor((y+ me.game.viewport.pos.y)/64);
-            //var fx =  imX*64;
-            //var fy = imY*64;
 			return {
 				x : imX,
 				y : imY
@@ -138,8 +137,6 @@ var jsApp	=
         var y =  Math.floor(py);
         var imX = Math.floor((x*64)+me.game.viewport.pos.x);
         var imY = Math.floor((y*64)+me.game.viewport.pos.y);
-        //var fx =  imX*64;
-        //var fy = imY*64;
         return {
             x : imX,
             y : imY

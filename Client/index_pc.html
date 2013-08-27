@@ -29,7 +29,8 @@
             var socket;
             window.onReady(function onReady() {
                 $.jStorage.flush();
-                socket = io.connect('http://199.115.231.229');
+                //socket = io.connect('http://199.115.231.229');9.18.223.222
+				socket = io.connect('http://9.18.223.222');
                 socket.on('loginok', function (data) {
                     if(data[0][0].msg != undefined){
                         alert(data[0][0].msg);
@@ -55,7 +56,7 @@
             });
 
             function go(){
-               socket = io.connect('http://199.115.231.229');
+               socket = io.connect('http://9.18.223.222');
                var user =  $("#username").val();
                var pass = $("#password").val();
                socket.emit("login",  { p1:user,p2:pass });
