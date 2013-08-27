@@ -4,19 +4,12 @@ jsApp.Timer = me.Renderable.extend({
 	{
 		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y,0,8));// position on the screen
         this.floating = true;
+		this.alwaysUpdate = true;
         this.isPersistent = false;
         this.pixely = pixelIs.y;
         this.pixelx = pixelIs.x;
-		console.log("i added the tween");
         this.pos.y = 0;
-        console.log(this.pos);
-        console.log(time);
-		// add a tween to change the object pos.y variable to 200 in 3 seconds
-		var tween = new me.Tween(this.pos).to({y: (64)}, time).onComplete(function ()
-																		{
-																			me.game.remove(this,true);
-																			me.game.sort();
-																		});
+		var tween = new me.Tween(this.pos).to({y: (64)}, time).onComplete((function(){me.game.remove(this,true);}).bind(this));
 		tween.start();
 		
 	},
@@ -40,7 +33,7 @@ jsApp.Timer = me.Renderable.extend({
 	
 	destroy : function()
 	{
-	    this.parent();
+	
 	}
 
 });
