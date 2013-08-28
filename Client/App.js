@@ -5,14 +5,14 @@ var jsApp	=
     // Initialize the jsApp
 	
     //socket : io.connect('http://199.115.231.229'),
-	socket : io.connect('http://9.18.223.222'),
+	socket : io.connect('http://192.168.0.190'),
     getUserData : function() {
       return $.jStorage.get("userData");
     },
 
     getSocket : function() {
         //return  io.connect('http://199.115.231.229');9.18.223.222
-		return  io.connect('http://9.18.223.222');
+		return  io.connect('http://192.168.0.190');
     },
 
     send: function(title, obj) {
@@ -45,7 +45,7 @@ var jsApp	=
 	//THIS IS THE TIMER SCHEDULER TO ADD IN THE ROUTINE THE THINGS THAT ARE PENDING
 	timeScheduler : function(type,data)
 	{
-		var systemtime = jsApp.getSystemDate();
+		var systemtime = jsApp.getSystemDate("full");
 		var time = jsApp.timeToMs(data.buildTimer);
 		
 		console.log("IM ON APP.JS --- idVillage:"+data.idVillage+" idBuilding:"+data.idBuilding+" x:"+data.x+" y:"+data.y+" buildTimer:"+data.buildTimer);
@@ -64,16 +64,27 @@ var jsApp	=
 	},
 	
 	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS
-	getSystemDate : function() 
+	getSystemDate : function(type)
 	{
-	  now = new Date();
-	  year = "" + now.getFullYear();
-	  month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
-	  day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
-	  hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
-	  minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
-	  second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
-	  return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+      now = new Date();
+      if(type == "full"){
+          year = "" + now.getFullYear();
+          month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
+          day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
+          hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+          minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+          second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+          return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+
+      }
+
+    if(type == "time"){
+        hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+        minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+        second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+        return hour + ":" + minute + ":" + second;
+    }
+
 	},
 	
 	//THIS IS NEEDED TO HAVE THE RIGHT TIME IN MS TO SEND IT TO THE SCHEDULER

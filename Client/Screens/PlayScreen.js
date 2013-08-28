@@ -18,7 +18,6 @@ var PlayScreen = me.ScreenObject.extend(
 				if(rows[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var idTile = 22; // NEED TO SEE THIS BETTER VERY QUICK!
-					var time = infobuild.buildTimer;
                     var pixelIs = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
 					//updating the resources
@@ -26,7 +25,7 @@ var PlayScreen = me.ScreenObject.extend(
 					//
 					var progressBar = new jsApp.Timer(time,pixelIs);// creating a new instance of the class Timer
 					me.game.add(progressBar,1100);// adding this to the screen
-					jsApp.timeScheduler("onUpdateCheck",infobuild);// sending the construction to the scheduler.
+                    jsApp.timeScheduler("onUpdateCheck",infobuild);// sending the construction to the scheduler.
 					
 				}else{
 					alert(data[0][0].Msg);
