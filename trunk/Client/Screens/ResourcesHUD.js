@@ -3,7 +3,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
 // to display the score value
 
     "init" : function init() {
-        this.parent(new me.Vector2d(5,5,gameW,30));// position on the screen
+        this.parent(new me.Vector2d(5,5),gameW,30);// position on the screen
         this.floating = true;
         this.isPersistent = true;
 
@@ -35,6 +35,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
     draw : function (context, x, y)
     {
         var iX = 20;
+		var alpha = context.globalAlpha; 
         context.globalAlpha = 0.6;
         context.fillStyle = "#00066";
 
@@ -62,6 +63,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         context.drawImage(this.Meatimage, this.pos.x + iX, this.pos.y);
         iX+=20;
         this.font.draw (context, this.FoodValue, this.pos.x +iX, this.pos.y);
+		context.globalAlpha = alpha;
     },
 
     "destroy" : function() {

@@ -4,15 +4,13 @@ var jsApp	=
 {
     // Initialize the jsApp
 	
-    //socket : io.connect('http://199.115.231.229'),
-	socket : io.connect('http://192.168.0.190'),
     getUserData : function() {
       return $.jStorage.get("userData");
     },
 
     getSocket : function() {
-        //return  io.connect('http://199.115.231.229');9.18.223.222
-		return  io.connect('http://192.168.0.190');
+        //return  io.connect('http://199.115.231.229');
+		return  io.connect('http://9.18.223.23');
     },
 
     send: function(title, obj) {
@@ -53,37 +51,29 @@ var jsApp	=
 		
 		setTimeout(function(){socket.emit(type, data);},time);
 		
-		/*var timer = new jsApp.Timer();					  
-		// add a tween to change the object pos.y variable to 200 in 3 seconds
-		tween = new me.Tween(timer.pos).to({y: 100}, time);
-		tween.easing(Easing.Linear.EaseNone);
-		tween.start();*/
-
-		
-		
 	},
 	
 	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS
 	getSystemDate : function(type)
 	{
-      now = new Date();
-      if(type == "full"){
-          year = "" + now.getFullYear();
-          month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
-          day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
-          hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
-          minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
-          second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
-          return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+		now = new Date();
+	    if(type == "full"){
+			year = "" + now.getFullYear();
+			month = "" + (now.getMonth() + 1); if (month.length == 1) { month = "0" + month; }
+			day = "" + now.getDate(); if (day.length == 1) { day = "0" + day; }
+			hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+			minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+			second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+			return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
 
-      }
+	    }
 
-    if(type == "time"){
-        hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
-        minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
-        second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
-        return hour + ":" + minute + ":" + second;
-    }
+		if(type == "time"){
+			hour = "" + now.getHours(); if (hour.length == 1) { hour = "0" + hour; }
+			minute = "" + now.getMinutes(); if (minute.length == 1) { minute = "0" + minute; }
+			second = "" + now.getSeconds(); if (second.length == 1) { second = "0" + second; }
+			return hour + ":" + minute + ":" + second;
+		}
 
 	},
 	
@@ -146,8 +136,8 @@ var jsApp	=
     getTileForPixels : function(px,py) {
         var x =  Math.floor(px);
         var y =  Math.floor(py);
-        var imX = Math.floor((x*64)+me.game.viewport.pos.x);
-        var imY = Math.floor((y*64)+me.game.viewport.pos.y);
+        var imX = Math.floor((x*64));
+        var imY = Math.floor((y*64));
         return {
             x : imX,
             y : imY

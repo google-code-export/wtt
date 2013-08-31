@@ -4,7 +4,8 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.upInfo = infoBuild ;
         this.upInfo.idVillage	= 1; //---> Need to see this better
 		this.mouseAction = undefined;
-        this.parent(new me.Vector2d(0,gameH-128,gameW,128));// position on the screen
+        //this.parent(new me.Vector2d(0,gameH-128,gameW,128));// position on the screen
+		this.parent(new me.Vector2d(0,gameH-128));
         this.floating = true;
         this.isPersistent = true;
 
@@ -129,9 +130,9 @@ jsApp.BuildingHUD = me.Renderable.extend({
 
     "destroy" : function() {
         gameHandler.activeHuds.buildingHUD = undefined;
-		me.input.releaseMouseEvent("mousedown", this);
-		me.input.releaseMouseEvent("mouseup", this);
-		me.input.releaseMouseEvent("mousemove", this);
+		me.input.releasePointerEvent("mousedown", this);
+		me.input.releasePointerEvent("mouseup", this);
+		me.input.releasePointerEvent("mousemove", this);
         this.upInfo     = undefined;
         this.Woodimage  = undefined;
         this.Stoneimage = undefined;

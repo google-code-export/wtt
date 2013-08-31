@@ -81,13 +81,13 @@ jsApp.BuildMenu = me.Renderable.extend({
         this.font.textBaseline = "bottom";
 
 
-        me.input.registerMouseEvent("mouseup", this,function(){
+        me.input.registerPointerEvent("mouseup", this,function(){
             // if i clicked the menu
             if(this.buildMenuRect != undefined) {
-                if (this.buildMenuRect.containsPoint(me.input.touches[0])) {
+                if (this.buildMenuRect.containsPointV(me.input.changedTouches[0])) {
                     var ct = this.options.length;
                     while(ct--) {
-                        if(this.options[ct].containsPoint(me.input.touches[0])){
+                        if(this.options[ct].containsPointV(me.input.changedTouches[0])){
                             // if the option has no click function it must be a building !
                             if(this.options[ct].hasClickFunction == undefined) {
                                 //simply make the selector to build it
@@ -104,13 +104,13 @@ jsApp.BuildMenu = me.Renderable.extend({
             }
 		}.bind(this));
 
-        me.input.registerMouseEvent("mousemove", this,function(){
+        me.input.registerPointerEvent("mousemove", this,function(){
             // if i clicked the menu
             if(this.buildMenuRect != undefined) {
 
                 var ct = this.options.length;
                 while(ct--){
-                    if(this.options[ct].containsPoint(me.input.touches[0])) {
+                    if(this.options[ct].containsPointV(me.input.changedTouches[0])) {
                     }
                 }
             }
@@ -119,9 +119,9 @@ jsApp.BuildMenu = me.Renderable.extend({
 
     "destroy" : function destroy() {
         //Removing mouse events and huds
-        me.input.releaseMouseEvent("mousemove", this);
-        me.input.releaseMouseEvent("mousedown", this);
-		me.input.releaseMouseEvent("mouseup", this);
+        me.input.releasePointerEvent("mousemove", this);
+        me.input.releasePointerEvent("mousedown", this);
+		me.input.releasePointerEvent("mouseup", this);
 
         // removing buttons
         var ct = this.options.length;
@@ -141,6 +141,7 @@ jsApp.BuildMenu = me.Renderable.extend({
         //size,colors,positions
         // Transparent background
         var alpha = context.globalAlpha;
+		var fillStyle = context.fillStyle;
         context.globalAlpha = 0.6;
         context.fillStyle = "#00066";
 
@@ -188,7 +189,7 @@ jsApp.BuildMenu = me.Renderable.extend({
 
 
         context.globalAlpha = alpha;
-
+		context.fillStyle = fillStyle;
 
     }
 });

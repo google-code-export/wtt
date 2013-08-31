@@ -3192,7 +3192,6 @@ window.me = window.me || {};
 			}
 			return false;
 		},
-
 		/**
 		 * object draw<br>
 		 * not to be called by the end user<br>
@@ -6404,23 +6403,23 @@ window.me = window.me || {};
 		  ---*/
 
 		draw : function(context) {
-			
+	 
 			// measure the logo size
-			var logo1_width = this.logo1.measureText(context, "melon").width;
-			var xpos = (me.video.getWidth() - logo1_width - this.logo2.measureText(context, "JS").width) / 2;
+			var logo1_width = this.logo1.measureText(context, "WTT").width;
+			var xpos = (me.video.getWidth() - logo1_width - this.logo2.measureText(context, "  China is Loading").width) / 2;
 			var ypos = me.video.getHeight() / 2;
-				
-			// clear surface
-			me.video.clearSurface(context, "black");
-			
-			// draw the melonJS logo
-			this.logo1.draw(context, 'melon', xpos , ypos);
-			xpos += logo1_width;
-			this.logo2.draw(context, 'JS', xpos, ypos);
-			
-			ypos += this.logo1.measureText(context, "melon").height / 2;
 
-			// display a progressive loading bar
+			// clear surface
+			//me.video.clearSurface(context, "black");
+
+			// draw the melonJS logo
+			this.logo1.draw(context, 'WTT', xpos , ypos);
+			xpos += logo1_width;
+			this.logo2.draw(context, '  China is Loading', xpos, ypos);
+			 
+			ypos += this.logo1.measureText(context, "WTT").height / 2;
+
+			//display a progressive loading bar
 			var progress = Math.floor(this.loadPercent * me.video.getWidth());
 
 			// draw the progress bar
@@ -6428,8 +6427,10 @@ window.me = window.me || {};
 			context.strokeRect(0, ypos, me.video.getWidth(), 6);
 			context.fillStyle = "#89b002";
 			context.fillRect(2, ypos + 2, progress - 4, 2);
-		}
+		
 
+		}
+	
 	});
 
 	/************************************************************************************/
