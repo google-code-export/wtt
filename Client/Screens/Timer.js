@@ -2,14 +2,16 @@ jsApp.Timer = me.Renderable.extend({
 
 	init : function init(time,pixelIs)
 	{
+		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y),64,8);// position on the screen
         this.buildTime = time;
         this.timeInit = jsApp.timeToMs(jsApp.getSystemDate("time"));
         this.timeEnd =  this.timeInit + this.buildTime;
-		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y,0,8));// position on the screen
-        this.floating = true;
-        this.isPersistent = false;
+        this.floating = false;
+		this.isPersistent = true;
+		this.alwaysUpdate = true;
         this.pixely = pixelIs.y;
         this.pixelx = pixelIs.x;
+		console.log(pixelIs);
 
 	},
 
@@ -18,11 +20,12 @@ jsApp.Timer = me.Renderable.extend({
 	{
 		// Transparent background
         var alpha = context.globalAlpha;
+		var fillStyle = context.fillStyle;
         context.globalAlpha = 1;
         context.fillStyle = "blue";
         context.fillRect(this.pixelx, this.pixely,this.pos.y,8);
-        //context.fillRect(10, 10,this.pos.y,8);
         context.globalAlpha = alpha;
+		context.fillStyle = fillStyle;
 	},
 	
 	"update" : function update()

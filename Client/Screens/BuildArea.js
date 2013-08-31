@@ -22,7 +22,7 @@ jsApp.BuildArea = me.Renderable.extend({
 
 
 		
-		me.input.registerMouseEvent("mousemove", me.game.viewport, (function(e) {
+		me.input.registerPointerEvent("mousemove", me.game.viewport, (function(e) {
             //the event publish it's to bind functions on mouse events
             //this is needed for we do not lose the mouse events for other functions
 		    me.event.publish("moveBuilding");
@@ -33,8 +33,8 @@ jsApp.BuildArea = me.Renderable.extend({
             //This code it's to fix the bug in case we move the screen during a construction
             //because we cant have a construction in the middle of a tile
             //the getPixelsForTile it's the function that returns the exact tile
-            //based in the pixel position of the mouse (me.input.touches[0].x, me.input.touches[0].y)
-			var tileIs = jsApp.getPixelsForTile(me.input.touches[0].x, me.input.touches[0].y);
+            //based in the pixel position of the mouse (me.input.changedTouches[0].x, me.input.changedTouches[0].y)
+			var tileIs = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
 			this.x = tileIs.x * 64 - me.game.viewport.pos.x;
 			this.y = tileIs.y * 64 - me.game.viewport.pos.y;
 		}).bind(this);
@@ -42,8 +42,9 @@ jsApp.BuildArea = me.Renderable.extend({
 		this.mouseDown = (function () {
             //TAKING ALL THE DATA TO SEND TO SERVER
 		    var building = infoBuild;
-			var buildPos = jsApp.getPixelsForTile(me.input.touches[0].x, me.input.touches[0].y);
-			var tileid = buildLayer.getTileId(me.input.touches[0].x, me.input.touches[0].y);// getting the current tileid we've clicked on
+			var buildPos = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
+			console.log("x: "+me.input.changedTouches[0].x+" y: "+me.input.changedTouches[0].y);
+			var tileid = buildLayer.getTileId(me.input.changedTouches[0].x, me.input.changedTouches[0].y);// getting the current tileid we've clicked on
             building.x = buildPos.x;
             building.y = buildPos.y;
 			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
@@ -54,7 +55,7 @@ jsApp.BuildArea = me.Renderable.extend({
 		}).bind(this);
 
 
-		me.input.registerMouseEvent("mousedown", me.game.viewport, (function(e) {
+		me.input.registerPointerEvent("mousedown", me.game.viewport, (function(e) {
 				me.event.publish("placeBuilding");
 		}).bind(this));
 
