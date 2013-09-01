@@ -9,8 +9,8 @@ var jsApp	=
     },
 
     getSocket : function() {
-        //return  io.connect('http://199.115.231.229');
-		return  io.connect('http://9.18.223.23');
+        //return  io.connect('http://199.115.231.229');192.168.0.190
+		return  io.connect('http://192.168.0.190');
     },
 
     send: function(title, obj) {
@@ -85,6 +85,20 @@ var jsApp	=
 		var ms = ((((+a[0]) * 60) * 60) + ((+a[1]) * 60) + (+a[2]))*1000; 
 		return ms;
 	},
+
+    msToTime : function(time)
+    {
+        var ms = time;
+        var sec = time/1000;
+        if(sec < 10){ sec = "0" + sec; }
+        var min = sec/60;
+        if(min < 10){ min = "0" + min;}
+        var hr = min/60;
+        if(hr < 10 ){ hr = "0" + hr;}
+        var hrs = hr+":"+min+":"+sec;
+
+        return hrs;
+    },
 	
     // this method is called when the app is initialized
     onload: function()

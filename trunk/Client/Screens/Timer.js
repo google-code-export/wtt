@@ -4,6 +4,7 @@ jsApp.Timer = me.Renderable.extend({
 	{
 		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y),64,8);// position on the screen
         this.buildTime = time;
+        this.progressBar = 0;
         this.timeInit = jsApp.timeToMs(jsApp.getSystemDate("time"));
         this.timeEnd =  this.timeInit + this.buildTime;
         this.floating = false;
@@ -11,7 +12,6 @@ jsApp.Timer = me.Renderable.extend({
 		this.alwaysUpdate = true;
         this.pixely = pixelIs.y;
         this.pixelx = pixelIs.x;
-		console.log(pixelIs);
 
 	},
 
@@ -23,7 +23,7 @@ jsApp.Timer = me.Renderable.extend({
 		var fillStyle = context.fillStyle;
         context.globalAlpha = 1;
         context.fillStyle = "blue";
-        context.fillRect(this.pixelx, this.pixely,this.pos.y,8);
+        context.fillRect(this.pos.x, this.pos.y,this.progressBar,8);
         context.globalAlpha = alpha;
 		context.fillStyle = fillStyle;
 	},
@@ -32,7 +32,7 @@ jsApp.Timer = me.Renderable.extend({
 	{
         this.actualTime = jsApp.timeToMs(jsApp.getSystemDate("time"));
         this.buildProgress = (100*(this.actualTime - this.timeInit))/this.buildTime;
-        this.pos.y = (64*this.buildProgress)/100;
+        this.progressBar = (64*this.buildProgress)/100;
 
         if(this.actualTime >= this.timeEnd){
             me.game.remove(this);
