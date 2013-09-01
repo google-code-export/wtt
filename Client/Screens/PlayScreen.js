@@ -62,6 +62,7 @@ var PlayScreen = me.ScreenObject.extend(
                         return false;
                     else{
                         if(gameHandler.activeHuds.buildingHUD==undefined) {
+                            console.log(obj[i]);
                             //console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
                             gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
@@ -80,6 +81,10 @@ var PlayScreen = me.ScreenObject.extend(
                         var idTile = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         var x      = data[0][i].posX;
                         var y      = data[0][i].posY;
+                        var pending = data[0][i].pending;
+                        if(pending == "Y"){
+                            idTile = 22;
+                        }
 						console.log("i:"+i+" x:"+x+" y:"+y+" idtile:"+idTile);
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
@@ -223,10 +228,11 @@ var PlayScreen = me.ScreenObject.extend(
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
 					var tileid = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
-					if((tileid != null) && (tileid != 22)){ // 22 it's for the construction tile
+					if (tileid != null){ // 22 it's for the construction tile
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
 						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
 					}
+
 				}
                 //
 				        
