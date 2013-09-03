@@ -7,6 +7,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
 		this.parent(new me.Vector2d(0,gameH-128));
         this.floating = true;
         this.isPersistent = true;
+		this.alwaysUpdate = true;
 
         this.font = new me.BitmapFont("BaseFont", 16);
         this.Woodimage  = me.loader.getImage("Wood") ;
@@ -15,7 +16,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
-        gameHandler.activeHuds.buildingHUD = this;
+        
 
         this.rectangle = new me.Rect(
             new me.Vector2d(
@@ -47,10 +48,10 @@ jsApp.BuildingHUD = me.Renderable.extend({
             (gameW/3), 128
         );
         var titletext = undefined;
+		//if this is contructing or updating do this//
         if(this.upInfo.Timer != undefined){
             titletext = infoBuild.Description;
             this.DescRect.TitleText = titletext.toUpperCase();
-            console.log(infoBuild.Timer);
             this.TimerRect.countDown = jsApp.timeToMs(infoBuild.Timer);
             this.TimerRect.initTime = me.timer.getTime();
         }else{
@@ -90,7 +91,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.buttonfont.textBaseline = "bottom";
         ////////
 
-
+		gameHandler.activeHuds.buildingHUD = this;
 	},
 
     draw : function (context)
@@ -113,9 +114,13 @@ jsApp.BuildingHUD = me.Renderable.extend({
 
         //UPDATE RECT//
         this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
+		
+		//if the building it's constructing or updating it'll draw this//
         if(this.upInfo.Timer != undefined){
             this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
             this.font.draw(context,this.upInfo.Timer,this.pos.x+((gameW/3)*2), this.pos.y+64 );
+			
+		//if not, it'll draw all the other information //
         }else{
             if(this.upInfo.Msg != undefined){
                 this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
@@ -156,27 +161,18 @@ jsApp.BuildingHUD = me.Renderable.extend({
 		me.input.releasePointerEvent("mousedown", this);
 		me.input.releasePointerEvent("mouseup", this);
 		me.input.releasePointerEvent("mousemove", this);
-        this.upInfo     = undefined;
-        this.Woodimage  = undefined;
-        this.Stoneimage = undefined;
-        this.Ironimage  = undefined;
-        this.Meatimage  = undefined;
-        this.Coinimage  = undefined;
-        this.Buildimage = undefined;
-        // o certo eh guardar as img dinamicamente em algum lugar e só ir buscando elas
     },
-    "update" : function() {
-        //alert("wolololo");
-        //if(this.TimerRect.timeInit != undefined){
+    "update" : function() {	
+		//here it's where i calculate the progress time in the HUD//
+        if(this.TimerRect.initTime != undefined){
             var total = this.TimerRect.countDown;
-            var progressTime = me.timer.getTime() - this.TimerRect.timeInit;
-            if(progressTime > this.TimerRect.countDown){
+            var progressTime = me.timer.getTime() - this.TimerRect.initTime;
+            if(progressTime <= total){
                 this.upInfo.Timer = jsApp.msToTime(total - progressTime);
-                console.log(this.upInfo.Timer);
-            }else{
-                me.game.remove(this,true);
-            }
-        //}
+			}else{
+				me.game.remove(this);
+			}
+        }
         return true;
     }
 });

@@ -3,35 +3,35 @@ gameH = 600;
 var jsApp	=
 {
     // Initialize the jsApp
-	
+	//get user information//
     getUserData : function() {
       return $.jStorage.get("userData");
     },
-
+	//WebSocket connection setup//
     getSocket : function() {
-        //return  io.connect('http://199.115.231.229');192.168.0.190
-		return  io.connect('http://192.168.0.190');
+        //return  io.connect('http://199.115.231.229');192.168.0.190//9.18.223.122//172.16.13.122
+		return  io.connect('http://9.18.223.227');
     },
-
+	//WebSocket Send Function //
     send: function(title, obj) {
             this.getSocket().emit(title, obj);
     },
-
+	//WebSocket Remove Listeners //
     destroy: function(title) {
         this.getSocket().removeAllListeners(title);
     },
-
+	
     loadLevel: function() {
 
     },
-
+	//Get user session //
     getUserSession: function(){
 
         var userData = {"idUser" : 3};
         return userData;
 
     },
-
+	//Melon Dialog //
     simpleDialog : function(msg)
     {
 
@@ -40,20 +40,14 @@ var jsApp	=
         me.game.sort();
     },
 	
-	//THIS IS THE TIMER SCHEDULER TO ADD IN THE ROUTINE THE THINGS THAT ARE PENDING
-	timeScheduler : function(type,data)
+	//THIS IS THE TIMER SCHEDULER TO ADD ANYTHING THAT NEED TO RUN IN TIME //
+	timeScheduler : function(data,time)
 	{
-		var systemtime = jsApp.getSystemDate("full");
-		var time = jsApp.timeToMs(data.buildTimer);
-		
-		console.log("IM ON APP.JS --- idVillage:"+data.idVillage+" idBuilding:"+data.idBuilding+" x:"+data.x+" y:"+data.y+" buildTimer:"+data.buildTimer);
-		console.log("time : "+systemtime);
-		
-		setTimeout(function(){socket.emit(type, data);},time);
-		
+		console.log("time no scheduler: "+time);
+		setTimeout(data,time);
 	},
 	
-	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS
+	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS OR HH:MM:SS
 	getSystemDate : function(type)
 	{
 		now = new Date();
@@ -77,7 +71,7 @@ var jsApp	=
 
 	},
 	
-	//THIS IS NEEDED TO HAVE THE RIGHT TIME IN MS TO SEND IT TO THE SCHEDULER
+	//THIS TRANSFORM HH:MM:SS TO MS
 	timeToMs : function(time)
 	{
 		var hms = time;   // your input string
@@ -85,19 +79,27 @@ var jsApp	=
 		var ms = ((((+a[0]) * 60) * 60) + ((+a[1]) * 60) + (+a[2]))*1000; 
 		return ms;
 	},
-
+	//THIS TRANSFORM MS TO HH:MM:SS
     msToTime : function(time)
     {
-        var ms = time;
-        var sec = time/1000;
-        if(sec < 10){ sec = "0" + sec; }
-        var min = sec/60;
-        if(min < 10){ min = "0" + min;}
-        var hr = min/60;
-        if(hr < 10 ){ hr = "0" + hr;}
-        var hrs = hr+":"+min+":"+sec;
+		var hours = 0;
+		var minutes = 0;
+		var seconds = 0;
+		
+		var elapsed_hours = Math.floor(time / 3600000);
+		var remaining = time - (elapsed_hours * 3600000);
+		var elapsed_minutes = Math.floor(remaining / 60000);
+		remaining = remaining - (elapsed_minutes * 60000);
+		var elapsed_seconds = Math.floor(remaining / 1000);
+		remaining = remaining - (elapsed_seconds * 1000);
+		var elapsed_fs = Math.floor(remaining / 10);
+		
+		if(elapsed_hours < 10)  { hours   = "0"+elapsed_hours;  }else{ hours   = elapsed_hours;  }
+		if(elapsed_minutes < 10){ minutes = "0"+elapsed_minutes;}else{ minutes = elapsed_minutes;}
+		if(elapsed_seconds < 10){ seconds = "0"+elapsed_seconds;}else{ seconds = elapsed_seconds;}
 
-        return hrs;
+		var hrs = hours+":"+minutes+":"+seconds;
+		return hrs;
     },
 	
     // this method is called when the app is initialized
@@ -135,7 +137,7 @@ var jsApp	=
         //me.entityPool.add("entity", entity);
         me.state.change(me.state.PLAY);
     },
-
+	//SEND THE PIXEL POSITION AND RETURN THE TILE POSITION //
 	 getPixelsForTile : function(px,py) {
 		    var x =  Math.floor(px);
             var y =  Math.floor(py);
@@ -146,7 +148,7 @@ var jsApp	=
 				y : imY
 			};
 	},
-
+	//SEND THE TILE POSITION AND RETURN THE PIXEL POSITION
     getTileForPixels : function(px,py) {
         var x =  Math.floor(px);
         var y =  Math.floor(py);

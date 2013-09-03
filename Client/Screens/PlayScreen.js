@@ -11,25 +11,59 @@ var PlayScreen = me.ScreenObject.extend(
 			jsApp.destroy("onConstruct");
 			jsApp.destroy("onResourcesUpdate");
 			
+            //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
+            socket.on("onListVillageBuildings", function(data){
+                var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
+				console.log(data);
+                for (var i in data[0]){
+                    if (i!="remove"){
+                        var idTile  = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+                        var x       = data[0][i].posX;
+                        var y       = data[0][i].posY;
+                        var pending = data[0][i].pending;
+						var timer   = data[0][i].Timer;
+						//if the construction still pending, add a new progress bar and a timeScheduler event//
+                        if(pending == "Y"){
+                            idTile   		   = 22;
+							var changeTile     = data[0][i].idTile;
+							var time    	   = jsApp.timeToMs(timer);
+							time = time;
+							var pixelIs 	   = jsApp.getTileForPixels(x,y);
+							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});};
+							me.game.add(progressBar,10);// adding this to the screen
+							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
+							
+							
+                        }
+                        buildLayer.setTile(x,y,idTile);//changing the tile
+                    }
+                }
+
+            });
+
+            socket.emit("onListVillageBuildings", idVillage);
+            //			
 			 //HERE WE SEND THE UPDATE REQUEST
 			 socket.on("onRequestUpdate",function(rows, data){
 				var infobuild = data;
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
-					var time = jsApp.timeToMs(infobuild.buildTimer);
-					console.log("ESSE EH O SEU TEMPO:"+time);
+					var time 	   = jsApp.timeToMs(infobuild.buildTimer);
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var idTile = 22; // NEED TO SEE THIS BETTER VERY QUICK!
-                    var pixelIs = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
-					infobuild.x = infobuild.posX;
-					infobuild.y = infobuild.posY;
+					var idTile 	   = 22; // NEED TO SEE THIS BETTER VERY QUICK!
+                    var pixelIs    = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
+					infobuild.x    = infobuild.posX;
+					infobuild.y    = infobuild.posY;
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
 					//
-					var progressBar = new jsApp.Timer(time,pixelIs);// creating a new instance of the class Timer
+					var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class Timer
+					var checkUpdate = function(){ socket.emit("onCheckUpdate",infobuild);};
+					
 					me.game.add(progressBar,10);// adding this to the screen
-                    jsApp.timeScheduler("onUpdateCheck",infobuild);// sending the construction to the scheduler.
+                    jsApp.timeScheduler(checkUpdate,time);// sending the construction to the scheduler.
 					
 				}else{
 					alert(rows[0][0].Msg);
@@ -40,12 +74,12 @@ var PlayScreen = me.ScreenObject.extend(
 			 });
 			 
 			 //CHECKING IF THE UPDATE ALREADY IS DONE
-			 socket.on("onUpdateCheck",function(rows, data){
+			 socket.on("onCheckUpdate",function(rows, data){
 				var infobuild = data;
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var idTile = infobuidl.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+					var idTile 	   = infobuild.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 					buildLayer.setTile(infobuild.posX,infobuild.posY,idTile);//changing the tile
 				}else{
 					alert(rows[0][0].Msg);
@@ -62,8 +96,6 @@ var PlayScreen = me.ScreenObject.extend(
                         return false;
                     else{
                         if(gameHandler.activeHuds.buildingHUD==undefined) {
-                            console.log(obj[i]);
-                            //console.log("Basic Description:"+obj[i].basicDescription+" Description:"+obj[i].Description+" idBuilding:"+obj[i].idBuilding+" wood:"+obj[i].wood+" stone:"+obj[i].stone+" iron:"+obj[i].iron+" gold:"+obj[i].gold+" idTile:"+obj[i].idTile);
                             gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
                             me.game.sort();
@@ -72,28 +104,6 @@ var PlayScreen = me.ScreenObject.extend(
                 });
             });
 			//
-
-            //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
-            socket.on("onListVillageBuildings", function(data){
-                var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
-                for (var i in data[0]){
-                    if (i!="remove"){
-                        var idTile = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
-                        var x      = data[0][i].posX;
-                        var y      = data[0][i].posY;
-                        var pending = data[0][i].pending;
-                        if(pending == "Y"){
-                            idTile = 22;
-                        }
-						console.log("i:"+i+" x:"+x+" y:"+y+" idtile:"+idTile);
-                        buildLayer.setTile(x,y,idTile);//changing the tile
-                    }
-                }
-
-            });
-
-            socket.emit("onListVillageBuildings", idVillage);
-            //
 			
 			//////////////////////////////////////////
 			//Request Construction//
@@ -106,7 +116,6 @@ var PlayScreen = me.ScreenObject.extend(
 						if(obj[i].Msg != "Done"){
 							alert(obj[i].Msg);
 						}else{
-							console.log("result["+i+"]: "+obj[i].Msg);
 							var building = data;
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							var time = jsApp.timeToMs(data.buildTimer);
@@ -114,9 +123,10 @@ var PlayScreen = me.ScreenObject.extend(
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 22");
 							
 							buildLayer.setTile(building.x,building.y,22);//changing the tile for the construction zone
-							var progressBar = new jsApp.Timer(time,pixelIs);// creating a new instance of the class Timer
+							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(progressBar,10);// adding this to the screen
-							jsApp.timeScheduler("onConstructCheck",building);// sending the construction to the scheduler.
+							var constructCheck = function(){socket.emit("onConstructCheck",building);};
+							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
 
 							//updating the resources
 							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
@@ -136,20 +146,20 @@ var PlayScreen = me.ScreenObject.extend(
 			//constructing and updating resourcesHUD//
 			//
 			socket.on("onConstructCheck", function(rows, data){
+				console.log(rows);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
 					else{
-						if(obj[i].Msg != "Done"){
-							alert(obj[i].Msg);
-						}else{
-							console.log("result["+i+"]: "+obj[i].Msg);
+						if(obj[i].Msg == "Done"){
+							console.log(data);
 							var building = data;
 							var idTile = building.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
-
-							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
+							buildLayer.setTile(building.x,building.y,idTile);//changing the tile	
+						}else{
+							alert(obj[i].Msg);
 						}
 					}
 
