@@ -1,8 +1,7 @@
 jsApp.BuildArea = me.Renderable.extend({
     "init" : function init(clickFun,infoBuild) {
         var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-		
-		this.clickFunction = clickFun; //here we create the variable to use the mouse events, needed.
+	
         this.info = infoBuild;
         this.info.idVillage = 1;// NEED TO SEE THIS BETTER! MULTI-VILLAGES PROBLEM
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40); //This is here we define the position in the screen
@@ -17,11 +16,7 @@ jsApp.BuildArea = me.Renderable.extend({
         this.y = 0;
         this.sizeX = 1;//size->Tiles
         this.sizeY = 1;
-		
-		this.clickFunction = undefined;
 
-
-		
 		me.input.registerPointerEvent("mousemove", me.game.viewport, (function(e) {
             //the event publish it's to bind functions on mouse events
             //this is needed for we do not lose the mouse events for other functions
@@ -43,7 +38,6 @@ jsApp.BuildArea = me.Renderable.extend({
             //TAKING ALL THE DATA TO SEND TO SERVER
 		    var building = infoBuild;
 			var buildPos = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
-			console.log("x: "+me.input.changedTouches[0].x+" y: "+me.input.changedTouches[0].y);
 			var tileid = buildLayer.getTileId(me.input.changedTouches[0].x, me.input.changedTouches[0].y);// getting the current tileid we've clicked on
             building.x = buildPos.x;
             building.y = buildPos.y;
