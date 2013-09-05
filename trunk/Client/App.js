@@ -10,7 +10,7 @@ var jsApp	=
 	//WebSocket connection setup//
     getSocket : function() {
         //return  io.connect('http://199.115.231.229');192.168.0.190//9.18.223.122//172.16.13.122
-		return  io.connect('http://9.18.223.227');
+		return  io.connect('http://172.16.13.122');
     },
 	//WebSocket Send Function //
     send: function(title, obj) {
@@ -43,7 +43,6 @@ var jsApp	=
 	//THIS IS THE TIMER SCHEDULER TO ADD ANYTHING THAT NEED TO RUN IN TIME //
 	timeScheduler : function(data,time)
 	{
-		console.log("time no scheduler: "+time);
 		setTimeout(data,time);
 	},
 	

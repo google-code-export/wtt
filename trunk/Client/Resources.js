@@ -16,12 +16,13 @@ var g_resources =
         {name: "Farmer",type: "image",  src: "data/sprite/Characters/farmer.png"},
 
         // Resources //
-        {name: "Wood" ,type: "image",  src: "data/sprite/Log.png"  },
-        {name: "Army" ,type: "image",  src: "data/sprite/army.png" },
-        {name: "Stone",type: "image",  src: "data/sprite/Stone.png"},
-        {name: "Iron" ,type: "image",  src: "data/sprite/iron.png" },
-        {name: "Meat" ,type: "image",  src: "data/sprite/Meat.png" },
-        {name: "Coin" ,type: "image",  src: "data/sprite/coin.png" },
+        {name: "Wood"  ,type: "image",  src: "data/sprite/Log.png"  },
+        {name: "Army"  ,type: "image",  src: "data/sprite/army.png" },
+        {name: "Stone" ,type: "image",  src: "data/sprite/Stone.png"},
+        {name: "Iron"  ,type: "image",  src: "data/sprite/iron.png" },
+        {name: "Meat"  ,type: "image",  src: "data/sprite/Meat.png" },
+        {name: "Coin"  ,type: "image",  src: "data/sprite/coin.png" },
+		{name: "Clock" ,type: "image",  src: "data/sprite/Clock.gif" },
 
         //////////////
         // BASE TMX //
