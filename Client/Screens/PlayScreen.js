@@ -14,7 +14,6 @@ var PlayScreen = me.ScreenObject.extend(
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
             socket.on("onListVillageBuildings", function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
-				console.log(data);
                 for (var i in data[0]){
                     if (i!="remove"){
                         var idTile  = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
@@ -27,15 +26,18 @@ var PlayScreen = me.ScreenObject.extend(
                             idTile   		   = 22;
 							var changeTile     = data[0][i].idTile;
 							var time    	   = jsApp.timeToMs(timer);
-							time = time;
+							var time		   = time;
 							var pixelIs 	   = jsApp.getTileForPixels(x,y);
 							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});};
 							me.game.add(progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
-							
-							
                         }
+						if(idTile == 14){
+							var pixelIs 	   = jsApp.getTileForPixels(x,y);
+							var resourceColect = function(){me.game.add(new jsApp.ColectAlert(pixelIs),10);} 
+							jsApp.timeScheduler(resourceColect,5000);
+						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
                 }
@@ -146,20 +148,31 @@ var PlayScreen = me.ScreenObject.extend(
 			//constructing and updating resourcesHUD//
 			//
 			socket.on("onConstructCheck", function(rows, data){
-				console.log(rows);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
 					else{
 						if(obj[i].Msg == "Done"){
-							console.log(data);
 							var building = data;
 							var idTile = building.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
-							buildLayer.setTile(building.x,building.y,idTile);//changing the tile	
+							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
+							if(idTile == 14){
+								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
+								var resourceColect = function(){me.game.add(new jsApp.ColectAlert(pixelIs),10);} 
+								jsApp.timeScheduler(resourceColect,5000);
+							}
+							
 						}else{
-							alert(obj[i].Msg);
+							var building 	   = data;
+							var time    	   = jsApp.timeToMs(obj[i].Msg);
+							var idTile 		   = building.idTile + 1;
+							var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
+							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : building.x, "y" : building.y, "idVillage" : building.idVillage, "idTile" : idTile});};
+							me.game.add(progressBar,10);// adding this to the screen
+							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
 						}
 					}
 

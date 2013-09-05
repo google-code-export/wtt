@@ -90,11 +90,13 @@ jsApp.BuildMenu = me.Renderable.extend({
                         if(this.options[ct].containsPointV(me.input.changedTouches[0])){
                             // if the option has no click function it must be a building !
                             if(this.options[ct].hasClickFunction == undefined) {
+								me.game.add(new jsApp.BuildingDetail(),5000);
+								me.game.sort();
                                 //simply make the selector to build it
-                                this.building = new jsApp.BuildArea("mousedown",this.options[ct].info);// creating a new instance of the class BuildArea
+                                /*this.building = new jsApp.BuildArea("mousedown",this.options[ct].info);// creating a new instance of the class BuildArea
                                 me.game.add(this.building,1000);// adding this to the screen
                                 me.game.remove(this); //removing the build hud
-                                me.game.sort();       // "printing" all this into the screen
+                                me.game.sort();       // "printing" all this into the screen*/
                             } else {
                                 this.options[ct].clickFunction(this);
                             }
@@ -111,6 +113,7 @@ jsApp.BuildMenu = me.Renderable.extend({
                 var ct = this.options.length;
                 while(ct--){
                     if(this.options[ct].containsPointV(me.input.changedTouches[0])) {
+						//console.log(this.options[ct]);
                     }
                 }
             }
