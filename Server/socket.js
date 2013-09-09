@@ -7,7 +7,7 @@ var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'root',
-  password : 'adm01BKP',
+  password : 'dqm50vnc',
   database : 'Jogo'
 });
 
@@ -51,7 +51,7 @@ io.sockets.on('connection', function (socket) {
 
 
   //////////////////////////
-  // onResourcesUpdate       //
+  // onResourcesUpdate    //
   //////////////////////////
   socket.on('onResourcesUpdate', function(data) {
       console.log("getting resources from idUser ="+data.userId);
@@ -61,6 +61,17 @@ io.sockets.on('connection', function (socket) {
           socket.emit("onResourcesUpdate", rows);
      });
   });
+  
+	//////////////////////////
+	// onResourcesCollect    //
+	//////////////////////////
+	socket.on('onResourcesCollect', function(data) {
+		connection.query("CALL `TimeCheckResource`("+data.idVillage+","+data.x+","+data.y+")",function(err, rows, fields){
+			if(rows.length==undefined || rows.length==0)
+				socket.emit("message", {msg:"Error!"});
+			socket.emit("onResourcesCollect", rows, data);
+		});
+	});
 
     //////////////////////////
     // onListBuilding       //

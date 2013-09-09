@@ -33,10 +33,12 @@ var PlayScreen = me.ScreenObject.extend(
 							me.game.add(progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
                         }
+						//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER TOO.
 						if(idTile == 14){
+							//var gatherTime     = jsApp.timeToMs(building.gatherTime);
+							var gatherTime	   = 30000; // --> Hardcoded to test.
 							var pixelIs 	   = jsApp.getTileForPixels(x,y);
-							var resourceColect = function(){me.game.add(new jsApp.ColectAlert(pixelIs),10);} 
-							jsApp.timeScheduler(resourceColect,5000);
+							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime}) // --> Need to start the resource collect engine
 						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
@@ -158,10 +160,15 @@ var PlayScreen = me.ScreenObject.extend(
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
+							//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER
 							if(idTile == 14){
+								var gatherTime     = jsApp.timeToMs(building.gatherTime);
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-								var resourceColect = function(){me.game.add(new jsApp.ColectAlert(pixelIs),10);} 
-								jsApp.timeScheduler(resourceColect,5000);
+								var ColectAlert    = new jsApp.ColectAlert(pixelIs);
+								var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime})};
+								jsApp.timeScheduler(resourceColect,gatherTime);
+								jsApp.timeScheduler(resourceAlert,gatherTime);
 							}
 							
 						}else{
@@ -193,6 +200,40 @@ var PlayScreen = me.ScreenObject.extend(
 						gameHandler.activeHuds["resourceHud"].FoodValue  = obj[i].food;
 						gameHandler.activeHuds["resourceHud"].IronValue  = obj[i].iron;
 						gameHandler.activeHuds["resourceHud"].GoldValue  = obj[i].gold;
+					}
+				});
+
+			});
+			/////////////////////////////////////////
+			
+			///////////////////////////////////////
+			//collecting the resources			//
+			socket.on('onResourcesCollect', function(rows, data) {
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(obj[i].Msg == "Done"){
+							//updating the resources
+							jsApp.send("onResourcesUpdate", jsApp.getUserData());
+							//
+							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
+							var ColectAlert    = new jsApp.ColectAlert(pixelIs);
+							var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
+							jsApp.timeScheduler(resourceColect,data.gatherTime);
+							jsApp.timeScheduler(resourceAlert,data.gatherTime);						
+						}else{
+							// if anyone try to hack, this will add a new time until the update it's done.
+							var remainingTime  = jsApp.timeToMs(obj[i].Msg);
+							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
+							var ColectAlert    = new jsApp.ColectAlert(pixelIs);
+							
+							var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
+							jsApp.timeScheduler(resourceColect,remainingTime);
+							jsApp.timeScheduler(resourceAlert,remainingTime);
+						}
 					}
 				});
 
@@ -295,10 +336,6 @@ var PlayScreen = me.ScreenObject.extend(
             // SORT GRAPHICS RENDERED TO THE SCREEN (SO IT CAN REDRAW IN THE RIGHT ORDER)
             me.game.sort();
         },
-		
-		onMouseDown: function(){
-			
-		},
 		
         draw: function (context) {
             // Transparent background
