@@ -53,7 +53,7 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
             // FALTA ALGUMA COISA AQUI
             //button.icon.animationpause = true;
             //button.icon.animationspeed = 5;
-            button.icon.addAnimation("anim", [0,1,2]);
+            button.icon.addAnimation("anim", [0]);
             button.icon.setCurrentAnimation('anim');
             button.icon.resize(3);
             button.info = infoUnit;
