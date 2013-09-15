@@ -113,8 +113,6 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
                                 // a casa que criou ta no this.building
                                 //var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
                                 //me.game.add(piece, 1000);
-
-
                                 var socket = jsApp.getSocket();
                                 socket.emit("onUnitCreate", data);
                             } else {

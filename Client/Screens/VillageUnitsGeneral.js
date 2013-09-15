@@ -1,8 +1,11 @@
 jsApp.VillageUnitsGeneral = me.Renderable.extend({
-    "init" : function init(listClasses, listUnits) {
+    "init" : function init(listUnits, listClasses) {
         this.parent(new me.Vector2d(gameW/10, gameH/10), gameW-(gameW/10)*2, (gameH/10)*8);// position on the screen
         this.floating = true;
+        this.listUnits = listUnits;
+        this.listClasses = listClasses;
         this.isPersistent = true;
+        this.titleFont = new me.Font("verdana", 18, "white", "right");
         ///////////////////////////
         // Declaring All Options //
         ///////////////////////////
@@ -41,7 +44,7 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
             // if i clicked the menu
             if (this.menuRect.containsPointV(me.input.changedTouches[0])) {
                 if (this.backRect.containsPointV(me.input.changedTouches[0])) {
-                    me.game.remove(instance,true);
+                    me.game.remove(this,true);
                     me.game.sort();
                 }
             }
@@ -70,7 +73,22 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         context.globalAlpha = 0.6;
         context.fillStyle = "#00066";
 
+        var ct = this.listClasses.length;
+        var iX = this.pos.x + 25;
+        var iY = this.pos.y + 25;
+        while(ct--) {
+            context.fillRect(iX, iY, 100, 20);
+            iY += 25;
+        }
+
         context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        context.fillRect(this.backRect.pos.x, this.backRect.pos.y, this.backRect.width, this.backRect.height);
+        this.titleFont.draw(
+            context,
+            "X",
+            this.backRect.pos.x+21,
+            this.backRect.pos.y+9
+        );
 
         context.fillStyle = "#00066";
         context.globalAlpha = alpha;

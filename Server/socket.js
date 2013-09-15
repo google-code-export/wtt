@@ -147,12 +147,14 @@ io.sockets.on('connection', function (socket) {
     //////////////////////////
     // onConstructCheck     //
     //////////////////////////
-    socket.on('onListVillageUnits', function(idVillage) {
-        console.log("listando units da vila "+idVillage);
-        connection.query("CALL `getVillageUnit`("+idVillage+")",function(err, rows, fields){
+    socket.on('onListVillageUnits', function(data) {
+        console.log("listando units da vila "+data.villageId);
+        connection.query("CALL `getVillageUnit`("+data.villageId+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
+                if(data.openMenu != undefined)
+                    rows[2] = "openMenu";
                 socket.emit("onListVillageUnits", rows);
             }
         });
