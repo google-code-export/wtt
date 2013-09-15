@@ -2,7 +2,7 @@ var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
-            var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
+            this.idVillage = 1; //-->NEED TO SEE THIS BETTER!!
 			this.TMXTileMap = "Chunk";
 			//Destroying websockets event before create a new one
 			jsApp.destroy("onBuildingSelect");
@@ -29,7 +29,7 @@ var PlayScreen = me.ScreenObject.extend(
 							var time		   = time;
 							var pixelIs 	   = jsApp.getTileForPixels(x,y);
 							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
-							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});};
+							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : this.idVillage, "idTile" : changeTile});};
 							me.game.add(progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
                         }
@@ -38,7 +38,7 @@ var PlayScreen = me.ScreenObject.extend(
 							//var gatherTime     = jsApp.timeToMs(building.gatherTime);
 							var gatherTime	   = 30000; // --> Hardcoded to test.
 							var pixelIs 	   = jsApp.getTileForPixels(x,y);
-							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime}) // --> Need to start the resource collect engine
+							socket.emit("onResourcesCollect",{"idVillage": this.idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime}) // --> Need to start the resource collect engine
 						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
@@ -46,35 +46,32 @@ var PlayScreen = me.ScreenObject.extend(
 
             });
 
-            socket.emit("onListVillageBuildings", idVillage);
+            socket.emit("onListVillageBuildings", this.idVillage);
 
             //PLACING UNITS THE PLAYER HAS ON THE MAP
             socket.on("onListVillageUnits", function(data){
                 var unitList = data[0];
                 var classList = data[1];
-
-                var unit = unitList.length;
-                while(unit--) {
-
-                    var thisUnit = unitList[unit];
-                    var pos = jsApp.getRandomPointInScreen();
-                    var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
-                    me.game.add(piece, 1000);
-                }
-
-
-
-                /*
-                if(gameHandler.activeHuds.villageUnitsGeneral==undefined) {
+                console.log(data[3]);
+                if(data[2]=="openMenu") {
                     gameHandler.activeHuds.villageUnitsGeneral = new jsApp.VillageUnitsGeneral(unitList, classList);
+                    gameHandler.activeHuds.villageUnitsGeneral.listUnits = unitList;
+                    gameHandler.activeHuds.villageUnitsGeneral.listClasses = classList;
                     me.game.add(gameHandler.activeHuds.villageUnitsGeneral, 1100);
                     me.game.sort();
+                } else {
+
+                    var unit = unitList.length;
+                    while(unit--) {
+                        var thisUnit = unitList[unit];
+                        var pos = jsApp.getRandomPointInScreen();
+                        var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
+                        me.game.add(piece, 1000);
+                    }
                 }
-                */
             });
 
-
-            socket.emit("onListVillageUnits", idVillage);
+            socket.emit("onListVillageUnits", { villageId : this.idVillage });
             //			
 			 //HERE WE SEND THE UPDATE REQUEST
 			 socket.on("onRequestUpdate",function(rows, data){
@@ -100,9 +97,9 @@ var PlayScreen = me.ScreenObject.extend(
 				}else{
 					alert(rows[0][0].Msg);
 				}
-                 me.game.remove(gameHandler.activeHuds.buildingHUD,true);
-                 gameHandler.activeHuds.buildingHUD = undefined;
-                 me.game.sort();
+                me.game.remove(gameHandler.activeHuds.buildingHUD,true);
+                gameHandler.activeHuds.buildingHUD = undefined;
+                me.game.sort();
 			 });
 			 
 			 //CHECKING IF THE UPDATE ALREADY IS DONE
@@ -116,7 +113,6 @@ var PlayScreen = me.ScreenObject.extend(
 				}else{
 					alert(rows[0][0].Msg);
 				}
-				
 			 });
 			 //
 			 
@@ -205,7 +201,7 @@ var PlayScreen = me.ScreenObject.extend(
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
 								var ColectAlert    = new jsApp.ColectAlert(pixelIs);
 								var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
-								var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime})};
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": this.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime})};
 								jsApp.timeScheduler(resourceColect,gatherTime);
 								jsApp.timeScheduler(resourceAlert,gatherTime);
 							}
@@ -259,7 +255,7 @@ var PlayScreen = me.ScreenObject.extend(
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
 							var ColectAlert    = new jsApp.ColectAlert(pixelIs);
 							var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
-							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": this.idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
 							jsApp.timeScheduler(resourceColect,data.gatherTime);
 							jsApp.timeScheduler(resourceAlert,data.gatherTime);						
 						}else{
@@ -269,7 +265,7 @@ var PlayScreen = me.ScreenObject.extend(
 							var ColectAlert    = new jsApp.ColectAlert(pixelIs);
 							
 							var resourceAlert  = function(){me.game.add(ColectAlert,10); } 
-							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": this.idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime})};
 							jsApp.timeScheduler(resourceColect,remainingTime);
 							jsApp.timeScheduler(resourceAlert,remainingTime);
 						}
@@ -337,6 +333,9 @@ var PlayScreen = me.ScreenObject.extend(
                                 if(gameHandler.activeHuds.buildMenu!=undefined)
                                     return;
                                 jsApp.send("onListBuilding", jsApp.getUserData());
+                            } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
+                                // AKI
+                                socket.emit("onListVillageUnits", { villageId : this.idVillage, openMenu:"true"});
                             }
                         }
                     }
@@ -350,7 +349,7 @@ var PlayScreen = me.ScreenObject.extend(
 					if (tileid != null){ // 22 it's for the construction tile
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
                         this.tileWhereBuildingIs = tileIs;
-						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
+						socket.emit("onBuildingSelect",{idVillage: this.idVillage, X: tileIs.x, Y: tileIs.y});
 					}
 
 				}
