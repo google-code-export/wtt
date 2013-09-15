@@ -5,7 +5,8 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         this.listUnits = listUnits;
         this.listClasses = listClasses;
         this.isPersistent = true;
-        this.titleFont = new me.Font("verdana", 18, "white", "right");
+        this.font = new me.Font("verdana", 14, "lime", "left");
+        this.titleFont = new me.Font("verdana", 18, "white", "left");
         ///////////////////////////
         // Declaring All Options //
         ///////////////////////////
@@ -29,6 +30,36 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
             ),
             30, 30
         );
+
+        // construindo as imagem
+        this.classImages = {
+
+        };
+        this.imgList = new Array();
+        var ct = this.listClasses.length;
+        var iX = this.pos.x + 45;
+        var iY = this.pos.y + 45;
+        while(ct--) {
+            var thisClass = this.listClasses[ct];
+            // soh adiciona a img se ja n tiver
+            if(this.classImages["id_"+thisClass.idUnit] == undefined) {
+                var img = new me.AnimationSheet(
+                    0, 0,
+                    me.loader.getImage(thisClass.Image),
+                    14, 18
+                );
+                img.floating = true;
+                // FALTA ALGUMA COISA AQUI
+                //button.icon.animationpause = true;
+                //button.icon.animationspeed = 5;
+                img.addAnimation("anim", [0]);
+                img.setCurrentAnimation('anim');
+                img.resize(2);
+                img.setAnimationFrame(0);
+                this.classImages["id_"+thisClass.idUnit] = img;
+                this.imgList.push(img);
+            }
+        }
 
         this.backRect.buttonColor = "red";
         this.backRect.buttonText = "X";
@@ -57,6 +88,12 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         me.input.releasePointerEvent("mousemove", this);
         me.input.releasePointerEvent("mousedown", this);
 		me.input.releasePointerEvent("mouseup", this);
+        var ct = this.imgList.length;
+        while(ct--) {
+            me.game.remove(this.imgList[ct]);
+        }
+        me.game.sort();
+        this.classImages = undefined;
         gameHandler.activeHuds.villageUnitsGeneral = undefined;
     },
 
@@ -73,20 +110,13 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         context.globalAlpha = 0.6;
         context.fillStyle = "#00066";
 
-        var ct = this.listClasses.length;
-        var iX = this.pos.x + 25;
-        var iY = this.pos.y + 25;
-        while(ct--) {
-            context.fillRect(iX, iY, 100, 20);
-            iY += 25;
-        }
 
         context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
         context.fillRect(this.backRect.pos.x, this.backRect.pos.y, this.backRect.width, this.backRect.height);
         this.titleFont.draw(
             context,
             "X",
-            this.backRect.pos.x+21,
+            this.backRect.pos.x+10,
             this.backRect.pos.y+9
         );
 
@@ -98,9 +128,43 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
             gameW/3,
             gameH/8
         );
+        context.fillStyle = fillStyle;
+        var ct = this.listClasses.length;
+        var iX = this.pos.x + 45;
+        var iY = this.pos.y + 45;
+        while(ct--) {
+            var thisClass = this.listClasses[ct];
+            context.fillRect(iX, iY, 120, 20);
+            if( this.classImages["id_"+thisClass.idUnit]!=undefined) {
+                var img = this.classImages["id_"+thisClass.idUnit];
+                img.pos.x = iX;
+                img.pos.y = iY;
+                me.game.add(img, 10000);
+                me.game.sort();
+                this.classImages["id_"+thisClass.idUnit] = undefined;
+            }
 
-        context.globalAlpha = alpha;
-		context.fillStyle = fillStyle;
+            this.font.draw(
+                context,
+                thisClass.Description,
+                iX+21,
+                iY+3
+            );
+            this.font.draw(
+                context,
+                thisClass.qty+" x ",
+                iX-30,
+                iY+3
+            );
+            context.fillStyle = fillStyle;
+
+            iY += 25;
+        }
+
+
+
+       // context.globalAlpha = alpha;
+		//context.fillStyle = fillStyle;
 
     }
 });

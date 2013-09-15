@@ -4,9 +4,7 @@
     <list default="true" readonly="true" id="aa8605ee-af45-4ad9-aa1b-1ec7f1e11cc9" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js" afterPath="$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/Screens/PlayScreen.js" afterPath="$PROJECT_DIR$/Client/Screens/PlayScreen.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js" afterPath="$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Server/socket.js" afterPath="$PROJECT_DIR$/Server/socket.js" />
     </list>
     <ignored path="WTT.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,7 +45,7 @@
       <file leaf-file-name="Unit.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Entity/Unit.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="34" selection-start="528" selection-end="528" vertical-scroll-proportion="0.0">
+            <state line="18" column="58" selection-start="637" selection-end="646" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -71,10 +69,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="socket.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="socket.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/socket.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="151" column="46" selection-start="5576" selection-end="5590" vertical-scroll-proportion="0.48795182">
+            <state line="146" column="29" selection-start="5364" selection-end="5364" vertical-scroll-proportion="-10.4">
               <folding />
             </state>
           </provider>
@@ -92,16 +90,16 @@
       <file leaf-file-name="BuildUnitMenu.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="85" column="70" selection-start="2730" selection-end="2794" vertical-scroll-proportion="-12.92">
+            <state line="183" column="40" selection-start="6728" selection-end="6728" vertical-scroll-proportion="-11.08">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VillageUnitsGeneral.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="VillageUnitsGeneral.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="41" selection-start="2410" selection-end="2410" vertical-scroll-proportion="-6.64">
+            <state line="155" column="21" selection-start="5114" selection-end="5114" vertical-scroll-proportion="0.8634538">
               <folding />
             </state>
           </provider>
@@ -138,10 +136,10 @@
         <option value="$PROJECT_DIR$/Client/App.js" />
         <option value="$PROJECT_DIR$/Client/Entity/Unit.js" />
         <option value="$PROJECT_DIR$/Client/UnityAI.js" />
-        <option value="$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js" />
         <option value="$PROJECT_DIR$/Server/socket.js" />
-        <option value="$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js" />
         <option value="$PROJECT_DIR$/Client/Screens/PlayScreen.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js" />
+        <option value="$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js" />
       </list>
     </option>
   </component>
@@ -679,13 +677,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Entity/Unit.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="34" selection-start="528" selection-end="528" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Client/UnityAI.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="29" selection-start="1153" selection-end="1153" vertical-scroll-proportion="0.0">
@@ -700,23 +691,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="85" column="70" selection-start="2730" selection-end="2794" vertical-scroll-proportion="-12.92">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Client/Screens/ColectAlert.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="41" selection-start="2410" selection-end="2410" vertical-scroll-proportion="-6.64">
           <folding />
         </state>
       </provider>
@@ -730,7 +707,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/socket.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="46" selection-start="5576" selection-end="5590" vertical-scroll-proportion="0.48795182">
+        <state line="146" column="29" selection-start="5364" selection-end="5364" vertical-scroll-proportion="-10.4">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Entity/Unit.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="58" selection-start="637" selection-end="646" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/BuildUnitMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="183" column="40" selection-start="6728" selection-end="6728" vertical-scroll-proportion="-11.08">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client/Screens/VillageUnitsGeneral.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="155" column="21" selection-start="5114" selection-end="5114" vertical-scroll-proportion="0.8634538">
           <folding />
         </state>
       </provider>
