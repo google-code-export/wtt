@@ -37,15 +37,25 @@ jsApp.ActionMenu = me.Renderable.extend({
              50, 30
         );
 
+        //////////////////////
+        // POSSIBLE BUTTONS //
+        //////////////////////
+        // BUILD
+        // Me.Rect(x,y,Witdh,Height)
+        this.unitsRect = new me.Rect(
+            new me.Vector2d(
+                this.pos.x +5+55,
+                this.pos.y+5
+            ),
+            50, 30
+        );
+        this.unitsRect.buttonText = "Units";
+
+
         this.buildRect.buttonText = "Build";
-        jsApp.getSocket().on("onListBuilding", function(data) {
-            this.buildMenu = new jsApp.BuildMenu(data[0]);
-            gameHandler.activeHuds.buildMenu = this;
-            me.game.add(this.buildMenu,1000);
-            me.game.sort();
-        });
 
         this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
+        this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
         this.options = this.mainOptions;
         this.font = new me.Font("verdana", 14, "lime", "right");
         this.font.textBaseline = "bottom";
@@ -95,6 +105,7 @@ jsApp.ActionMenu = me.Renderable.extend({
                         button.pos.y + button.height - 8
                     );
                     context.globalAlpha = 0.6;
+                    context.fillStyle = "#000";
                 }
             }
         }

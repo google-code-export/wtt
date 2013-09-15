@@ -7,9 +7,12 @@ var jsApp	=
     getUserData : function() {
       return $.jStorage.get("userData");
     },
+    getRandom : function(min, max) {
+        return Math.floor((Math.random()*max)+min);
+    },
 	//WebSocket connection setup//
     getSocket : function() {
-		return  io.connect('');
+		return  io.connect('199.241.31.175');
     },
 	//WebSocket Send Function //
     send: function(title, obj) {
@@ -29,6 +32,12 @@ var jsApp	=
         var userData = {"idUser" : 3};
         return userData;
 
+    },
+    getRandomPointInScreen : function () {
+        return pos = {
+            x : jsApp.getRandom(me.game.viewport.pos.x, me.game.viewport.pos.x + me.game.viewport.width),
+            y : jsApp.getRandom(me.game.viewport.pos.y, me.game.viewport.pos.y + me.game.viewport.height)
+        };
     },
 	//Melon Dialog //
     simpleDialog : function(msg)

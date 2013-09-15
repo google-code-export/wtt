@@ -63,16 +63,16 @@ var Generator = {
     hasTileNearby : function(chunk, x, y, tile) {
       var c = 2;
         var list = new Array();
-      for(c = 2 ; c <= 8 ; c+=2) {
-          var rel = this.getRelative(x,y,c);
-        //  console.log("c = "+c);
-          if(rel.x < 0 || rel.x >= 20 || rel.y < 0 || rel.y >= 20)  {
-             continue;
+          for(c = 2 ; c <= 8 ; c+=2) {
+              var rel = this.getRelative(x,y,c);
+            //  console.log("c = "+c);
+              if(rel.x < 0 || rel.x >= 20 || rel.y < 0 || rel.y >= 20)  {
+                 continue;
+              }
+            //  console.log(chunk);
+              if( tile==undefined || chunk.chunkTiles[rel.x][rel.y])
+              list.push(rel);
           }
-        //  console.log(chunk);
-          if( tile==undefined || chunk.chunkTiles[rel.x][rel.y])
-          list.push(rel);
-      }
       return list;
     },
 
@@ -135,7 +135,6 @@ var Generator = {
     },
 
     generateChunk : function(type, cx, cy) {
-
         // generating terrain
         var chunk = new Chunk();
 
@@ -166,8 +165,8 @@ var Generator = {
         }
 
         console.log("generating chunk "+cx+ " "+cy);
-        chunk.x = cx;
-        chunk.y = cy;
+        //chunk.x = cx;
+        //chunk.y = cy;
         return chunk;
     },
 

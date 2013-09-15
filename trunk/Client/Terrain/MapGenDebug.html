@@ -60,7 +60,6 @@
                             drawTile(ctx,x*tilesInChunk+xx, y*tilesInChunk+yy, color)
                         }
                     }
-
                 }
             }
         }
@@ -91,9 +90,7 @@
                     ctx.stroke();
                     iX += tilesInChunk;
                     columns++;
-             }
-
-
+            }
             while(lines < mapSize) {
                 ctx.beginPath();
                 ctx.moveTo(0, iY);

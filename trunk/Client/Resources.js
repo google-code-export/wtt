@@ -14,6 +14,7 @@ var g_resources =
 
         // units //
         {name: "Farmer",type: "image",  src: "data/sprite/Characters/farmer.png"},
+        {name: "Lumberjack",type: "image",  src: "data/sprite/Characters/lumberjack.png"},
 
         // Resources //
         {name: "Wood"  ,type: "image",  src: "data/sprite/Log.png"  },
@@ -43,8 +44,8 @@ var g_resources =
 			house1 : 0,
             archery1: 1,
             archery2: 2,
-            barracks1:10
-
+            barracks1:10,
+            lumberjack: 3
 		}
 	
 	}
