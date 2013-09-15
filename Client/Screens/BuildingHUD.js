@@ -1,7 +1,10 @@
 jsApp.BuildingHUD = me.Renderable.extend({
+
     "init" : function init(infoBuild) {
         var socket  = jsApp.getSocket();
         this.upInfo = infoBuild ;
+        console.log("Opening info building ");
+
         this.upInfo.idVillage	= 1; //---> Need to see this better
 		this.mouseAction = undefined;
 		this.parent(new me.Vector2d(0,gameH-128));
@@ -16,7 +19,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
-        
 
         this.rectangle = new me.Rect(
             new me.Vector2d(
@@ -25,6 +27,18 @@ jsApp.BuildingHUD = me.Renderable.extend({
             )
             ,gameW,128
         )
+
+        this.createUnitButton = undefined;
+        console.log(infoBuild);
+        if(infoBuild.listUnitsCanMake.length >0) {
+            this.createUnitButton = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+132,
+                    this.pos.y+21
+                ),
+                160, 30
+            );
+        }
 
 		//////////////////////////
         // BUILDING INFORMATION //
@@ -84,7 +98,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 this.pos.x +((gameW/3)*2)+64,
                 this.pos.y+80
             ),
-            70, 30
+            140, 30
         );
         this.buildRect.buttonText = "UPDATE";
         this.buttonfont = new me.Font("verdana", 14, "lime", "right");
@@ -114,7 +128,15 @@ jsApp.BuildingHUD = me.Renderable.extend({
 
         //UPDATE RECT//
         this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
-		
+
+        // BUILD UNIT BUTTON
+        if( this.createUnitButton != undefined ) {
+            context.fillStyle = "green";
+            context.fillRect(this.createUnitButton.pos.x, this.createUnitButton.pos.y, this.createUnitButton.width, this.createUnitButton.height);
+            this.font.draw(context,"TRAIN UNIT",this.createUnitButton.pos.x+1, this.createUnitButton.pos.y +5 );
+        }
+        context.fillStyle = "#00066";
+
 		//if the building it's constructing or updating it'll draw this//
         if(this.upInfo.Timer != undefined){
             this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
@@ -150,6 +172,8 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 context.fillStyle = "#585858";
                 context.fillRect(this.buildRect.pos.x, this.buildRect.pos.y, this.buildRect.width, this.buildRect.height);
                 this.buttonfont.draw(context, this.buildRect.buttonText, this.buildRect.pos.x + this.buildRect.width - 8, this.buildRect.pos.y + this.buildRect.height - 8);
+
+
             }
 
         }

@@ -49,6 +49,16 @@ io.sockets.on('connection', function (socket) {
 		});
   });
 
+    ///////////////////
+    // Request Chunk //
+    ///////////////////
+    socket.on('onResourcesUpdate', function(data) {
+        //var chunk = data.chunk;
+        //console.log("getting chunk data for chunk zone ="+chunk.zoneId+" and chunk XY = "+chunk.x+","+chunk.y);
+        //if(false) {
+        //
+        //}
+    });
 
   //////////////////////////
   // onResourcesUpdate    //
@@ -98,6 +108,27 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
+
+
+
+    ////////////////////
+    // onCreateUnit   //
+    ////////////////////
+    socket.on('onUnitCreate', function(data) {
+        console.log("creating unit id "+data.idUnit+" at building id " + data.idBuildingBuilt);
+        connection.query("CALL `CreateUnit`("+data.idBuildingBuilt+","+data.idUnit+",'"+randomName()+"')",function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCreateUnit", rows, data);
+             }
+            connection.query("CALL `getResources`('"+data.userId+"')",function(err, rows, fields){
+                if(rows.length==undefined || rows.length==0)
+                    socket.emit("message", {msg:"Player not found!"});
+                socket.emit("onResourcesUpdate", rows);
+            });
+        });
+    });
 	
     //////////////////////////
     // onConstructCheck     //
@@ -113,6 +144,20 @@ io.sockets.on('connection', function (socket) {
         });
     });
 
+    //////////////////////////
+    // onConstructCheck     //
+    //////////////////////////
+    socket.on('onListVillageUnits', function(idVillage) {
+        console.log("listando units da vila "+idVillage);
+        connection.query("CALL `getVillageUnit`("+idVillage+")",function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListVillageUnits", rows);
+            }
+        });
+    });
+
 
 	//////////////////////////
     // onBuildingSelect     //
@@ -123,7 +168,18 @@ io.sockets.on('connection', function (socket) {
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onBuildingSelect",rows);
+                var idBuilding = rows[0][0].idBuilding;
+                connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
+                    if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
+
+                        //socket.emit("message", {msg:"ERROR:"+ err2});
+                    }else{
+                        rows[0][0].listUnitsCanMake = rows2[0];
+
+                    }
+                    socket.emit("onBuildingSelect",rows);
+                });
+
 			}
 		});
 	});
@@ -157,7 +213,6 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
-    /////////////////////////
 	
 	////////////////////////////
     // onRequestUpdate //////////
@@ -172,7 +227,6 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
-    /////////////////////////
 	
 	////////////////////////////
     // onCheckUpdate //////////
@@ -190,6 +244,14 @@ io.sockets.on('connection', function (socket) {
     /////////////////////////
 	
 });
+
+var nomes = [
+    "Jhony", "Manolo", "Dirceu", "Castro"
+]
+
+var randomName = function() {
+    return "Jonny Bigode";
+}
 
 
 console.log("Way of The Temple SuperDumper Server running beautifully on port 8080");

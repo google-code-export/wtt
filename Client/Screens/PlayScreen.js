@@ -47,6 +47,34 @@ var PlayScreen = me.ScreenObject.extend(
             });
 
             socket.emit("onListVillageBuildings", idVillage);
+
+            //PLACING UNITS THE PLAYER HAS ON THE MAP
+            socket.on("onListVillageUnits", function(data){
+                var unitList = data[0];
+                var classList = data[1];
+
+                var unit = unitList.length;
+                while(unit--) {
+
+                    var thisUnit = unitList[unit];
+                    var pos = jsApp.getRandomPointInScreen();
+                    var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
+                    me.game.add(piece, 1000);
+                }
+
+
+
+                /*
+                if(gameHandler.activeHuds.villageUnitsGeneral==undefined) {
+                    gameHandler.activeHuds.villageUnitsGeneral = new jsApp.VillageUnitsGeneral(unitList, classList);
+                    me.game.add(gameHandler.activeHuds.villageUnitsGeneral, 1100);
+                    me.game.sort();
+                }
+                */
+            });
+
+
+            socket.emit("onListVillageUnits", idVillage);
             //			
 			 //HERE WE SEND THE UPDATE REQUEST
 			 socket.on("onRequestUpdate",function(rows, data){
@@ -101,6 +129,7 @@ var PlayScreen = me.ScreenObject.extend(
                     else{
                         if(gameHandler.activeHuds.buildingHUD==undefined) {
                             gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
+
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
                             me.game.sort();
                         }
@@ -129,7 +158,7 @@ var PlayScreen = me.ScreenObject.extend(
 							buildLayer.setTile(building.x,building.y,22);//changing the tile for the construction zone
 							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(progressBar,10);// adding this to the screen
-							var constructCheck = function(){socket.emit("onConstructCheck",building);};
+							var constructCheck = function(){socket.emit("onConstructCheck",onConstructCheck);};
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
 
 							//updating the resources
@@ -144,7 +173,17 @@ var PlayScreen = me.ScreenObject.extend(
 				});
 			});
 			//////////////////////////////////////////
-			
+
+
+            ///////////////////////
+            // LISTING BUILDINGS //
+            ///////////////////////
+            jsApp.getSocket().on("onListBuilding", function(data) {
+                this.buildMenu = new jsApp.BuildMenu(data[0]);
+                gameHandler.activeHuds.buildMenu = this;
+                me.game.add(this.buildMenu,1000);
+                me.game.sort();
+            });
 			
 			//////////////////////////////////////////
 			//constructing and updating resourcesHUD//
@@ -263,14 +302,30 @@ var PlayScreen = me.ScreenObject.extend(
 						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPointV(me.input.changedTouches[0])){
 						}
+
+
                     }else{
+                        if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
+                            if(gameHandler.activeHuds.buildingHUD.createUnitButton.containsPointV(me.input.changedTouches[0])) {
+                                var unitsICanMake = gameHandler.activeHuds.buildingHUD.upInfo.listUnitsCanMake;
+                                if(gameHandler.activeHuds.unitMenu==undefined) {
+                                    gameHandler.activeHuds.unitMenu = new jsApp.BuildUnitMenu(unitsICanMake, gameHandler.activeHuds.buildingHUD.upInfo);
+                                    me.game.add(gameHandler.activeHuds.unitMenu, 1100);
+                                    me.game.sort();
+                                }
+                            }
+                        }
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);
                         gameHandler.activeHuds.buildingHUD = undefined;
                         me.game.sort();
                         //
                     }
-                }else if(gameHandler.activeHuds.actionMenu != undefined && gameHandler.activeHuds.actionMenu.menuRect.containsPointV(me.input.changedTouches[0])) {
+                }
+                else if(gameHandler.activeHuds.unitMenu!=undefined) {
+                    // do nothing but we need this here
+                }
+                else if(gameHandler.activeHuds.actionMenu != undefined && gameHandler.activeHuds.actionMenu.menuRect.containsPointV(me.input.changedTouches[0])) {
                     var menu = gameHandler.activeHuds.actionMenu;
                     // if i clicked the menu
                     if(menu.menuRect != undefined) {
@@ -294,6 +349,7 @@ var PlayScreen = me.ScreenObject.extend(
 					var tileid = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					if (tileid != null){ // 22 it's for the construction tile
 						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
+                        this.tileWhereBuildingIs = tileIs;
 						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
 					}
 
