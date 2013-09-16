@@ -43,7 +43,6 @@ var PlayScreen = me.ScreenObject.extend(
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
                 }
-
             });
 
             socket.emit("onListVillageBuildings", this.idVillage);
@@ -65,7 +64,7 @@ var PlayScreen = me.ScreenObject.extend(
                     while(unit--) {
                         var thisUnit = unitList[unit];
                         var pos = jsApp.getRandomPointInScreen();
-                        var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
+                        var piece = new Unit(pos.x , pos.y , me.ObjectSettings , thisUnit.image);
                         me.game.add(piece, 1000);
                     }
                 }
@@ -80,7 +79,7 @@ var PlayScreen = me.ScreenObject.extend(
 				if(rows[0][0].Msg == "Done"){
 					var time 	   = jsApp.timeToMs(infobuild.buildTimer);
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var idTile 	   = 22; // NEED TO SEE THIS BETTER VERY QUICK!
+					var idTile 	   = 5; // NEED TO SEE THIS BETTER VERY QUICK!
                     var pixelIs    = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
 					infobuild.x    = infobuild.posX;
 					infobuild.y    = infobuild.posY;
@@ -149,13 +148,13 @@ var PlayScreen = me.ScreenObject.extend(
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							var time = jsApp.timeToMs(data.buildTimer);
                             var pixelIs = jsApp.getTileForPixels(building.x,building.y);
-							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 22");
+							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 5");
 							
-							buildLayer.setTile(building.x,building.y,22);//changing the tile for the construction zone
+							buildLayer.setTile(building.x,building.y,5);//changing the tile for the construction zone
 							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(progressBar,10);// adding this to the screen
-							var constructCheck = function(){socket.emit("onConstructCheck",onConstructCheck);};
-							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
+							var vconstructCheck = function(){socket.emit("onConstructCheck",onConstructCheck);};
+							jsApp.timeScheduler(vconstructCheck,time);// sending the construction to the scheduler.
 
 							//updating the resources
 							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //

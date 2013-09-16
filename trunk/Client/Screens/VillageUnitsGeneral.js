@@ -36,6 +36,7 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
 
         };
         this.imgList = new Array();
+        this.rectList = new Array();
         var ct = this.listClasses.length;
         var iX = this.pos.x + 45;
         var iY = this.pos.y + 45;
@@ -48,6 +49,7 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
                     me.loader.getImage(thisClass.Image),
                     14, 18
                 );
+                //context.fillRect(iX, iY, 120, 20);
                 img.floating = true;
                 // FALTA ALGUMA COISA AQUI
                 //button.icon.animationpause = true;
@@ -59,7 +61,24 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
                 this.classImages["id_"+thisClass.idUnit] = img;
                 this.imgList.push(img);
             }
+            var rect = new me.Rect(
+                new me.Vector2d(
+                    0,
+                    0
+                ),
+                120, 20
+            );
+            rect.clickFunction = function(instance, idClass, className) {
+                me.game.remove(instance,true);
+                me.game.sort();
+                jsApp.ListUnitInClass(instance.listUnits, this.idClass, className);
+            };
+            rect.idClass = thisClass.idUnit;
+            thisClass.rect = rect;
+
         }
+
+
 
         this.backRect.buttonColor = "red";
         this.backRect.buttonText = "X";
@@ -77,6 +96,13 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
                 if (this.backRect.containsPointV(me.input.changedTouches[0])) {
                     me.game.remove(this,true);
                     me.game.sort();
+                }
+                var ct = this.listClasses.length;
+                while(ct--) {
+                    if(this.listClasses[ct].rect.containsPointV(me.input.changedTouches[0])) {
+
+                        this.listClasses[ct].rect.clickFunction(this,this.listClasses[ct].idClass, this.listClasses[ct].Description);
+                    }
                 }
             }
 		}.bind(this));
@@ -134,7 +160,14 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         var iY = this.pos.y + 45;
         while(ct--) {
             var thisClass = this.listClasses[ct];
-            context.fillRect(iX, iY, 120, 20);
+
+            var rect = thisClass.rect;
+            rect.pos.x = iX;
+            rect.pos.y = iY;
+            context.fillStyle = "#00066";
+            context.globalAlpha = 0.6;
+            context.fillRect(rect.pos.x, rect.pos.y, rect.width, rect.height);
+            context.globalAlpha = 1;
             if( this.classImages["id_"+thisClass.idUnit]!=undefined) {
                 var img = this.classImages["id_"+thisClass.idUnit];
                 img.pos.x = iX;
@@ -160,11 +193,8 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
 
             iY += 25;
         }
-
-
-
-       // context.globalAlpha = alpha;
-		//context.fillStyle = fillStyle;
+        // context.globalAlpha = alpha;
+		// context.fillStyle = fillStyle;
 
     }
 });

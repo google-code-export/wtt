@@ -14,7 +14,7 @@ jsApp.BuildMenu = me.Renderable.extend({
         ///////////////////////////
 		// Me.Rect(x,y,Witdh,Height)
         //Creating the HUD
-        this.buildMenuRect = new me.Rect(
+        this.menuRect = new me.Rect(
             new me.Vector2d(
                 this.pos.x ,
                 this.pos.y
@@ -83,8 +83,8 @@ jsApp.BuildMenu = me.Renderable.extend({
 
         me.input.registerPointerEvent("mouseup", this,function(){
             // if i clicked the menu
-            if(this.buildMenuRect != undefined) {
-                if (this.buildMenuRect.containsPointV(me.input.changedTouches[0])) {
+            if(this.menuRect != undefined) {
+                if (this.menuRect.containsPointV(me.input.changedTouches[0])) {
                     var ct = this.options.length;
                     while(ct--) {
                         if(this.options[ct].containsPointV(me.input.changedTouches[0])){
@@ -108,7 +108,7 @@ jsApp.BuildMenu = me.Renderable.extend({
 
         me.input.registerPointerEvent("mousemove", this,function(){
             // if i clicked the menu
-            if(this.buildMenuRect != undefined) {
+            if(this.menuRect != undefined) {
 
                 var ct = this.options.length;
                 while(ct--){
