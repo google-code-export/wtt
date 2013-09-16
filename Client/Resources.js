@@ -16,6 +16,10 @@ var g_resources =
         {name: "Farmer",type: "image",  src: "data/sprite/Characters/farmer.png"},
         {name: "Lumberjack",type: "image",  src: "data/sprite/Characters/lumberjack.png"},
 
+        // faces
+        {name: "maleFaces",type: "image",  src: "data/sprite/Characters/maleFaces.png"},
+
+
         // Resources //
         {name: "Wood"  ,type: "image",  src: "data/sprite/Log.png"  },
         {name: "Army"  ,type: "image",  src: "data/sprite/army.png" },
