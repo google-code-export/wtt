@@ -76,9 +76,10 @@ io.sockets.on('connection', function (socket) {
 	// onResourcesCollect    //
 	//////////////////////////
 	socket.on('onResourcesCollect', function(data) {
+		console.log("CALL `TimeCheckResource`("+data.idVillage+","+data.x+","+data.y+")");
 		connection.query("CALL `TimeCheckResource`("+data.idVillage+","+data.x+","+data.y+")",function(err, rows, fields){
-			if(rows.length==undefined || rows.length==0)
-				socket.emit("message", {msg:"Error!"});
+			//if(rows.length==undefined || rows.length==0)
+				//socket.emit("message", {msg:"Error!"});
 			socket.emit("onResourcesCollect", rows, data);
 		});
 	});
@@ -145,11 +146,11 @@ io.sockets.on('connection', function (socket) {
     });
 
     //////////////////////////
-    // onConstructCheck     //
+    // onListVillageUnits   //
     //////////////////////////
     socket.on('onListVillageUnits', function(data) {
-        console.log("listando units da vila "+data.villageId);
-        connection.query("CALL `getVillageUnit`("+data.villageId+")",function(err, rows, fields){
+        console.log(data.idVillage);
+        connection.query("CALL `getVillageUnit`("+data.idVillage+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
