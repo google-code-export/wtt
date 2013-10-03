@@ -42,6 +42,7 @@ jsApp.BuildArea = me.Renderable.extend({
             building.x = buildPos.x;
             building.y = buildPos.y;
 			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
+			building.idTile = building.idTile + 1; // --> NEED TO SEE THIS BETTER
 			console.log("FROM Build Area --- idVillage:"+building.idVillage+" idBuilding:"+building.idBuilding+" x:"+building.x+" y:"+building.y+" buildTimer:"+building.buildTimer);
 			socket.emit("onConstructRequest", building);
             me.game.remove(this,true);

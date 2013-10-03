@@ -43,7 +43,6 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
                 ),
                 120, 200
             );
-            console.log(infoUnit);
             button.icon = new me.AnimationSheet(
                 0, 0,
                 me.loader.getImage(infoUnit.Image),
@@ -100,21 +99,19 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
 								//*me.game.add(new jsApp.BuildingDetail(),5000);
 								//me.game.sort();
                                 //simply make the selector to build it
-                                me.game.remove(this);
-                                me.game.sort();
-
-                                //// THIS PART WILL BE ON A TIMER when recives confirmation of the onUnitCreate
+                                //// THIS PART WILL BE ON A TIMER when recives confirmation of the onRequestUnit
+								
                                 var data = {
-                                    idBuildingBuilt : this.building.idBuildingBuilt,
-                                    idUnit : this.options[ct].info.idUnit,
-                                    userId : jsApp.getUserData().userId
+                                    idBuildingBuilt  : this.building.idBuildingBuilt,
+									buildingX		 : this.building.posX,
+									buildingY		 : this.building.posY,
+                                    idUnit 			 : this.options[ct].info.idUnit,
+									unitImg          : this.options[ct].info.Image,
+                                    userId 			 : jsApp.getUserData().userId,
+									idVillage		 : 1 //--> NEED TO SEE THIS BETTER!!
                                 }
-                                // Aqui pra criar o carinha , onde tiver a casa que criou
-                                // a casa que criou ta no this.building
-                                //var piece = new Unit(pos.x,pos.y , me.ObjectSettings, thisUnit.image);
-                                //me.game.add(piece, 1000);
                                 var socket = jsApp.getSocket();
-                                socket.emit("onUnitCreate", data);
+                                socket.emit("onRequestUnit", data);
                             } else {
                                 this.options[ct].clickFunction(this);
                             }

@@ -17,7 +17,7 @@ jsApp.ColectAlert = me.Renderable.extend({
         this.floating = false;
 		this.isPersistent = false;
 		this.alwaysUpdate = true;
-		var tween = new me.Tween(this.pos).to({y: (this.pos.y + 8)}, 5000).onComplete((function() {
+		var tween = new me.Tween(this.pos).to({y: (this.pos.y + 8)}, 2500).onComplete((function() {
 			me.game.remove(this,true)
 		}).bind(this));
 		tween.start();

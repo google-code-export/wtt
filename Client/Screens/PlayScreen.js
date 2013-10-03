@@ -23,21 +23,19 @@ var PlayScreen = me.ScreenObject.extend(
 						var timer   = data[0][i].Timer;
 						var type    = data[0][i].Type;
 						//if the construction still pending, add a new progress bar and a timeScheduler event//
-                        if(this.pending == "Y"){
+                        if(pending == "Y"){
                             idTile   	   = 5;
-							changeTile     = data[0][i].idTile;
+							changeTile     = data[0][i].idTile + 1;
 							time    	   = jsApp.timeToMs(timer);
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
-							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
-							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});};
-							me.game.add(progressBar,10);// adding this to the screen
-							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
+							socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});
                         }
 						//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER TOO.
 						if(type == "R"){
-							//var gatherTime     = jsApp.timeToMs(building.gatherTime);
-							gatherTime	   = 30000; // --> Hardcoded to test.
+							console.log(data[0][i]);
+							//var gatherTime = jsApp.timeToMs(data[0][i].gatherTime);
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
+							var gatherTime = 30000;
 							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime, "type" : idTile}) // --> Need to start the resource collect engine
 						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
@@ -51,15 +49,13 @@ var PlayScreen = me.ScreenObject.extend(
             socket.on("onListVillageUnits", function(data){
                 var unitList = data[0];
                 var classList = data[1];
-                console.log(data[3]);
                 if(data[2]=="openMenu") {
                     gameHandler.activeHuds.villageUnitsGeneral = new jsApp.VillageUnitsGeneral(unitList, classList);
                     gameHandler.activeHuds.villageUnitsGeneral.listUnits = unitList;
                     gameHandler.activeHuds.villageUnitsGeneral.listClasses = classList;
                     me.game.add(gameHandler.activeHuds.villageUnitsGeneral, 1100);
                     me.game.sort();
-                } else {
-
+                }else{
                     var unit = unitList.length;
                     while(unit--) {
                         var thisUnit = unitList[unit];
@@ -91,10 +87,8 @@ var PlayScreen = me.ScreenObject.extend(
 					//
 					var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class Timer
 					var checkUpdate = function(){ socket.emit("onCheckUpdate",infobuild);};
-					
 					me.game.add(progressBar,10);// adding this to the screen
                     jsApp.timeScheduler(checkUpdate,time);// sending the construction to the scheduler.
-					
 				}else{
 					alert(rows[0][0].Msg);
 				}
@@ -119,12 +113,17 @@ var PlayScreen = me.ScreenObject.extend(
 			 
 			 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
-			 socket.on('onBuildingSelect', function(data) {
-                 $.each(data, function(i, obj) {
+			 socket.on('onBuildingSelect', function(rows,data) {
+                 $.each(rows, function(i, obj) {
                     if(i>0)
                         return false;
                     else{
                         if(gameHandler.activeHuds.buildingHUD==undefined) {
+							console.log(obj[i]);
+							//THIS WILL DO UNTIL WE FIX IT RIGHT
+							if(obj[i].posX == undefined){obj[i].posX = data.X}
+							if(obj[i].posY == undefined){obj[i].posY = data.Y}
+							//
                             gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
 
                             me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
@@ -181,36 +180,95 @@ var PlayScreen = me.ScreenObject.extend(
 					else{
 						if(obj[i].Msg == "Done"){
 							var building = data;
-							var idTile = building.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+							var idTile = building.idTile; // NEED TO SEE THIS BETTER VERY QUICK!
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
 							//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER
 							if(building.Type == "R"){
-								var gatherTime     = jsApp.timeToMs(building.gatherTime);
+								var gatherTime     = jsApp.timeToMs(building.TimerColection);
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-								var ColectAlert    = new jsApp.ColectAlert(pixelIs, idTile);
-								var resourceAlert  = function(){me.game.add(ColectAlert,10); me.game.sort();} 
-								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime, "type" : idTile})};
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": idVillage, "x" : building.x, "y" : building.y, "gatherTime" : TimerColection, "type" : idTile})};
 								jsApp.timeScheduler(resourceColect,gatherTime);
-								jsApp.timeScheduler(resourceAlert,gatherTime);
 							}
 							
 						}else{
 							var building 	   = data;
 							var time    	   = jsApp.timeToMs(obj[i].Msg);
-							var idTile 		   = building.idTile + 1;
+							var idTile 		   = building.idTile;
 							var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
 							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : building.x, "y" : building.y, "idVillage" : building.idVillage, "idTile" : idTile});};
 							me.game.add(progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
+							me.game.sort();
 						}
 					}
 
 				});
 			});
 			////////////////////////////////////
+			
+			////////////////////////////////////////////////////////////////
+			//Creating Units
+			//
+			socket.on("onRequestUnit", function(rows, data){
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(obj[i].Msg != "Done"){
+						alert(obj[i].Msg);
+						}else{
+							var unitInfo = data;
+							console.log(unitInfo);
+							var time = jsApp.timeToMs(obj[i].Timer);
+							var pixelIs = jsApp.getTileForPixels(unitInfo.buildingX,unitInfo.buildingY);
+							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							me.game.add(progressBar,10);// adding this to the screen
+							var unitCheck = function(){socket.emit("onUnitCheck",data);};
+							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
+
+							//updating the resources
+							jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
+							
+							me.game.remove(gameHandler.activeHuds.unitMenu);
+							me.game.sort();
+						}
+					}
+				});
+			});
+			
+			socket.on("onUnitCheck", function(rows, data){
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(obj[i].Msg == "Done"){
+							// Aqui pra criar o carinha , onde tiver a casa que criou
+							// a casa que criou ta no this.building
+							var pixelIs = jsApp.getTileForPixels(data.buildingX, data.buildingY);
+							var piece   = new Unit(pixelIs.x,pixelIs.y, me.ObjectSettings, data.unitImg);
+							me.game.add(piece, 1000);
+							me.game.sort();
+						}else{
+							var unit 	       = data;
+							var time    	   = jsApp.timeToMs(obj[i].Msg);
+							var pixelIs 	   = jsApp.getTileForPixels(unit.buildingX, unit.buildingY);
+							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							var unitCheck = function(){socket.emit("onUnitCheck",unit);};
+							me.game.add(progressBar,10);// adding this to the screen
+							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
+							me.game.sort();
+						}
+					
+					}
+				});
+			});
+			
+			//////////////////////////////////////////////////////////////
+			
+			
 			
             ///////////////////////
             // LISTING BUILDINGS //
@@ -243,7 +301,6 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////
 			//collecting the resources			//
 			socket.on('onResourcesCollect', function(rows, data) {
-				console.log(rows);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -254,24 +311,19 @@ var PlayScreen = me.ScreenObject.extend(
 							//
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
 							var ColectAlert    = new jsApp.ColectAlert(pixelIs, data.type);
-							var resourceAlert  = function(){me.game.add(ColectAlert,10); me.game.sort();} 
 							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
-							jsApp.timeScheduler(resourceColect,data.gatherTime);
-							jsApp.timeScheduler(resourceAlert,data.gatherTime);						
+							me.game.add(ColectAlert,10); 
+							jsApp.timeScheduler(resourceColect,data.gatherTime);	
+							me.game.sort();							
 						}else{
 							// if anyone try to hack, this will add a new time until the update it's done.
 							var remainingTime  = jsApp.timeToMs(obj[i].Msg);
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
-							var ColectAlert    = new jsApp.ColectAlert(pixelIs, data.type);
-							
-							var resourceAlert  = function(){me.game.add(ColectAlert,10); me.game.sort();}; 
 							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
 							jsApp.timeScheduler(resourceColect,remainingTime);
-							jsApp.timeScheduler(resourceAlert,remainingTime);
 						}
 					}
 				});
-
 			});
 			/////////////////////////////////////////
       
@@ -292,6 +344,7 @@ var PlayScreen = me.ScreenObject.extend(
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
+					//IF I CLICKED IN THE UPDATE BUTTON
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPointV(me.input.changedTouches[0])){
 						var updatebuild = gameHandler.activeHuds.buildingHUD.upInfo;
 						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
@@ -301,6 +354,7 @@ var PlayScreen = me.ScreenObject.extend(
 
 
                     }else{
+						//IF I CLICKED IN THE TRAIN UNIT BUTTON
                         if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
                             if(gameHandler.activeHuds.buildingHUD.createUnitButton.containsPointV(me.input.changedTouches[0])) {
                                 var unitsICanMake = gameHandler.activeHuds.buildingHUD.upInfo.listUnitsCanMake;
