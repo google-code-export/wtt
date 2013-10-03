@@ -113,21 +113,30 @@ io.sockets.on('connection', function (socket) {
 
 
     ////////////////////
-    // onCreateUnit   //
+    // onRequestUnit  //
     ////////////////////
-    socket.on('onUnitCreate', function(data) {
+    socket.on('onRequestUnit', function(data) {
         console.log("creating unit id "+data.idUnit+" at building id " + data.idBuildingBuilt);
         connection.query("CALL `CreateUnit`("+data.idBuildingBuilt+","+data.idUnit+",'"+randomName()+"')",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onCreateUnit", rows, data);
-             }
-            connection.query("CALL `getResources`('"+data.userId+"')",function(err, rows, fields){
-                if(rows.length==undefined || rows.length==0)
-                    socket.emit("message", {msg:"Player not found!"});
-                socket.emit("onResourcesUpdate", rows);
-            });
+                socket.emit("onRequestUnit", rows, data);
+            }
+        });
+    });
+	
+	////////////////////
+    // onUnitCheck    //
+    ////////////////////
+    socket.on('onUnitCheck', function(data) {
+        console.log("Verifying unit id "+data.idUnit+" at building id " + data.idBuildingBuilt+",vila"+data.idVillage+",x"+data.buildingX+",y"+data.buildingY);
+        connection.query("CALL `TimeCheckUnit`("+data.idVillage+","+data.buildingX+","+data.buildingY+","+data.idUnit+")",function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onUnitCheck", rows, data);
+            }
         });
     });
 	
@@ -180,7 +189,7 @@ io.sockets.on('connection', function (socket) {
                         rows[0][0].listUnitsCanMake = rows2[0];
 
                     }
-                    socket.emit("onBuildingSelect",rows);
+                    socket.emit("onBuildingSelect",rows,data);
                 });
 
 			}

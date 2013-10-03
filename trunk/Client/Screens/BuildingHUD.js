@@ -4,7 +4,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         var socket  = jsApp.getSocket();
         this.upInfo = infoBuild ;
         console.log("Opening info building ");
-
+		console.log(infoBuild);
         this.upInfo.idVillage	= 1; //---> Need to see this better
 		this.mouseAction = undefined;
 		this.parent(new me.Vector2d(0,gameH-128));
@@ -12,12 +12,13 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.isPersistent = true;
 		this.alwaysUpdate = true;
 
-        this.font = new me.BitmapFont("BaseFont", 16);
+        this.font 		= new me.BitmapFont("BaseFont", 16);
         this.Woodimage  = me.loader.getImage("Wood") ;
         this.Stoneimage = me.loader.getImage("Stone");
         this.Ironimage  = me.loader.getImage("Iron") ;
         this.Meatimage  = me.loader.getImage("Meat") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
+		this.Clockimage = me.loader.getImage("Clock") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
 
         this.rectangle = new me.Rect(
@@ -29,7 +30,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
         )
 
         this.createUnitButton = undefined;
-        console.log(infoBuild);
         if(infoBuild.listUnitsCanMake.length >0) {
             this.createUnitButton = new me.Rect(
                 new me.Vector2d(
@@ -92,7 +92,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
         );
         this.UPRect.TitleText = "UPDATE";
         this.UPRect.buildDesc = infoBuild.Description.toUpperCase();
-
         this.buildRect = new me.Rect(
             new me.Vector2d(
                 this.pos.x +((gameW/3)*2)+64,
@@ -168,7 +167,12 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 context.drawImage(this.Ironimage, this.pos.x+((gameW/3)*2), this.pos.y+60);
                 iX=20;
                 this.font.draw (context, this.upInfo.iron, this.pos.x+((gameW/3)*2) +iX, this.pos.y+60);
-
+				iX += this.upInfo.iron.toString().length*16+20;
+				
+				context.drawImage(this.Clockimage, this.pos.x+((gameW/3)*2) + iX, this.pos.y+60);
+                iX+=20;
+                this.font.draw (context, this.upInfo.buildTimer, this.pos.x+((gameW/3)*2) +iX, this.pos.y+60);
+				
                 context.fillStyle = "#585858";
                 context.fillRect(this.buildRect.pos.x, this.buildRect.pos.y, this.buildRect.width, this.buildRect.height);
                 this.buttonfont.draw(context, this.buildRect.buttonText, this.buildRect.pos.x + this.buildRect.width - 8, this.buildRect.pos.y + this.buildRect.height - 8);

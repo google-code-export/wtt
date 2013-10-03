@@ -4,17 +4,20 @@ var g_resources =
         {name: "TileSet",	type: "image",	src: "data/sprite/TileSet.png"},
 
         // IMAGES //
-        {name: "Title"   ,	type: "image",	src: "data/sprite/Title.png"},
-		{name: "BuildImg",	type: "image",	src: "data/sprite/build.png"},
-        {name: "WoodTexture" ,type: "image",  src: "data/sprite/woodtexture.png"  },
-
+        {name: "Title"   	 ,	type: "image",	src: "data/sprite/Title.png"},
+		{name: "BuildImg"	 ,	type: "image",	src: "data/sprite/build.png"},
+        {name: "WoodTexture" ,	type: "image",  src: "data/sprite/woodtexture.png"  },
+		{name: "Clock" 		 ,	type: "image",  src: "data/sprite/Clock.gif"},
 
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},
 
         // units //
-        {name: "Farmer",type: "image",  src: "data/sprite/Characters/farmer.png"},
-        {name: "Lumberjack",type: "image",  src: "data/sprite/Characters/lumberjack.png"},
+        {name: "Farmer"		,	type: "image",  src: "data/sprite/Characters/farmer.png"},
+        {name: "Lumberjack" ,	type: "image",  src: "data/sprite/Characters/lumberjack.png"},
+		{name: "Ninja"		,	type: "image",  src: "data/sprite/Characters/ninja.png"},
+		{name: "Soldier"	,	type: "image",  src: "data/sprite/Characters/soldier.png"},
+		{name: "Archer"		,	type: "image",  src: "data/sprite/Characters/archer.png"},
 
         // faces
         {name: "maleFaces",type: "image",  src: "data/sprite/Characters/maleFaces.png"},
@@ -27,13 +30,12 @@ var g_resources =
         {name: "Iron"  ,type: "image",  src: "data/sprite/iron.png" },
         {name: "Meat"  ,type: "image",  src: "data/sprite/Meat.png" },
         {name: "Coin"  ,type: "image",  src: "data/sprite/coin.png" },
-		{name: "Clock" ,type: "image",  src: "data/sprite/Clock.gif" },
 
         //////////////
         // BASE TMX //
         //////////////
         {name: "area01",	type: "tmx",	src: "data/area01.tmx"},
-        {name: "Chunk",	type: "tmx",	src: "data/Chunk.tmx"}
+        {name: "Chunk" ,	type: "tmx",	src: "data/Chunk.tmx"}
     ];
 
 	var C = {
