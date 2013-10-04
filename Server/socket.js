@@ -88,8 +88,8 @@ io.sockets.on('connection', function (socket) {
     // onListBuilding       //
     //////////////////////////
     socket.on('onListBuilding', function(data) {
-        console.log("getting build list for user idUser ="+data.userId);
-        connection.query("CALL `possibleBuildings`("+data.userId+")",function(err, rows, fields){
+        console.log("getting build list for user idVillage ="+data.idVillage);
+        connection.query("CALL `possibleBuildings`("+data.idVillage+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0)
                 socket.emit("message", {msg:"Player not found!"});
             socket.emit("onListBuilding", rows);
@@ -131,7 +131,7 @@ io.sockets.on('connection', function (socket) {
     ////////////////////
     socket.on('onUnitCheck', function(data) {
         console.log("Verifying unit id "+data.idUnit+" at building id " + data.idBuildingBuilt+",vila"+data.idVillage+",x"+data.buildingX+",y"+data.buildingY);
-        connection.query("CALL `TimeCheckUnit`("+data.idVillage+","+data.buildingX+","+data.buildingY+","+data.idUnit+")",function(err, rows, fields){
+        connection.query("CALL `TimeCheckUnit`("+data.idVillage+","+data.buildingX+","+data.buildingY+")",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
@@ -180,18 +180,22 @@ io.sockets.on('connection', function (socket) {
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                var idBuilding = rows[0][0].idBuilding;
-                connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
-                    if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
+				if(rows[0][0].idBasicBuild == undefined){
+					var idBuilding = rows[0][0].idBuilding;
+				}else{
+					var idBuilding = rows[0][0].idBasicBuild;
+				}
+				
+				console.log("idBuilding:"+idBuilding);
+				console.log(rows[0][0]);
+				connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
+					if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
+					}else{
+						rows[0][0].listUnitsCanMake = rows2[0];
 
-                        //socket.emit("message", {msg:"ERROR:"+ err2});
-                    }else{
-                        rows[0][0].listUnitsCanMake = rows2[0];
-
-                    }
-                    socket.emit("onBuildingSelect",rows,data);
-                });
-
+					}
+					socket.emit("onBuildingSelect",rows,data);
+				});				
 			}
 		});
 	});

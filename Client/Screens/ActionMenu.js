@@ -36,12 +36,8 @@ jsApp.ActionMenu = me.Renderable.extend({
              ),
              50, 30
         );
-
-        //////////////////////
-        // POSSIBLE BUTTONS //
-        //////////////////////
-        // BUILD
-        // Me.Rect(x,y,Witdh,Height)
+		/////////////////////
+        // VIEW UNITS
         this.unitsRect = new me.Rect(
             new me.Vector2d(
                 this.pos.x +5+55,
@@ -49,13 +45,24 @@ jsApp.ActionMenu = me.Renderable.extend({
             ),
             50, 30
         );
+		
+		///////////////////////
+		//MARKET
+        this.marketRect = new me.Rect(
+            new me.Vector2d(
+                this.pos.x +5+55+55,
+                this.pos.y+5
+            ),
+            65, 30
+        );
+		
         this.unitsRect.buttonText = "Units";
-
-
         this.buildRect.buttonText = "Build";
-
+		this.marketRect.buttonText = "Market";
+		
         this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
         this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
+		this.mainOptions.push(this.marketRect);//incluindo os botões no vetor
         this.options = this.mainOptions;
         this.font = new me.Font("verdana", 14, "lime", "right");
         this.font.textBaseline = "bottom";
