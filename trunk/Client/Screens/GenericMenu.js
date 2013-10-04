@@ -65,19 +65,19 @@ jsApp.GenericMenu = me.Renderable.extend({
 
         me.input.registerPointerEvent("mouseup", this,function(){
             // if i clicked the menu
-
             if(this.menuRect != undefined) {
                 if (this.menuRect.containsPointV(me.input.changedTouches[0])) {
                     var ct = this.options.length;
                     while(ct--) {
-                        if(this.options[ct].type=="button" && this.options.width != undefined) {
-                            console.log(this.options[ct]);
+                        if(this.options[ct].type=="button") {
                             if(this.options[ct].containsPointV(me.input.changedTouches[0])){
                                 // if the option has no click function it must be a building !
                                 if(this.options[ct].hasClickFunction == undefined) {
                                     me.game.remove(this);
                                     me.game.sort();
                                 } else {
+									
+									console.log(this.options[ct]);
                                     this.options[ct].clickFunction(this);
                                 }
                             }

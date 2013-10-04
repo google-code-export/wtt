@@ -63,6 +63,29 @@ jsApp.BuildingHUD = me.Renderable.extend({
         );
         var titletext = undefined;
 		//if this is contructing or updating do this//
+		if(this.upInfo.idUnit != undefined){
+			this.unit = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+128,
+                    this.pos.y+126
+                ),
+                120, 200
+            );
+            /*this.unit.icon = new me.AnimationSheet(
+                0, 0,
+                me.loader.getImage(this.upInfo.Image),
+                14, 18
+            );*/
+			this.unit.icon = me.loader.getImage(this.upInfo.Image);
+            this.unit.icon.floating = true;
+			//this.unit.icon.addAnimation("anim", [0]);
+            //this.unit.icon.setCurrentAnimation('anim');
+            //this.unit.icon.resize(3);
+            //this.unit.icon.setAnimationFrame(0);
+			this.DescRect.buildDesc = this.upInfo.Image.toUpperCase();
+		}else{
+			this.DescRect.buildDesc = "THIS IS A BUILDING.";
+		}
         if(this.upInfo.Timer != undefined){
             titletext = infoBuild.Description;
             this.DescRect.TitleText = titletext.toUpperCase();
@@ -73,12 +96,11 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 titletext = infoBuild.basicDescription;
                 this.DescRect.TitleText = titletext.toUpperCase();
             } else {
-                titletext = infoBuild.Description;
+                titletext = this.upInfo.Msg;//infoBuild.Description;
+				console.log("titletext: "+titletext);
                 this.DescRect.TitleText = titletext.toUpperCase();
             }
         }
-
-        this.DescRect.buildDesc = "THIS IS A BUILDING.";
         ////////
 
         // UPDATE
@@ -117,24 +139,28 @@ jsApp.BuildingHUD = me.Renderable.extend({
         context.fillRect(0,gameH-128,gameW, 128);
         context.globalAlpha = 1;
 
-		context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
+		//context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
         //
 
        //DESCRIPTION RECT//
         this.font.draw(context,this.DescRect.TitleText,this.pos.x+128, this.pos.y );
-        this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
+		if(this.upInfo.idUnit != undefined){
+			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
+			context.drawImage(this.unit.icon, this.pos.x, this.pos.y);
+		}else{
+			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
+			// BUILD UNIT BUTTON
+			if( this.createUnitButton != undefined ) {
+				context.fillStyle = "green";
+				context.fillRect(this.createUnitButton.pos.x, this.createUnitButton.pos.y, this.createUnitButton.width, this.createUnitButton.height);
+				this.font.draw(context,"TRAIN UNIT",this.createUnitButton.pos.x+1, this.createUnitButton.pos.y +5 );
+			}
+			context.fillStyle = "#00066";
+		}
         //
 
         //UPDATE RECT//
         this.font.draw(context,this.UPRect.TitleText,this.pos.x+((gameW/3)*2), this.pos.y );
-
-        // BUILD UNIT BUTTON
-        if( this.createUnitButton != undefined ) {
-            context.fillStyle = "green";
-            context.fillRect(this.createUnitButton.pos.x, this.createUnitButton.pos.y, this.createUnitButton.width, this.createUnitButton.height);
-            this.font.draw(context,"TRAIN UNIT",this.createUnitButton.pos.x+1, this.createUnitButton.pos.y +5 );
-        }
-        context.fillStyle = "#00066";
 
 		//if the building it's constructing or updating it'll draw this//
         if(this.upInfo.Timer != undefined){

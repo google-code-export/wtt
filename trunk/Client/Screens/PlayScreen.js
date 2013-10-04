@@ -62,6 +62,7 @@ var PlayScreen = me.ScreenObject.extend(
                         var pos = jsApp.getRandomPointInScreen();
                         var piece = new Unit(pos.x , pos.y , me.ObjectSettings , thisUnit.image);
                         me.game.add(piece, 1000);
+						me.game.sort();
                     }
                 }
             });
@@ -114,23 +115,23 @@ var PlayScreen = me.ScreenObject.extend(
 			 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 socket.on('onBuildingSelect', function(rows,data) {
-                 $.each(rows, function(i, obj) {
-                    if(i>0)
-                        return false;
-                    else{
-                        if(gameHandler.activeHuds.buildingHUD==undefined) {
+				$.each(rows, function(i, obj) {
+					if(i>0)
+						return false;
+					else{
+						if(gameHandler.activeHuds.buildingHUD==undefined) {
 							console.log(obj[i]);
 							//THIS WILL DO UNTIL WE FIX IT RIGHT
 							if(obj[i].posX == undefined){obj[i].posX = data.X}
 							if(obj[i].posY == undefined){obj[i].posY = data.Y}
 							//
-                            gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
+							gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
 
-                            me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
-                            me.game.sort();
-                        }
-                    }
-                });
+							me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
+							me.game.sort();
+						}
+					}
+				});
             });
 			//
 			
@@ -274,6 +275,7 @@ var PlayScreen = me.ScreenObject.extend(
             // LISTING BUILDINGS //
             ///////////////////////
             jsApp.getSocket().on("onListBuilding", function(data) {
+				console.log(data[0]);
                 this.buildMenu = new jsApp.BuildMenu(data[0]);
                 gameHandler.activeHuds.buildMenu = this;
                 me.game.add(this.buildMenu,1000);
@@ -358,6 +360,7 @@ var PlayScreen = me.ScreenObject.extend(
                         if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
                             if(gameHandler.activeHuds.buildingHUD.createUnitButton.containsPointV(me.input.changedTouches[0])) {
                                 var unitsICanMake = gameHandler.activeHuds.buildingHUD.upInfo.listUnitsCanMake;
+								console.log(gameHandler.activeHuds.buildingHUD);
                                 if(gameHandler.activeHuds.unitMenu==undefined) {
                                     gameHandler.activeHuds.unitMenu = new jsApp.BuildUnitMenu(unitsICanMake, gameHandler.activeHuds.buildingHUD.upInfo);
                                     me.game.add(gameHandler.activeHuds.unitMenu, 1100);
@@ -386,10 +389,16 @@ var PlayScreen = me.ScreenObject.extend(
                                 // game.add(object, z)
                                 if(gameHandler.activeHuds.buildMenu!=undefined)
                                     return;
-                                jsApp.send("onListBuilding", jsApp.getUserData());
+                                jsApp.send("onListBuilding", {"idVillage" : 1} );//->NEED TO SEE THIS BETTER!!
                             } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
                                 // AKI
                                 socket.emit("onListVillageUnits", {"idVillage" : 1, "openMenu" : "true"});
+                            } else if(menu.marketRect.containsPointV(me.input.changedTouches[0])) {
+                                // AKI
+                                //socket.emit("onListVillageUnits", {"idVillage" : 1, "openMenu" : "true"});
+								gameHandler.activeHuds.marketMenu = new jsApp.MarketMenu();
+								me.game.add(gameHandler.activeHuds.marketMenu, 1100);
+								me.game.sort();
                             }
                         }
                     }
