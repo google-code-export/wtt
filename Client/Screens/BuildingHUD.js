@@ -71,20 +71,20 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 ),
                 120, 200
             );
-            /*this.unit.icon = new me.AnimationSheet(
+            this.unit.icon = new me.AnimationSheet(
                 0, 0,
                 me.loader.getImage(this.upInfo.Image),
                 14, 18
-            );*/
-			this.unit.icon = me.loader.getImage(this.upInfo.Image);
+            );
             this.unit.icon.floating = true;
-			//this.unit.icon.addAnimation("anim", [0]);
-            //this.unit.icon.setCurrentAnimation('anim');
-            //this.unit.icon.resize(3);
-            //this.unit.icon.setAnimationFrame(0);
+			this.unit.icon.addAnimation("anim", [0]);
+            this.unit.icon.setCurrentAnimation('anim');
+            this.unit.icon.resize(3);
+            this.unit.icon.setAnimationFrame(0);
 			this.DescRect.buildDesc = this.upInfo.Image.toUpperCase();
 		}else{
 			this.DescRect.buildDesc = "THIS IS A BUILDING.";
+			this.unit = "undefined";
 		}
         if(this.upInfo.Timer != undefined){
             titletext = infoBuild.Description;
@@ -139,14 +139,24 @@ jsApp.BuildingHUD = me.Renderable.extend({
         context.fillRect(0,gameH-128,gameW, 128);
         context.globalAlpha = 1;
 
-		//context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
+		context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
         //
 
        //DESCRIPTION RECT//
         this.font.draw(context,this.DescRect.TitleText,this.pos.x+128, this.pos.y );
 		if(this.upInfo.idUnit != undefined){
-			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
-			context.drawImage(this.unit.icon, this.pos.x, this.pos.y);
+			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+148, this.pos.y+64 );
+				if(this.unit.icon != undefined) {
+                    if(this.unit.hasRendered == undefined) {
+                        this.unit.hasRendered = true;
+                        this.unit.icon.pos.x = this.pos.x+128;
+                        this.unit.icon.pos.y = this.pos.y+64;
+                        this.unit.width = this.unit.icon.width*3;
+                        this.unit.height = this.unit.icon.height*3;
+                        me.game.add(this.unit.icon, 10000);
+                        me.game.sort();
+                    }
+                }
 		}else{
 			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
 			// BUILD UNIT BUTTON
@@ -202,8 +212,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 context.fillStyle = "#585858";
                 context.fillRect(this.buildRect.pos.x, this.buildRect.pos.y, this.buildRect.width, this.buildRect.height);
                 this.buttonfont.draw(context, this.buildRect.buttonText, this.buildRect.pos.x + this.buildRect.width - 8, this.buildRect.pos.y + this.buildRect.height - 8);
-
-
             }
 
         }
@@ -211,6 +219,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
     },
 
     "destroy" : function() {
+		me.game.remove(this.unit.icon);
         gameHandler.activeHuds.buildingHUD = undefined;
 		me.input.releasePointerEvent("mousedown", this);
 		me.input.releasePointerEvent("mouseup", this);
