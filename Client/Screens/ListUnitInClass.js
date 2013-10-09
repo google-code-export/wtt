@@ -15,7 +15,6 @@ jsApp.ListUnitInClass = function (unitList, idClass, className) {
     var y = 25;
     while(ct--) {
         var unit = unitInClassList[ct];
-        console.log(unit);
         var face = new me.Rect(
             new me.Vector2d(
                 x,

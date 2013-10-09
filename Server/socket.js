@@ -245,7 +245,7 @@ io.sockets.on('connection', function (socket) {
     });
 	
 	////////////////////////////
-    // onCheckUpdate //////////
+    // onCheckUpdate  //////////
     ////////////////////////////
     socket.on('onCheckUpdate', function(data){
         console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.posX+" y:"+data.posY);
@@ -258,6 +258,20 @@ io.sockets.on('connection', function (socket) {
         });
     });
     /////////////////////////
+	
+	////////////////////////////
+    // onSellMenu  //////////
+    ////////////////////////////
+	socket.on("onSellMenu", function(){
+		connection.query("CALL `ViewSell`()", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onSellMenu",rows);
+            }
+        });
+	});
+	/////////////////////////////
 	
 });
 

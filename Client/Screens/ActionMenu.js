@@ -48,9 +48,16 @@ jsApp.ActionMenu = me.Renderable.extend({
 		
 		///////////////////////
 		//MARKET
-        this.marketRect = new me.Rect(
+        this.sellRect = new me.Rect(
             new me.Vector2d(
                 this.pos.x +5+55+55,
+                this.pos.y+5
+            ),
+            65, 30
+        );
+		this.buyRect = new me.Rect(
+            new me.Vector2d(
+                this.pos.x +5+55+55+55,
                 this.pos.y+5
             ),
             65, 30
@@ -58,11 +65,13 @@ jsApp.ActionMenu = me.Renderable.extend({
 		
         this.unitsRect.buttonText = "Units";
         this.buildRect.buttonText = "Build";
-		this.marketRect.buttonText = "Market";
+		this.sellRect.buttonText = "Sell";
+		this.buyRect.buttonText = "Buy";
 		
         this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
         this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
-		this.mainOptions.push(this.marketRect);//incluindo os botões no vetor
+		this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
+		this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
         this.options = this.mainOptions;
         this.font = new me.Font("verdana", 14, "lime", "right");
         this.font.textBaseline = "bottom";

@@ -328,7 +328,17 @@ var PlayScreen = me.ScreenObject.extend(
 				});
 			});
 			/////////////////////////////////////////
-      
+			
+			///////////////////////////////////////
+			//Opening sell menu					//
+			////						/////////
+			socket.on('onSellMenu', function(rows) {
+				gameHandler.activeHuds.sellMenu = new jsApp.SellMenu(rows);
+				me.game.add(gameHandler.activeHuds.sellMenu, 1100);
+				me.game.sort();
+			});
+			////////////////////////////////////
+			
             this.parent();
             /////////////////
             // GAME CAMERA //
@@ -341,8 +351,8 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-				
-				
+				console.log("X :"+me.input.changedTouches[0].x);
+				console.log("y :"+me.input.changedTouches[0].y);
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
@@ -391,14 +401,14 @@ var PlayScreen = me.ScreenObject.extend(
                                     return;
                                 jsApp.send("onListBuilding", {"idVillage" : 1} );//->NEED TO SEE THIS BETTER!!
                             } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
-                                // AKI
+                                // IF I CLIKED ON LIST UNITS
                                 socket.emit("onListVillageUnits", {"idVillage" : 1, "openMenu" : "true"});
-                            } else if(menu.marketRect.containsPointV(me.input.changedTouches[0])) {
-                                // AKI
-                                //socket.emit("onListVillageUnits", {"idVillage" : 1, "openMenu" : "true"});
-								gameHandler.activeHuds.marketMenu = new jsApp.MarketMenu();
-								me.game.add(gameHandler.activeHuds.marketMenu, 1100);
-								me.game.sort();
+                            } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
+                                // IF I CLIKED ON SELL
+								socket.emit("onSellMenu");
+                            }else if(menu.buyRect.containsPointV(me.input.changedTouches[0])) {
+                                // IF I CLIKED ON BUY
+								socket.emit("onBuyMenu");
                             }
                         }
                     }
