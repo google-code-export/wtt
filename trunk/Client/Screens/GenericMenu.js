@@ -39,7 +39,7 @@ jsApp.GenericMenu = me.Renderable.extend({
         };
         this.options.push(this.backRect);
 
-
+		console.log(buttonList.clickFunction);
         this.buttonList = buttonList;
         var ct = buttonList.length;
         var iniX = this.pos.x + 5;
@@ -57,7 +57,12 @@ jsApp.GenericMenu = me.Renderable.extend({
                 button.icon.animationpause = true;
                 button.icon.animationspeed = 0;
                 button.icon.floating = true;
-                button.icon.setAnimationFrame(button.animFrame);
+				if(button.animFrame == undefined){
+					button.icon.addAnimation("anim", [0]);
+					button.icon.setCurrentAnimation('anim');
+				}else{
+					button.icon.setAnimationFrame(button.animFrame);
+				}
             }
             this.options.push(button);
             iniX += 70;
@@ -77,7 +82,7 @@ jsApp.GenericMenu = me.Renderable.extend({
                                     me.game.sort();
                                 } else {
 									
-									console.log(this.options[ct]);
+									console.log(this.options[ct].clickFunction(this));
                                     this.options[ct].clickFunction(this);
                                 }
                             }
@@ -150,7 +155,6 @@ jsApp.GenericMenu = me.Renderable.extend({
             var ct = this.options.length;
             while(ct--) {
                 var button = this.options[ct];
-
                 if(button.type=="button") {
 
 

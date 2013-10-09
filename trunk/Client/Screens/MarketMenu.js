@@ -32,7 +32,8 @@ jsApp.MarketMenu = function () {
 	sellRect.type = "button";
 	sellRect.hasClickFunction = true;
 	sellRect.clickFunction   = function () {	
-		alert("I wanna Sell, BITCH!");
+		socket.emit("onSellMenu");
+		me.game.remove(this);
 	};
 	sellRect.buttonText = "Sell";
 	

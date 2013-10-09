@@ -11,12 +11,13 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.floating = true;
         this.isPersistent = true;
 		this.alwaysUpdate = true;
-
+		
+		//LOADING IMAGES
         this.font 		= new me.BitmapFont("BaseFont", 16);
         this.Woodimage  = me.loader.getImage("Wood") ;
         this.Stoneimage = me.loader.getImage("Stone");
         this.Ironimage  = me.loader.getImage("Iron") ;
-        this.Meatimage  = me.loader.getImage("Meat") ;
+        this.Meatimage  = me.loader.getImage("Food") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
 		this.Clockimage = me.loader.getImage("Clock") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
@@ -92,14 +93,13 @@ jsApp.BuildingHUD = me.Renderable.extend({
             this.TimerRect.countDown = jsApp.timeToMs(infoBuild.Timer);
             this.TimerRect.initTime = me.timer.getTime();
         }else{
-            if(this.upInfo.Msg == undefined){
-                titletext = infoBuild.basicDescription;
-                this.DescRect.TitleText = titletext.toUpperCase();
-            } else {
-                titletext = this.upInfo.Msg;//infoBuild.Description;
-				console.log("titletext: "+titletext);
-                this.DescRect.TitleText = titletext.toUpperCase();
-            }
+			if(infoBuild.basicDescription == undefined){
+				titletext = infoBuild.Description;
+				this.DescRect.TitleText = titletext.toUpperCase();
+			}else{
+				titletext = infoBuild.basicDescription;
+				this.DescRect.TitleText = titletext.toUpperCase();
+			}
         }
         ////////
 

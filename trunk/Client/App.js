@@ -165,7 +165,12 @@ var jsApp	=
             x : imX,
             y : imY
         };
-    }
+    },
+	//BRING ONLY THE FIRST CHAR TO THE UPPERCASE
+	toTitleCase : function(str)
+	{
+		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	}
 };
 
 var gameHandler =  {

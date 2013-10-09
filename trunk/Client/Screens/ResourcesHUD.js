@@ -17,7 +17,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         this.Woodimage  = me.loader.getImage("Wood") ;
         this.Stoneimage = me.loader.getImage("Stone");
         this.Ironimage  = me.loader.getImage("Iron") ;
-        this.Meatimage  = me.loader.getImage("Meat") ;
+        this.Meatimage  = me.loader.getImage("Food") ;
         this.Coinimage  = me.loader.getImage("Coin") ;
         gameHandler.activeHuds["resourceHud"] = this;
 		

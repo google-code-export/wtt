@@ -28,7 +28,7 @@ var g_resources =
         {name: "Army"  ,type: "image",  src: "data/sprite/army.png" },
         {name: "Stone" ,type: "image",  src: "data/sprite/Stone.png"},
         {name: "Iron"  ,type: "image",  src: "data/sprite/iron.png" },
-        {name: "Meat"  ,type: "image",  src: "data/sprite/Meat.png" },
+        {name: "Food"  ,type: "image",  src: "data/sprite/Meat.png" },
         {name: "Coin"  ,type: "image",  src: "data/sprite/coin.png" },
 
         //////////////
