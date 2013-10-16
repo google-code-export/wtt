@@ -5,11 +5,19 @@ var PlayScreen = me.ScreenObject.extend(
             var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
 			this.TMXTileMap = "Chunk";
 			//Destroying websockets event before create a new one
-			jsApp.destroy("onBuildingSelect");
-            jsApp.destroy("onListVillageBuildings");
-			jsApp.destroy("onRequestUpdate");
-			jsApp.destroy("onConstruct");
-			jsApp.destroy("onResourcesUpdate");
+			 jsApp.destroy("onBuildingSelect");
+             jsApp.destroy("onListVillageBuildings");
+			 jsApp.destroy("onRequestUpdate");
+			 jsApp.destroy("onConstruct");
+			 jsApp.destroy("onResourcesUpdate");
+			 jsApp.destroy("onCheckUpdate");
+			 jsApp.destroy("onConstructRequest");
+			 jsApp.destroy("onConstructCheck");
+			 jsApp.destroy("onRequestUnit");
+			 jsApp.destroy("onUnitCheck");
+			 jsApp.destroy("onListBuilding");
+			 jsApp.destroy("onResourcesCollect");
+			 jsApp.destroy("onSellMenu");	
 			
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
             socket.on("onListVillageBuildings", function(data){
@@ -44,7 +52,7 @@ var PlayScreen = me.ScreenObject.extend(
             });
 
             socket.emit("onListVillageBuildings", idVillage);
-
+			
             //PLACING UNITS THE PLAYER HAS ON THE MAP
             socket.on("onListVillageUnits", function(data){
                 var unitList = data[0];
@@ -61,7 +69,7 @@ var PlayScreen = me.ScreenObject.extend(
                         var thisUnit = unitList[unit];
                         var pos = jsApp.getRandomPointInScreen();
                         var piece = new Unit(pos.x , pos.y , me.ObjectSettings , thisUnit.image);
-                        me.game.add(piece, 1000);
+                        me.game.add(piece, 10);
 						me.game.sort();
                     }
                 }
@@ -86,9 +94,9 @@ var PlayScreen = me.ScreenObject.extend(
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
 					//
-					var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class Timer
+					this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class Timer
 					var checkUpdate = function(){ socket.emit("onCheckUpdate",infobuild);};
-					me.game.add(progressBar,10);// adding this to the screen
+					me.game.add(this.progressBar,10);// adding this to the screen
                     jsApp.timeScheduler(checkUpdate,time);// sending the construction to the scheduler.
 				}else{
 					alert(rows[0][0].Msg);
@@ -112,7 +120,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 });
 			 //
 			 
-			 
+
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 socket.on('onBuildingSelect', function(rows,data) {
 				$.each(rows, function(i, obj) {
@@ -153,8 +161,8 @@ var PlayScreen = me.ScreenObject.extend(
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 5");
 							
 							buildLayer.setTile(building.x,building.y,5);//changing the tile for the construction zone
-							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
-							me.game.add(progressBar,10);// adding this to the screen
+							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							me.game.add(this.progressBar,10);// adding this to the screen
 							var vconstructCheck = function(){socket.emit("onConstructCheck",data);};
 							jsApp.timeScheduler(vconstructCheck,time);// sending the construction to the scheduler.
 
@@ -174,6 +182,7 @@ var PlayScreen = me.ScreenObject.extend(
 			//////////////////////////////////////////
 			//constructing and updating resourcesHUD//
 			//
+
 			socket.on("onConstructCheck", function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
@@ -198,9 +207,9 @@ var PlayScreen = me.ScreenObject.extend(
 							var time    	   = jsApp.timeToMs(obj[i].Msg);
 							var idTile 		   = building.idTile;
 							var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							this.progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							var constructCheck = function(){socket.emit("onConstructCheck",{"x" : building.x, "y" : building.y, "idVillage" : building.idVillage, "idTile" : idTile});};
-							me.game.add(progressBar,10);// adding this to the screen
+							me.game.add(this.progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(constructCheck,time);// sending the construction to the scheduler.
 							me.game.sort();
 						}
@@ -225,8 +234,8 @@ var PlayScreen = me.ScreenObject.extend(
 							console.log(unitInfo);
 							var time = jsApp.timeToMs(obj[i].Timer);
 							var pixelIs = jsApp.getTileForPixels(unitInfo.buildingX,unitInfo.buildingY);
-							var progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
-							me.game.add(progressBar,10);// adding this to the screen
+							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							me.game.add(this.progressBar,10);// adding this to the screen
 							var unitCheck = function(){socket.emit("onUnitCheck",data);};
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 
@@ -239,7 +248,7 @@ var PlayScreen = me.ScreenObject.extend(
 					}
 				});
 			});
-			
+
 			socket.on("onUnitCheck", function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
@@ -250,15 +259,15 @@ var PlayScreen = me.ScreenObject.extend(
 							// a casa que criou ta no this.building
 							var pixelIs = jsApp.getTileForPixels(data.buildingX, data.buildingY);
 							var piece   = new Unit(pixelIs.x,pixelIs.y, me.ObjectSettings, data.unitImg);
-							me.game.add(piece, 1000);
+							me.game.add(piece, 10);
 							me.game.sort();
 						}else{
 							var unit 	       = data;
 							var time    	   = jsApp.timeToMs(obj[i].Msg);
 							var pixelIs 	   = jsApp.getTileForPixels(unit.buildingX, unit.buildingY);
-							var progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							this.progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							var unitCheck = function(){socket.emit("onUnitCheck",unit);};
-							me.game.add(progressBar,10);// adding this to the screen
+							me.game.add(this.progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 							me.game.sort();
 						}
@@ -270,7 +279,7 @@ var PlayScreen = me.ScreenObject.extend(
 			//////////////////////////////////////////////////////////////
 			
 			
-			
+
             ///////////////////////
             // LISTING BUILDINGS //
             ///////////////////////
@@ -281,7 +290,7 @@ var PlayScreen = me.ScreenObject.extend(
                 me.game.add(this.buildMenu,1000);
                 me.game.sort();
             });			
-			
+ 
 			///////////////////////////////////////
 			//getting the resources by websockets//
 			socket.on('onResourcesUpdate', function(data) {
@@ -299,7 +308,7 @@ var PlayScreen = me.ScreenObject.extend(
 
 			});
 			/////////////////////////////////////////
-			
+		 
 			///////////////////////////////////////
 			//collecting the resources			//
 			socket.on('onResourcesCollect', function(rows, data) {
@@ -328,7 +337,7 @@ var PlayScreen = me.ScreenObject.extend(
 				});
 			});
 			/////////////////////////////////////////
-			
+		 
 			///////////////////////////////////////
 			//Opening sell menu					//
 			////						/////////
@@ -351,8 +360,6 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-				console.log("X :"+me.input.changedTouches[0].x);
-				console.log("y :"+me.input.changedTouches[0].y);
 
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
@@ -409,7 +416,11 @@ var PlayScreen = me.ScreenObject.extend(
                             }else if(menu.buyRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON BUY
 								socket.emit("onBuyMenu");
-                            }
+                            }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
+							    //IF I CLIKED ON THE WORLD
+								me.game.remove(this, true);
+								me.state.change(me.state.OUTWORLD);
+							}
                         }
                     }
                 }
@@ -454,7 +465,7 @@ var PlayScreen = me.ScreenObject.extend(
 
             // ADDING THE GAME GUI
             this.hud = new jsApp.ResourcesHUD();
-            this.gui = new jsApp.ActionMenu();
+            this.gui = new jsApp.ActionMenu("Village");
 
             me.game.add(this.hud, 1000);
             me.game.add(this.gui, 1000);
@@ -493,12 +504,29 @@ var PlayScreen = me.ScreenObject.extend(
         "update": function update() {
             return true;
         },
-        onDestroyEvent: function () {
+        onDestroyEvent: function() {
             me.input.releasePointerEvent("mousedown", me.game.viewport);
             me.input.releasePointerEvent("mouseup", me.game.viewport);
             me.input.releasePointerEvent("mousemove", me.game.viewport);
             me.game.disableHUD();
+			me.game.remove(this.hud,true);
+			me.game.remove(this.gui,true);
+			me.game.remove(this.progressBar,true);
             me.audio.stopTrack();
+			jsApp.destroy("onBuildingSelect");
+            jsApp.destroy("onListVillageBuildings");
+			jsApp.destroy("onRequestUpdate");
+			jsApp.destroy("onConstruct");
+			jsApp.destroy("onResourcesUpdate");
+			jsApp.destroy("onCheckUpdate");
+			jsApp.destroy("onConstructRequest");
+			jsApp.destroy("onConstructCheck");
+			jsApp.destroy("onRequestUnit");
+			jsApp.destroy("onUnitCheck");
+			jsApp.destroy("onListBuilding");
+			jsApp.destroy("onResourcesCollect");
+			jsApp.destroy("onSellMenu");	
+			me.game.sort();
         }
     });
 

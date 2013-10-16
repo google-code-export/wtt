@@ -48,7 +48,7 @@ jsApp.SellMenu = function (marketInfo){
 		plusBtn1.type	   		  = "button";
 		plusBtn1.buttonText 	  = "+";
 		plusBtn1.hasClickFunction = true;
-		plusBtn1.clickFunction    = function(){
+		plusBtn1.clickFunction    = function(qtd){
 			qtd.text = qtd.text + 5;
 		};
 		
@@ -64,7 +64,7 @@ jsApp.SellMenu = function (marketInfo){
 		minusBtn1.type	   		   = "button";
 		minusBtn1.buttonText 	   = "-";
 		minusBtn1.hasClickFunction = true;
-		minusBtn1.clickFunction    = function(){
+		minusBtn1.clickFunction    = function(qtd){
 			if(qtd.text > 0){
 				qtd.text = qtd.text - 5;
 			}
@@ -92,7 +92,7 @@ jsApp.SellMenu = function (marketInfo){
 		plusBtn2.type	   		  = "button";
 		plusBtn2.buttonText 	  = "+";
 		plusBtn2.hasClickFunction = true;
-		plusBtn2.clickFunction    = function(){
+		plusBtn2.clickFunction    = function(price){
 			price.text = price.text + 5;
 		};
 		
@@ -109,7 +109,7 @@ jsApp.SellMenu = function (marketInfo){
 		minusBtn2.type	   		   = "button";
 		minusBtn2.buttonText 	   = "-";
 		minusBtn2.hasClickFunction = true;
-		minusBtn2.clickFunction    = function(){
+		minusBtn2.clickFunction    = function(price){
 			if(price.text > 0){
 				price.text = price.text - 5;
 			}
