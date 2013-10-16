@@ -138,6 +138,8 @@ var jsApp	=
         me.state.set(me.state.MENU, new TitleScreen());
         // the main game screen
         me.state.set(me.state.PLAY, new PlayScreen());
+		// the outworld gama screen
+		me.state.set(me.state.OUTWORLD, new OutWorldScreen());
         // adicionando os tipos de entidade na POOL de memória
         me.entityPool.add("unit", Unit);
 
