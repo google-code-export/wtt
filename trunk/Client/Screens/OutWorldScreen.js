@@ -87,11 +87,10 @@ var OutWorldScreen = me.ScreenObject.extend(
 
             // call superclass constructor
             this.parent();
-			me.game.sort();
             return true;
         },
         "update": function update() {
-            return this.visible;
+            return true;
         },
         onDestroyEvent: function() {
             me.input.releasePointerEvent("mousedown", me.game.viewport);
