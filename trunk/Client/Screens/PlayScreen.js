@@ -2,7 +2,8 @@ var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
 			var socket = jsApp.getSocket();
-            var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
+			var userData = jsApp.getUserData();
+            this.idVillage = userData.idVillage; //-->NEED TO SEE THIS BETTER!!
 			this.TMXTileMap = "Chunk";
 			//Destroying websockets event before create a new one
 			 jsApp.destroy("onBuildingSelect");
@@ -19,6 +20,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onResourcesCollect");
 			 jsApp.destroy("onSellMenu");	
 			
+			console.log(jsApp.getUserData());
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
             socket.on("onListVillageBuildings", function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
@@ -30,6 +32,7 @@ var PlayScreen = me.ScreenObject.extend(
                         var pending = data[0][i].pending;
 						var timer   = data[0][i].Timer;
 						var type    = data[0][i].Type;
+						var idVillage = jsApp.getUserData().idVillage;
 						//if the construction still pending, add a new progress bar and a timeScheduler event//
                         if(pending == "Y"){
                             idTile   	   = 5;
@@ -51,7 +54,7 @@ var PlayScreen = me.ScreenObject.extend(
                 }
             });
 
-            socket.emit("onListVillageBuildings", idVillage);
+            socket.emit("onListVillageBuildings", this.idVillage);
 			
             //PLACING UNITS THE PLAYER HAS ON THE MAP
             socket.on("onListVillageUnits", function(data){
@@ -76,7 +79,7 @@ var PlayScreen = me.ScreenObject.extend(
             });
 			
 			//console.log("village id!!!:"+idVillage);
-            socket.emit("onListVillageUnits", {"idVillage" : 1});
+            socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
 			//alert("enviei o "+idVillage+"!!");
             //			
 			 //HERE WE SEND THE UPDATE REQUEST
@@ -133,8 +136,8 @@ var PlayScreen = me.ScreenObject.extend(
 							if(obj[i].posX == undefined){obj[i].posX = data.X}
 							if(obj[i].posY == undefined){obj[i].posY = data.Y}
 							//
-							gameHandler.activeHuds.buildingHUD = new jsApp.BuildingHUD(obj[i]);
-
+							gameHandler.activeHuds.buildingHUD 			 = new jsApp.BuildingHUD(obj[i]);
+							gameHandler.activeHuds.buildingHUD.idVillage = this.idVillage; 	
 							me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
 							me.game.sort();
 						}
@@ -189,8 +192,9 @@ var PlayScreen = me.ScreenObject.extend(
 						return false;
 					else{
 						if(obj[i].Msg == "Done"){
-							var building = data;
-							var idTile = building.idTile; // NEED TO SEE THIS BETTER VERY QUICK!
+							var building  = data;
+							var idTile    = building.idTile; 
+							var userData  = jsApp.getUserData().idVillage;
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
@@ -198,7 +202,7 @@ var PlayScreen = me.ScreenObject.extend(
 							if(building.Type == "R"){
 								var gatherTime     = jsApp.timeToMs(building.TimerColection);
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": idVillage, "x" : building.x, "y" : building.y, "gatherTime" : TimerColection, "type" : idTile})};
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": userData.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : TimerColection, "type" : idTile})};
 								jsApp.timeScheduler(resourceColect,gatherTime);
 							}
 							
@@ -271,7 +275,6 @@ var PlayScreen = me.ScreenObject.extend(
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 							me.game.sort();
 						}
-					
 					}
 				});
 			});
@@ -320,9 +323,10 @@ var PlayScreen = me.ScreenObject.extend(
 							//updating the resources
 							jsApp.send("onResourcesUpdate", jsApp.getUserData());
 							//
+							var userData       = jsApp.getUserData();
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
 							var ColectAlert    = new jsApp.ColectAlert(pixelIs, data.type);
-							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": data.idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
 							me.game.add(ColectAlert,10); 
 							jsApp.timeScheduler(resourceColect,data.gatherTime);	
 							me.game.sort();							
@@ -330,7 +334,7 @@ var PlayScreen = me.ScreenObject.extend(
 							// if anyone try to hack, this will add a new time until the update it's done.
 							var remainingTime  = jsApp.timeToMs(obj[i].Msg);
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
-							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
+							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": data.idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
 							jsApp.timeScheduler(resourceColect,remainingTime);
 						}
 					}
@@ -347,6 +351,29 @@ var PlayScreen = me.ScreenObject.extend(
 				me.game.sort();
 			});
 			////////////////////////////////////
+			
+			//////////////////////////////////////////
+			//Getting Villages from the OutWorld    //
+			/////////////////////////////////////////
+			/*socket.on("onListWorldVillage", function(rows){
+                var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
+				var worldVillages = new Array();
+                for (var i in rows[0]){
+                    if (i!="remove"){
+                        var idTile     = rows[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+						var pixelIs    = jsApp.getTileForPixels(rows[0][i].posX,rows[0][i].posY);
+						var x		   = rows[0][i].posX;
+						var y		   = rows[0][i].posY
+						var playerName = rows[0][i].Nick;
+						
+						var villageInfo = {"playerName" : playerName, "x" : x, "y" : y, "px" : pixelIs.x, "py" : pixelIs.y};
+						worldVillages.push(villageInfo);
+                    }
+                }
+				new OutWorldScreen(worldVillages);
+            });*/
+			////////////////////////////////////////////////////////////////////
+			
 			
             this.parent();
             /////////////////
@@ -406,10 +433,10 @@ var PlayScreen = me.ScreenObject.extend(
                                 // game.add(object, z)
                                 if(gameHandler.activeHuds.buildMenu!=undefined)
                                     return;
-                                jsApp.send("onListBuilding", {"idVillage" : 1} );//->NEED TO SEE THIS BETTER!!
+                                jsApp.send("onListBuilding", {"idVillage" : this.idVillage} );//->NEED TO SEE THIS BETTER!!
                             } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON LIST UNITS
-                                socket.emit("onListVillageUnits", {"idVillage" : 1, "openMenu" : "true"});
+                                socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});
                             } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON SELL
 								socket.emit("onSellMenu");
@@ -418,6 +445,7 @@ var PlayScreen = me.ScreenObject.extend(
 								socket.emit("onBuyMenu");
                             }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
+								socket.emit("onListWorldVillage");
 								me.game.remove(this, true);
 								me.state.change(me.state.OUTWORLD);
 							}
@@ -431,9 +459,8 @@ var PlayScreen = me.ScreenObject.extend(
 					var tileIs = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
 					var tileid = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					if (tileid != null){ // 22 it's for the construction tile
-						var idVillage = 1; // -> NEED TO SEE THIS BETTER!
                         this.tileWhereBuildingIs = tileIs;
-						socket.emit("onBuildingSelect",{idVillage: idVillage, X: tileIs.x, Y: tileIs.y});
+						socket.emit("onBuildingSelect",{idVillage: this.idVillage, X: tileIs.x, Y: tileIs.y});
 					}
 
 				}
@@ -509,9 +536,7 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.releasePointerEvent("mouseup", me.game.viewport);
             me.input.releasePointerEvent("mousemove", me.game.viewport);
             me.game.disableHUD();
-			me.game.remove(this.hud,true);
-			me.game.remove(this.gui,true);
-			me.game.remove(this.progressBar,true);
+			me.game.removeAll(true);
             me.audio.stopTrack();
 			jsApp.destroy("onBuildingSelect");
             jsApp.destroy("onListVillageBuildings");

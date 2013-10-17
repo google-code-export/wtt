@@ -3,7 +3,7 @@ jsApp.BuildArea = me.Renderable.extend({
         var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 	
         this.info = infoBuild;
-        this.info.idVillage = 1;// NEED TO SEE THIS BETTER! MULTI-VILLAGES PROBLEM
+		this.info.idVillage = jsApp.getUserData().idVillage;
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40); //This is here we define the position in the screen
         this.floating = true;
         this.isPersistent = true;

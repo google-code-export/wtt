@@ -72,7 +72,7 @@ io.sockets.on('connection', function (socket) {
      });
   });
   
-	//////////////////////////
+	///////////////////////////
 	// onResourcesCollect    //
 	//////////////////////////
 	socket.on('onResourcesCollect', function(data) {
@@ -268,6 +268,20 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onSellMenu",rows);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	////////////////////////////
+    // onListWorldVillage  //////////
+    ////////////////////////////
+	socket.on("onListWorldVillage", function(){
+		connection.query("CALL `getWorldVillages`(1)", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListWorldVillage",rows);
             }
         });
 	});

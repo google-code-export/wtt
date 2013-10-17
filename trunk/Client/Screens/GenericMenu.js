@@ -38,8 +38,6 @@ jsApp.GenericMenu = me.Renderable.extend({
             me.game.sort();
         };
         this.options.push(this.backRect);
-
-		console.log(buttonList.clickFunction);
         this.buttonList = buttonList;
         var ct = buttonList.length;
         var iniX = this.pos.x + 5;

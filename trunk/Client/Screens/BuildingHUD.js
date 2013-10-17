@@ -5,7 +5,6 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.upInfo = infoBuild ;
         console.log("Opening info building ");
 		console.log(infoBuild);
-        this.upInfo.idVillage	= 1; //---> Need to see this better
 		this.mouseAction = undefined;
 		this.parent(new me.Vector2d(0,gameH-128));
         this.floating = true;

@@ -108,7 +108,7 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
                                     idUnit 			 : this.options[ct].info.idUnit,
 									unitImg          : this.options[ct].info.Image,
                                     userId 			 : jsApp.getUserData().userId,
-									idVillage		 : 1 //--> NEED TO SEE THIS BETTER!!
+									idVillage		 : jsApp.getUserData().idVillage
                                 }
                                 var socket = jsApp.getSocket();
                                 socket.emit("onRequestUnit", data);
