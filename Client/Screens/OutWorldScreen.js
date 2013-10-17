@@ -1,9 +1,11 @@
 var OutWorldScreen = me.ScreenObject.extend(
     {
-        onResetEvent: function () {
-			var socket = jsApp.getSocket();
-            var idVillage = 1; //-->NEED TO SEE THIS BETTER!!
-			this.TMXTileMap = "Chunk";
+		
+        onResetEvent: function (worldVillages) {
+			var socket         			 = jsApp.getSocket();
+            var idWorld        			 = 1; //-->NEED TO SEE THIS BETTER!!
+			this.TMXTileMap   			 = "Chunk";
+			this.font          			 = new me.Font("verdana", 18, "white", "left");
 			//Destroying websockets event before create a new one
 			 jsApp.destroy("onBuildingSelect");
              jsApp.destroy("onListVillageBuildings");
@@ -18,6 +20,27 @@ var OutWorldScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onListBuilding");
 			 jsApp.destroy("onResourcesCollect");
 			 jsApp.destroy("onSellMenu");	
+			
+			////////////////////////////////////
+			//WORLD SOCKETS			         //
+			//////////////////////////////////
+			socket.on("onListWorldVillage", function(rows){
+                var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
+				var worldVillages = new Array();
+                for (var i in rows[0]){
+                    if (i!="remove"){
+                        var idTile      = rows[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
+						var pixelIs     = jsApp.getTileForPixels(rows[0][i].posX,rows[0][i].posY);
+						var x		    = rows[0][i].posX;
+						var y		    = rows[0][i].posY;
+						var playerName  = rows[0][i].Nick;
+						var villageInfo = {"playerName" : playerName, "x" : pixelIs.x, "y" : pixelIs.y};
+                        buildLayer.setTile(x,y,idTile);//changing the tile
+						var names = new jsApp.WorldNames(villageInfo);
+						me.game.add(names,10);
+                    }
+                }
+            });
 			
             /////////////////
             // GAME CAMERA //
@@ -64,7 +87,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			this.parent();
         },
 		
-        draw: function (context) {
+        "draw": function (context) {
             // Transparent background
             var alpha = context.globalAlpha;
             context.globalAlpha = 0.6;
