@@ -7,6 +7,7 @@ var PlayScreen = me.ScreenObject.extend(
 			this.TMXTileMap = "Chunk";
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
             loadMap("Chunk");
+			me.game.sort();
 			//Destroying websockets event before create a new one
 			 jsApp.destroy("onBuildingSelect");
              jsApp.destroy("onListVillageBuildings");
@@ -353,30 +354,8 @@ var PlayScreen = me.ScreenObject.extend(
 				me.game.sort();
 			});
 			////////////////////////////////////
-			
-			//////////////////////////////////////////
-			//Getting Villages from the OutWorld    //
-			/////////////////////////////////////////
-			/*socket.on("onListWorldVillage", function(rows){
-                var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
-				var worldVillages = new Array();
-                for (var i in rows[0]){
-                    if (i!="remove"){
-                        var idTile     = rows[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
-						var pixelIs    = jsApp.getTileForPixels(rows[0][i].posX,rows[0][i].posY);
-						var x		   = rows[0][i].posX;
-						var y		   = rows[0][i].posY
-						var playerName = rows[0][i].Nick;
-						
-						var villageInfo = {"playerName" : playerName, "x" : x, "y" : y, "px" : pixelIs.x, "py" : pixelIs.y};
-						worldVillages.push(villageInfo);
-                    }
-                }
-				new OutWorldScreen(worldVillages);
-            });*/
-			////////////////////////////////////////////////////////////////////
-			
-			
+		
+
             this.parent();
             /////////////////
             // GAME CAMERA //
@@ -389,7 +368,8 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-
+				console.log(~~me.input.changedTouches[0].x);
+				console.log(~~me.input.changedTouches[0].y);
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
 					//IF I CLICKED IN THE UPDATE BUTTON
@@ -536,6 +516,8 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.releasePointerEvent("mousemove", me.game.viewport);
             me.game.disableHUD();
 			me.game.removeAll(true);
+			me.game.remove(this.hud, true);
+			me.game.remove(this.gui, true);
             me.audio.stopTrack();
 			jsApp.destroy("onBuildingSelect");
             jsApp.destroy("onListVillageBuildings");
