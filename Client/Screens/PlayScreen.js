@@ -5,6 +5,8 @@ var PlayScreen = me.ScreenObject.extend(
 			var userData = jsApp.getUserData();
             this.idVillage = userData.idVillage; //-->NEED TO SEE THIS BETTER!!
 			this.TMXTileMap = "Chunk";
+			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
+            loadMap("Chunk");
 			//Destroying websockets event before create a new one
 			 jsApp.destroy("onBuildingSelect");
              jsApp.destroy("onListVillageBuildings");
@@ -496,9 +498,6 @@ var PlayScreen = me.ScreenObject.extend(
 
             me.game.add(this.hud, 1000);
             me.game.add(this.gui, 1000);
-
-            // LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
-            loadMap("Chunk");
             // SORT GRAPHICS RENDERED TO THE SCREEN (SO IT CAN REDRAW IN THE RIGHT ORDER)
             me.game.sort();
         },
