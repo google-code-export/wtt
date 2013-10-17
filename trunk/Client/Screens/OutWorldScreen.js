@@ -53,14 +53,52 @@ var OutWorldScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-				        
+				
+				//IF I HAVE ANY WORLD VILLAGE ACTION MENU OPEN
+				if(gameHandler.activeHuds.actionWorldMenu != undefined){
+					//IF I CLICKED IN 'ENTER' BUTTON
+					if(gameHandler.activeHuds.actionWorldMenu.enterRect.containsPointV(me.input.changedTouches[0])){
+					}
+					
+					//IF I CLICKED IN 'ATTACK' BUTTON
+					else if(gameHandler.activeHuds.actionWorldMenu.attackRect.containsPointV(me.input.changedTouches[0])){
+					}
+				
+					//IF I CLICKED IN 'TRADE' BUTTON
+					else if(gameHandler.activeHuds.actionWorldMenu.tradeRect.containsPointV(me.input.changedTouches[0])){
+					}
+					
+					//IF I CLICKED IN 'SEND MSG' BUTTON
+					else if(gameHandler.activeHuds.actionWorldMenu.msgRect.containsPointV(me.input.changedTouches[0])){
+					}
+					else{
+						//IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
+						me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
+						gameHandler.activeHuds.actionWorldMenu = undefined;
+					}
+					//
+				//IF I DONT HAVE ANY WORLD VILLAGE ACTION MENU OPEN
+				}else{
+					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
+					var tileIs     = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
+					var pixelIs    = jsApp.getTileForPixels(tileIs.x,tileIs.y);
+					var tileid     = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
+					//IF I CLICKED IN SOMETHING I'LL SEE WHAT IT'S AND CREATE A ACTION MENU
+					if (tileid == 11){ 
+						var actionWorldMenu = new jsApp.WorldBuildingOptions('',pixelIs);
+						me.game.add(actionWorldMenu,10);
+						me.game.sort();
+					}
+				}
+				
             }).bind(this));
 
             me.input.registerPointerEvent("mouseup", me.game.viewport, (function (e) {
                 this.mousedown = false;
 
             }).bind(this));
-
+			
+			//MOVES GAME CAMERA
             me.input.registerPointerEvent("mousemove", me.game.viewport, (function (e) {
                 if (this.mousedown == true) {
 
@@ -76,7 +114,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 
                 }
             }).bind(this));
-
+			
+			//ADD ACTION GUI TO THE SCREEN
 			this.gui = new jsApp.ActionMenu("World");
 			me.game.add(this.gui, 1000);
 			
