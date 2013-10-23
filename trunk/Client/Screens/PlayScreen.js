@@ -1,9 +1,10 @@
 var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
+			me.game.reset();
 			var socket = jsApp.getSocket();
 			var userData = jsApp.getUserData();
-            this.idVillage = userData.idVillage; //-->NEED TO SEE THIS BETTER!!
+            this.idVillage = userData.idVillage;
 			this.TMXTileMap = "Chunk";
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
             loadMap("Chunk");
@@ -22,8 +23,15 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onListBuilding");
 			 jsApp.destroy("onResourcesCollect");
 			 jsApp.destroy("onSellMenu");	
-			
+			 jsApp.destroy("onOpenCreateSquad");
+			 jsApp.destroy("onCreateSquad");
 			console.log(jsApp.getUserData());
+			
+			//LISTING VILLAGE UNITS AND BUILDINGS
+			socket.emit("onListVillageBuildings", this.idVillage);
+			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
+			
+			
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
             socket.on("onListVillageBuildings", function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
@@ -44,7 +52,7 @@ var PlayScreen = me.ScreenObject.extend(
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
 							socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});
                         }
-						//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER TOO.
+						//IF IT'S A COLLECTOR 
 						if(type == "R"){
 							console.log(data[0][i]);
 							//var gatherTime = jsApp.timeToMs(data[0][i].gatherTime);
@@ -57,8 +65,6 @@ var PlayScreen = me.ScreenObject.extend(
                 }
             });
 
-            socket.emit("onListVillageBuildings", this.idVillage);
-			
             //PLACING UNITS THE PLAYER HAS ON THE MAP
             socket.on("onListVillageUnits", function(data){
                 var unitList = data[0];
@@ -81,10 +87,6 @@ var PlayScreen = me.ScreenObject.extend(
                 }
             });
 			
-			//console.log("village id!!!:"+idVillage);
-            socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
-			//alert("enviei o "+idVillage+"!!");
-            //			
 			 //HERE WE SEND THE UPDATE REQUEST
 			 socket.on("onRequestUpdate",function(rows, data){
 				var infobuild = data;
@@ -255,7 +257,9 @@ var PlayScreen = me.ScreenObject.extend(
 					}
 				});
 			});
-
+			
+			/////////////////////////////////////////////
+			//checking if the unit it's already done
 			socket.on("onUnitCheck", function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
@@ -280,6 +284,73 @@ var PlayScreen = me.ScreenObject.extend(
 						}
 					}
 				});
+			});
+			///////////////////////////////////////////////
+			//creating the window to create the squad
+			socket.on("onOpenCreateSquad", function(rows, data){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var idVillage = data;
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogArmy");
+				div.setAttribute("name","dialogArmy");
+				div.setAttribute("title","Create Squad");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogArmy" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
+						"Send": function() {
+							//creating the new squad
+							var squadName = $("#squadName").val();
+							var idUnits   = "";
+							$("input:checkbox:checked").each(function(i, obj){
+								idUnits = idUnits + $(this).val()+",";
+							});
+							//clearing the last char
+							idUnits = idUnits.substring(0,(idUnits.length - 1));
+							
+							//sending to the server
+							socket.emit("onCreateSquad",{"idVillage" : idVillage, "squadName" : squadName, "idUnits" :  idUnits});
+							
+							//clearing the form
+							$( "#dialogArmy" ).html('');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( "#dialogArmy" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var squadContent = "Squad Name: <input type='text' name='squadName' id='squadName' length='20'></input>";
+				$.each(rows[0], function(i, obj) {
+					var unit =rows[0][i];
+					var unitCheckBox = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'>"+unit.Unit_Name+"("+unit.Description+")</input>";
+					squadContent = squadContent + unitCheckBox;
+				});
+				
+				$("#dialogArmy").append(squadContent);
+				$( "#dialogArmy" ).dialog( "open" );
+			});
+			
+			///////////////////////////////////////////////
+			//creating the window to create the squad
+			socket.on("onCreateSquad", function(rows, data){
+				console.log(rows);
 			});
 			
 			//////////////////////////////////////////////////////////////
@@ -375,6 +446,7 @@ var PlayScreen = me.ScreenObject.extend(
 					//IF I CLICKED IN THE UPDATE BUTTON
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPointV(me.input.changedTouches[0])){
 						var updatebuild = gameHandler.activeHuds.buildingHUD.upInfo;
+						updatebuild.idVillage = this.idVillage;
 						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
 						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPointV(me.input.changedTouches[0])){
@@ -419,6 +491,9 @@ var PlayScreen = me.ScreenObject.extend(
                             } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON LIST UNITS
                                 socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});
+							} else if(menu.squadRect.containsPointV(me.input.changedTouches[0])) {
+								// IF I CLIKED ON CREATE ARMY
+								socket.emit("onOpenCreateSquad", this.idVillage);
                             } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON SELL
 								socket.emit("onSellMenu");
@@ -511,14 +586,11 @@ var PlayScreen = me.ScreenObject.extend(
             return true;
         },
         onDestroyEvent: function() {
-            me.input.releasePointerEvent("mousedown", me.game.viewport);
+			me.input.releasePointerEvent("mousedown", me.game.viewport);
             me.input.releasePointerEvent("mouseup", me.game.viewport);
             me.input.releasePointerEvent("mousemove", me.game.viewport);
-            me.game.disableHUD();
-			me.game.removeAll(true);
-			me.game.remove(this.hud, true);
-			me.game.remove(this.gui, true);
-            me.audio.stopTrack();
+			me.game.remove(this.hud);
+			me.game.remove(this.gui);
 			jsApp.destroy("onBuildingSelect");
             jsApp.destroy("onListVillageBuildings");
 			jsApp.destroy("onRequestUpdate");
@@ -531,7 +603,8 @@ var PlayScreen = me.ScreenObject.extend(
 			jsApp.destroy("onUnitCheck");
 			jsApp.destroy("onListBuilding");
 			jsApp.destroy("onResourcesCollect");
-			jsApp.destroy("onSellMenu");	
+			jsApp.destroy("onSellMenu");
+			me.game.reset();
 			me.game.sort();
         }
     });

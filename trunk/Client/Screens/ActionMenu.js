@@ -3,7 +3,7 @@ jsApp.ActionMenu = me.Renderable.extend({
     "init" : function init(type) {
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40);
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 		this.mouseAction = undefined;
         gameHandler.activeHuds.actionMenu = this;
         // options that are displayed on the screen
@@ -23,6 +23,7 @@ jsApp.ActionMenu = me.Renderable.extend({
             gameW,
             40
         );
+		var iX = 5;
 		if(type == "Village"){
 			//////////////////////
 			// POSSIBLE BUTTONS //
@@ -31,55 +32,82 @@ jsApp.ActionMenu = me.Renderable.extend({
 			// Me.Rect(x,y,Witdh,Height)
 			this.buildRect = new me.Rect(
 				new me.Vector2d(
-					this.pos.x +5,
+					this.pos.x +iX,
 					this.pos.y+5
 				 ),
 				 50, 30
 			);
+			iX+=55;
 			/////////////////////
 			// VIEW UNITS
 			this.unitsRect = new me.Rect(
 				new me.Vector2d(
-					this.pos.x +5+55,
+					this.pos.x +iX,
 					this.pos.y+5
 				),
 				50, 30
 			);
-			
+			iX+=55;
+			///////////////////////
+			//CREATE SQUAD
+			this.squadRect = new me.Rect(
+				new me.Vector2d(
+					this.pos.x +5+iX,
+					this.pos.y+5
+				),
+				100, 30
+			);
+			iX+=110;
+			///////////////////////
+			// VIEW SQUAD
+			this.viewSquadRect = new me.Rect(
+				new me.Vector2d(
+					this.pos.x +iX,
+					this.pos.y+5
+				),
+				100, 30
+			);
+			iX+=110;
 			///////////////////////
 			//MARKET
 			this.sellRect = new me.Rect(
 				new me.Vector2d(
-					this.pos.x +5+55+55,
+					this.pos.x +iX,
 					this.pos.y+5
 				),
 				50, 30
 			);
+			iX+=55;
 			this.buyRect = new me.Rect(
 				new me.Vector2d(
-					this.pos.x +5+55+55+55,
+					this.pos.x +iX,
 					this.pos.y+5
 				),
 				50, 30
 			);
+			iX+=55;
 			//////////////////
 			//OUTWORLD
 			this.worldRect = new me.Rect(
 				new me.Vector2d(
-					this.pos.x +5+55+55+55+55,
+					this.pos.x +iX,
 					this.pos.y+5
 				),
 				50, 30
 			);
 			
-			this.unitsRect.buttonText = "Units";
-			this.buildRect.buttonText = "Build";
-			this.sellRect.buttonText = "Sell";
-			this.buyRect.buttonText = "Buy";
-			this.worldRect.buttonText = "World";
+			this.unitsRect.buttonText      = "Units";
+			this.squadRect.buttonText      = "Create Squad";
+			this.viewSquadRect.buttonText  = "View Squad";
+			this.buildRect.buttonText  	   = "Build";
+			this.sellRect.buttonText   	   = "Sell";
+			this.buyRect.buttonText        = "Buy";
+			this.worldRect.buttonText      = "World";
 			
 			this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
+			this.mainOptions.push(this.squadRect);//incluindo os botões no vetor
+			this.mainOptions.push(this.viewSquadRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.worldRect);//incluindo os botões no vetor
@@ -110,7 +138,7 @@ jsApp.ActionMenu = me.Renderable.extend({
     },
 
     "destroy" : function destroy() {
-	
+		me.game.remove(this);
     },
 
     "update" : function update() {

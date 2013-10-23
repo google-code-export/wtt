@@ -2,7 +2,7 @@ jsApp.BuildMenu = me.Renderable.extend({
     "init" : function init(buildList) {
         this.parent(new me.Vector2d(gameW/10, gameH/10), gameW-(gameW/10)*2, (gameH/10)*8);// position on the screen
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 		this.mouseAction = undefined;//binding variable for mouse actions
         // options that are displayed on the screen
         this.options = new Array();
@@ -131,8 +131,8 @@ jsApp.BuildMenu = me.Renderable.extend({
         while(ct--) {
             me.game.remove(this.options[ct].icon);
         }
-       // me.game.remove(this.houseRect.icon);
         gameHandler.activeHuds.buildMenu = undefined;
+		//
     },
 
     "update" : function update() {

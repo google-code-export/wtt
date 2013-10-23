@@ -8,7 +8,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
 		this.mouseAction = undefined;
 		this.parent(new me.Vector2d(0,gameH-128));
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 		this.alwaysUpdate = true;
 		
 		//LOADING IMAGES
@@ -144,11 +144,11 @@ jsApp.BuildingHUD = me.Renderable.extend({
        //DESCRIPTION RECT//
         this.font.draw(context,this.DescRect.TitleText,this.pos.x+128, this.pos.y );
 		if(this.upInfo.idUnit != undefined){
-			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+148, this.pos.y+64 );
+			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+155, this.pos.y+64 );
 				if(this.unit.icon != undefined) {
                     if(this.unit.hasRendered == undefined) {
                         this.unit.hasRendered = true;
-                        this.unit.icon.pos.x = this.pos.x+128;
+                        this.unit.icon.pos.x = this.pos.x+150;
                         this.unit.icon.pos.y = this.pos.y+64;
                         this.unit.width = this.unit.icon.width*3;
                         this.unit.height = this.unit.icon.height*3;

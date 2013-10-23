@@ -140,6 +140,33 @@ io.sockets.on('connection', function (socket) {
         });
     });
 	
+	/////////////////////////
+    // onOpenCreateSquad  //
+    ///////////////////////
+    socket.on('onOpenCreateSquad', function(data) {
+        console.log("Verifying units in village id "+data);
+        connection.query("CALL `ViewToCreateSquad`("+data+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onOpenCreateSquad", rows, data);
+            }
+        });
+    });
+	
+	/////////////////////////
+    // onCreateSquad      //
+    ///////////////////////
+    socket.on('onCreateSquad', function(data) {
+        console.log("Creating squad name "+data.squadName);
+        connection.query("CALL `newSquad`("+data.idVillage+",'"+data.idUnits+"','"+data.squadName+"')",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCreateSquad", rows, data);
+            }
+        });
+    });
     //////////////////////////
     // onConstructCheck     //
     //////////////////////////
@@ -230,9 +257,9 @@ io.sockets.on('connection', function (socket) {
         });
     });
 	
-	////////////////////////////
-    // onRequestUpdate //////////
-    ////////////////////////////
+	///////////////////////////
+    // onRequestUpdate      //
+    /////////////////////////
     socket.on('onRequestUpdate', function(data){
         console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.posX+" y:"+data.posY);
         connection.query("CALL `updateBuildings`("+data.idVillage+","+data.idBuilding+","+data.posX+","+data.posY+")", function(err, rows, fields){
@@ -244,9 +271,9 @@ io.sockets.on('connection', function (socket) {
         });
     });
 	
-	////////////////////////////
-    // onCheckUpdate  //////////
-    ////////////////////////////
+	////////////////////////
+    // onCheckUpdate     //
+    //////////////////////
     socket.on('onCheckUpdate', function(data){
         console.log("Updating idbuilding:"+data.idBuilding+" x:"+data.posX+" y:"+data.posY);
         connection.query("CALL `TimeCheck`("+data.idVillage+","+data.posX+","+data.posY+")", function(err, rows, fields){
@@ -259,9 +286,9 @@ io.sockets.on('connection', function (socket) {
     });
     /////////////////////////
 	
-	////////////////////////////
-    // onSellMenu  //////////
-    ////////////////////////////
+	/////////////////////
+    // onSellMenu     //
+    ///////////////////
 	socket.on("onSellMenu", function(){
 		connection.query("CALL `ViewSell`()", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
@@ -274,8 +301,8 @@ io.sockets.on('connection', function (socket) {
 	/////////////////////////////
 	
 	////////////////////////////
-    // onListWorldVillage  //////////
-    ////////////////////////////
+    // onListWorldVillage     //
+    ///////////////////////////
 	socket.on("onListWorldVillage", function(){
 		connection.query("CALL `getWorldVillages`(1)", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
@@ -287,6 +314,20 @@ io.sockets.on('connection', function (socket) {
 	});
 	/////////////////////////////
 	
+
+	////////////////////////////
+    // onVillageSelect        //
+    ///////////////////////////
+	socket.on("onVillageSelect", function(data){
+		connection.query("CALL `ViewVillageOwner`("+data.idUser+","+data.x+","+data.y+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onVillageSelect",rows,data);
+            }
+        });
+	});	
+	////////////////////////////
 });
 
 // gotta put some more names here or try to use this:

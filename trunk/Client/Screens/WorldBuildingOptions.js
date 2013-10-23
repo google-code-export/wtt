@@ -1,9 +1,12 @@
 jsApp.WorldBuildingOptions = me.Renderable.extend({
-    "init" : function init(type,pixelIs) {
+    "init" : function init(type,idVillage,pixelIs) {
         this.floating = false;
-        this.isPersistent = true;
-
+        this.isPersistent = false;;
+		
 		gameHandler.activeHuds.actionWorldMenu = this;
+		this.idVillage						   = idVillage;
+		console.log(idVillage);
+		console.log(type);
         // options that are displayed on the screen
         this.options = new Array();
 		var iY = 0;
@@ -14,7 +17,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			//////////////////////
 			// POSSIBLE BUTTONS //
 			//////////////////////
-			
+		
+		if(type == "Friend"){
 			//////////////////////
 			// ENTER
 			this.enterRect = new me.Rect(
@@ -27,6 +31,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			iY += 50;
 			this.enterRect.buttonText = "Enter";
 			this.options.push(this.enterRect);//including button to the array
+		}else{
 			//////////////////////
 			// ATTACK
 			this.attackRect = new me.Rect(
@@ -39,6 +44,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			iY += 50;
 			this.attackRect.buttonText = "Attack";
 			this.options.push(this.attackRect);//including button to the array
+		}
 			//////////////////////
 			// TRADE
 			this.tradeRect = new me.Rect(
@@ -66,7 +72,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			var totalHeight = iY+5;
 			
 			var ct = this.options.length;
-			console.log(ct);
+
 			while(ct--){
 				console.log(this.options[ct]);
 			}
@@ -78,7 +84,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
     },
 
     "destroy" : function destroy() {
-	
+		me.game.remove(this);
     },
 
     "update" : function update() {

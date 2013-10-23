@@ -4,7 +4,7 @@ jsApp.VillageUnitsGeneral = me.Renderable.extend({
         this.floating = true;
         this.listUnits = listUnits;
         this.listClasses = listClasses;
-        this.isPersistent = true;
+        this.isPersistent = false;
         this.font = new me.Font("verdana", 14, "lime", "left");
         this.titleFont = new me.Font("verdana", 18, "white", "left");
         ///////////////////////////
