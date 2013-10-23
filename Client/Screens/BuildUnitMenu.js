@@ -3,7 +3,7 @@ jsApp.BuildUnitMenu = me.Renderable.extend({
         this.building = buildingIsMaking;
         this.parent(new me.Vector2d(gameW/10, gameH/10), gameW-(gameW/10)*2, (gameH/10)*8);// position on the screen
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 		this.mouseAction = undefined;//binding variable for mouse actions
         // options that are displayed on the screen
         this.options = new Array();

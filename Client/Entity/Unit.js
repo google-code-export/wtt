@@ -7,6 +7,7 @@ var Unit = me.ObjectEntity.extend(
             settings.image = classType;
             settings.spritewidth = 14;
             settings.spriteheight = 18;
+			this.isPersistent = false;
             this.parent(x, y , settings);
 
             this.lastAction = undefined;
@@ -28,5 +29,10 @@ var Unit = me.ObjectEntity.extend(
             UnityAI.takeMyMindAway(this); // woooooooorray
             //this.pos.x +=0.3;
             this.parent();
-        }
+        },
+		
+		destroy : function ()
+		{
+			me.game.remove(this);
+		}
     });

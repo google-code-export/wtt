@@ -2,7 +2,7 @@ jsApp.BuildingDetail = me.Renderable.extend({
     "init" : function init(buildList) {
         this.parent(new me.Vector2d(gameW/20, gameH/20), gameW-(gameW/20)*2, (gameH/20)*8);// position on the screen
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 		this.mouseAction = undefined;//binding variable for mouse actions
 
         // Declaring All Options //

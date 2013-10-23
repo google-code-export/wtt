@@ -6,7 +6,7 @@ jsApp.BuildArea = me.Renderable.extend({
 		this.info.idVillage = jsApp.getUserData().idVillage;
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40); //This is here we define the position in the screen
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
         this.options = this.mainOptions;
         this.font = new me.Font("verdana", 14, "lime", "right");//getting the font.
         this.font.textBaseline = "bottom";

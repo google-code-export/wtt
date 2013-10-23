@@ -5,7 +5,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
     "init" : function init() {
         this.parent(new me.Vector2d(5,5),gameW,30);// position on the screen
         this.floating = true;
-        this.isPersistent = true;
+        this.isPersistent = false;
 
         this.WoodValue = 0;
         this.StoneValue = 0;

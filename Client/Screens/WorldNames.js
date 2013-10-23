@@ -5,7 +5,7 @@ jsApp.WorldNames = me.Renderable.extend({
 		this.parent(new me.Vector2d(villageInfo.x,villageInfo.y),8,16);// position on the screen
 		this.font         = new me.Font("verdana", 18, "white", "left");
         this.floating     = false;
-		this.isPersistent = true;
+		this.isPersistent = false;
 		this.alwaysUpdate = true;
 		this.villageInfo  = villageInfo;
 	},
