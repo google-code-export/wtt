@@ -167,6 +167,35 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
+	
+	
+	/////////////////////////
+    // onViewSquad        //
+    ///////////////////////
+    socket.on('onViewSquad', function(data) {
+        console.log("Viewing squads from idVillage: "+data);
+        connection.query("CALL `ViewVillageSquad`("+data+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onViewSquad", rows, data);
+            }
+        });
+    });
+	
+	/////////////////////////
+    // onSquadDetail      //
+    ///////////////////////
+    socket.on('onSquadDetail', function(data) {
+        console.log("Viewing units from squads: "+data);
+        connection.query("CALL `CountUnitSquad`("+data+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onSquadDetail", rows, data);
+            }
+        });
+    });
     //////////////////////////
     // onConstructCheck     //
     //////////////////////////
@@ -295,6 +324,48 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onSellMenu",rows);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////
+    // onCreateOffer  //
+    ///////////////////
+	socket.on("onCreateOffer", function(data){
+		connection.query("CALL `doOffer`("+data.userId+","+data.idResource+","+data.qtd+","+data.prc+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCreateOffer",rows,data);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////
+    // onBuyMenu      //
+    ///////////////////
+	socket.on("onBuyMenu", function(data){
+		connection.query("CALL `ViewOffer`("+data+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onBuyMenu",rows);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////
+    // onBuyOffer  //
+    ///////////////////
+	socket.on("onBuyOffer", function(data){
+		connection.query("CALL `BuyOffer`("+data.userId+","+data.idOffert+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onBuyOffer",rows,data);
             }
         });
 	});
