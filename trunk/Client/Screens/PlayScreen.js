@@ -6,12 +6,15 @@ var PlayScreen = me.ScreenObject.extend(
 			var userData = jsApp.getUserData();
             this.idVillage = userData.idVillage;
 			this.TMXTileMap = "Chunk";
+			
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
             loadMap("Chunk");
 			me.game.sort();
+			
 			//Destroying websockets event before create a new one
 			 jsApp.destroy("onBuildingSelect");
              jsApp.destroy("onListVillageBuildings");
+			 jsApp.destroy("onListVillageUnits");
 			 jsApp.destroy("onRequestUpdate");
 			 jsApp.destroy("onConstruct");
 			 jsApp.destroy("onResourcesUpdate");
@@ -25,7 +28,10 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSellMenu");	
 			 jsApp.destroy("onOpenCreateSquad");
 			 jsApp.destroy("onCreateSquad");
-			console.log(jsApp.getUserData());
+			 jsApp.destroy("onViewSquad");
+			 jsApp.destroy("onSquadDetail");
+			 jsApp.destroy("onCreateOffer");
+			 jsApp.destroy("onBuyMenu");
 			
 			//LISTING VILLAGE UNITS AND BUILDINGS
 			socket.emit("onListVillageBuildings", this.idVillage);
@@ -349,10 +355,91 @@ var PlayScreen = me.ScreenObject.extend(
 			
 			///////////////////////////////////////////////
 			//creating the window to create the squad
-			socket.on("onCreateSquad", function(rows, data){
-				console.log(rows);
+			socket.on("onViewSquad", function(rows, data){
+
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var idVillage 	   = data;
+				var div 	  	   = document.createElement("div");
+				var squadFunction  = "<script>function showSquadDetail(idSquad){socket.emit('onSquadDetail',idSquad);$('#dialogSquad').dialog('close');$('#dialogSquad').html('');}</script>";
+				div.setAttribute("id","dialogSquad");
+				div.setAttribute("name","dialogSquad");
+				div.setAttribute("title","View Squad");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$("#dialogSquad").append(squadFunction);
+				$( "#dialogSquad" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+
+					},
+					close: function() {
+						$("#dialogSquad").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var villageSquadContent = "";
+				$.each(rows[0], function(i, obj) {
+					var squad 		 = rows[0][i];
+					console.log(squad);
+					var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+");'>"+squad.SquadName+"</a>";
+					villageSquadContent = villageSquadContent + villageSquad;
+				});
+				
+				$("#dialogSquad").append(villageSquadContent);
+				$( "#dialogSquad" ).dialog( "open" );
+				
 			});
 			
+
+			///////////////////////////////////////////////
+			//creating the window to create the squad
+			socket.on("onSquadDetail", function(rows, idSquad,squadName){
+
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+				div.setAttribute("id","dialogSquadUnits");
+				div.setAttribute("name","dialogSquadUnits");
+				div.setAttribute("title",squadName);
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$("#dialogSquadUnits").dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+
+					},
+					close: function() {
+						$("#dialogSquadUnits").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var unitSquadContent = "";
+				$.each(rows[0], function(i, obj) {
+					var unit 		 = rows[0][i];
+					var unitImg      = me.loader.getImage(unit.Image);
+					console.log(unit);
+					//console.log(unitImg);
+					var unitSquad = "<br> "+unit.qty+" X "+unit.Description;
+					unitSquadContent = unitSquadContent + unitSquad;
+				});
+				
+				$("#dialogSquadUnits").append(unitSquadContent);
+				$( "#dialogSquadUnits" ).dialog( "open" );
+				
+			});
 			//////////////////////////////////////////////////////////////
 			
 			
@@ -420,13 +507,187 @@ var PlayScreen = me.ScreenObject.extend(
 			//Opening sell menu					//
 			////						/////////
 			socket.on('onSellMenu', function(rows) {
-				gameHandler.activeHuds.sellMenu = new jsApp.SellMenu(rows);
-				me.game.add(gameHandler.activeHuds.sellMenu, 1100);
-				me.game.sort();
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var userData  = jsApp.getUserData();
+				console.log(userData);
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogSell");
+				div.setAttribute("name","dialogSell");
+				div.setAttribute("title","Select what you want to sell :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogSell" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Send": function() {
+							//creating new market offer
+							$.each(rows[0], function(i, obj) {
+								var resource = rows[0][i];
+								if(resource.Description == "gold"){
+								}else{
+									//if it's a valid number, send to the server
+									if( ($("#"+resource.Description+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) && ($("#"+resource.Description+"_prc").val() !="" && $("#"+resource.Description+"_prc").val() !=0) ){
+										var qtd = $("#"+resource.Description+"_qtd").val();
+										var prc	= $("#"+resource.Description+"_prc").val();
+										socket.emit('onCreateOffer',{"userId" : userData.userId, "idResource" : resource.idBasecResouce, "qtd" : qtd, "prc" : prc});
+									}else{
+									}
+								}
+							});
+							//clearing the form
+							$( "#dialogSell" ).html('');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( "#dialogSell" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						//clearing the form
+						$( "#dialogSell" ).html('');
+						$( this ).dialog( "close" );
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE SELL MARKET
+				var sellContent = "";
+				sellContent 	= "<table border=0 width=100%><tr>";
+				sellContent     = sellContent + "<td width=(100/3) align=center><b>Resource</b></td>";
+				sellContent     = sellContent + "<td width=(100/3) align=center><b>Qtd</b></td>";
+				sellContent     = sellContent + "<td width=(100/3) align=center><b>Price p/ Unit</b></td>";
+				sellContent     = sellContent + "</tr>";
+
+				$.each(rows[0], function(i, obj) {
+					var resource = rows[0][i];
+					if(resource.Description == "gold"){
+					}else{
+						resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description));
+						resource.img = $(resource.img).attr("src");
+						
+						var resourceSell = "<tr> <td align=center width=(100/3)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
+						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input type='number' name='"+resource.Description+"_qtd' id='"+resource.Description+"_qtd' size=5 /></td>";
+						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input type='number' name='"+resource.Description+"_prc' id='"+resource.Description+"_prc' size=5 /></td>";
+						resourceSell 	 = resourceSell +"</tr>";
+						sellContent		 = sellContent + resourceSell;
+					}
+				});
+				
+				sellContent	= sellContent + "</table>";
+				
+				$("#dialogSell").append(sellContent);
+				$("#dialogSell").dialog( "open" );
 			});
 			////////////////////////////////////
-		
+			
+			///////////////////////////////////////
+			//after create a offer				//
+			////						/////////
+			socket.on('onCreateOffer', function(rows,data) {
+				//updating the resources
+				jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				//
+				console.log(rows);
+			});
+			///////////////////////////////////
+			
+			///////////////////////////////////////
+			//Opening buy menu					//
+			////						/////////
+			socket.on('onBuyMenu', function(rows) {
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var userData  = jsApp.getUserData();
+				console.log(rows);
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogBuy");
+				div.setAttribute("name","dialogBuy");
+				div.setAttribute("title","Select what you want to Buy :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogBuy" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Send": function() {
+							//creating new market offer
+							$.each(rows[0], function(i, obj) {
+								var resource = rows[0][i];
+								//if it's a valid number, send to the server
+								if( ($("#"+resource.idOffert+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) ){
+									var qtd 		= $("#"+resource.idOffert+"_qtd").val();
+									var userData	= jsApp.getUserData(); 
+									socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert});
+								}else{
+								}
+							});
+							//clearing the form
+							$( "#dialogBuy" ).html('');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( "#dialogBuy" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						//clearing the form
+						$( "#dialogBuy" ).html('');
+						$( this ).dialog( "close" );
+					}
+				});
 
+				//////////////////////////////////
+				//POPULATING THE BUY MARKET
+				var buyContent = "";
+				buyContent 	= "<table border=0 width=100%><tr>";
+				buyContent     = buyContent + "<td width=(100/5) align=center><b>Id Offer</b></td>";
+				buyContent     = buyContent + "<td width=(100/5) align=center><b>Resource</b></td>";
+				buyContent     = buyContent + "<td width=(100/5) align=center><b>Qtd</b></td>";
+				buyContent     = buyContent + "<td width=(100/5) align=center><b>Price p/ Unit</b></td>";
+				buyContent     = buyContent + "<td width=(100/5) align=center><b>Buy</b></td>";
+				buyContent     = buyContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					var resource = rows[0][i];
+					console.log(resource);
+										
+					//resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description)); -->NEED TO FIX!
+					//resource.img = $(resource.img).attr("src"); -->NEED TO FIX!
+					//var resourceBuy = "<tr> <td align=center width=(100/4)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
+					var resourceBuy = "<tr><td id='id_"+resource.idOffert+"'align=center width=(100/5)>"+resource.idOffert+"</td>";
+					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.idBasecResouce+"</td>";
+					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.Qty+"</td>";
+					resourceBuy = resourceBuy + "<td align=center width=(100/5)><img src='data/sprite/coin.png' />"+resource.Money+"</td>";
+					resourceBuy	= resourceBuy + "<td align=center width=(100/5)><input type='number' name='"+resource.idOffert+"_qtd' id='"+resource.idOffert+"_qtd' size=5 /></td>";
+					buyContent  = buyContent + resourceBuy + "</tr>";
+				});
+				buyContent	= buyContent + "</table>";
+				$("#dialogBuy").append(buyContent);
+				$("#dialogBuy").dialog( "open" );
+			});
+			////////////////////////////////////
+			///////////////////////////////////////
+			//after buy a offer				//
+			////						/////////
+			socket.on('onBuyOffer', function(rows,data) {
+				//updating the resources
+				jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				//
+				console.log(rows);
+			});
+			///////////////////////////////////
             this.parent();
             /////////////////
             // GAME CAMERA //
@@ -494,12 +755,15 @@ var PlayScreen = me.ScreenObject.extend(
 							} else if(menu.squadRect.containsPointV(me.input.changedTouches[0])) {
 								// IF I CLIKED ON CREATE ARMY
 								socket.emit("onOpenCreateSquad", this.idVillage);
+							} else if(menu.viewSquadRect.containsPointV(me.input.changedTouches[0])) {
+								//IF I CLIKED ON VIEW SQUAD
+								socket.emit("onViewSquad", this.idVillage);
                             } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON SELL
 								socket.emit("onSellMenu");
                             }else if(menu.buyRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON BUY
-								socket.emit("onBuyMenu");
+								socket.emit("onBuyMenu",userData.userId);
                             }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
 								socket.emit("onListWorldVillage");
@@ -591,19 +855,24 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.releasePointerEvent("mousemove", me.game.viewport);
 			me.game.remove(this.hud);
 			me.game.remove(this.gui);
-			jsApp.destroy("onBuildingSelect");
-            jsApp.destroy("onListVillageBuildings");
-			jsApp.destroy("onRequestUpdate");
-			jsApp.destroy("onConstruct");
-			jsApp.destroy("onResourcesUpdate");
-			jsApp.destroy("onCheckUpdate");
-			jsApp.destroy("onConstructRequest");
-			jsApp.destroy("onConstructCheck");
-			jsApp.destroy("onRequestUnit");
-			jsApp.destroy("onUnitCheck");
-			jsApp.destroy("onListBuilding");
-			jsApp.destroy("onResourcesCollect");
-			jsApp.destroy("onSellMenu");
+			 jsApp.destroy("onBuildingSelect");
+             jsApp.destroy("onListVillageBuildings");
+			 jsApp.destroy("onListVillageUnits");
+			 jsApp.destroy("onRequestUpdate");
+			 jsApp.destroy("onConstruct");
+			 jsApp.destroy("onResourcesUpdate");
+			 jsApp.destroy("onCheckUpdate");
+			 jsApp.destroy("onConstructRequest");
+			 jsApp.destroy("onConstructCheck");
+			 jsApp.destroy("onRequestUnit");
+			 jsApp.destroy("onUnitCheck");
+			 jsApp.destroy("onListBuilding");
+			 jsApp.destroy("onResourcesCollect");
+			 jsApp.destroy("onSellMenu");	
+			 jsApp.destroy("onOpenCreateSquad");
+			 jsApp.destroy("onCreateSquad");
+			 jsApp.destroy("onViewSquad");
+			 jsApp.destroy("onSquadDetail");
 			me.game.reset();
 			me.game.sort();
         }
