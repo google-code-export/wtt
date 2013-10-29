@@ -8,21 +8,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 			var userData				 = jsApp.getUserData();
 			this.TMXTileMap   			 = "Chunk";
 			this.font          			 = new me.Font("verdana", 18, "white", "left");
-			//Destroying websockets event before create a new one
-			 jsApp.destroy("onBuildingSelect");
-             jsApp.destroy("onListVillageBuildings");
-			 jsApp.destroy("onRequestUpdate");
-			 jsApp.destroy("onConstruct");
-			 jsApp.destroy("onResourcesUpdate");
-			 jsApp.destroy("onCheckUpdate");
-			 jsApp.destroy("onConstructRequest");
-			 jsApp.destroy("onConstructCheck");
-			 jsApp.destroy("onRequestUnit");
-			 jsApp.destroy("onUnitCheck");
-			 jsApp.destroy("onListBuilding");
-			 jsApp.destroy("onResourcesCollect");
-			 jsApp.destroy("onSellMenu");	
 			
+			//Destroying websockets event before create a new one	
+			 jsApp.destroy("onListWorldVillage");
+			 jsApp.destroy("onVillageSelect");
+			 jsApp.destroy("onListSquadAtk");
+			 jsApp.destroy("onAtkVillage");
+			  
 			////////////////////////////////////
 			//WORLD SOCKETS			         //
 			//////////////////////////////////
@@ -67,6 +59,77 @@ var OutWorldScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			
 			
+			//////////////////////////////////////////////////
+			//LISTING SQUADS TO ATTACK THE VILLAGE THAT I CLIKED
+			socket.on("onListSquadAtk", function(rows, data){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var idVillage 	   = data;
+				var div 	  	   = document.createElement("div");
+			
+				div.setAttribute("id","dialogAtkSquad");
+				div.setAttribute("name","dialogAtkSquad");
+				div.setAttribute("title","Select the Squad to attack :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogAtkSquad" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Send" : function(){
+							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
+							var idVillageAtk = 1;//  --> FIX ME!!
+							if(idVillageAtk == 1){var idVillageDef =2;}else{var idVillageDef =1;} // --> FIX ME!!
+							$("input:radio[id*='atkSquad_']:checked").each(function(i, obj){
+								var idSquadVillage = $(this).val();
+								console.log(idSquadVillage);
+								socket.emit('onAtkVillage',{"IdVillagAtk" : idVillageAtk, "IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef});
+							});
+							
+							$( "#dialogAtkSquad" ).html('');
+							$( this ).dialog( "close" );
+						},
+						
+						Cancel: function() {
+							$( "#dialogAtkSquad" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogAtkSquad").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUAD RADIOBOXES
+				var atkSquadContent = "";
+				$.each(rows[0], function(i, obj) {
+					var squad 		 = rows[0][i];
+					console.log(squad);
+					var atkSquad = "<br> <input type='radio' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					//atkSquad	 = atkSquad + "<input type=hidden id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"'  />"; -->FIX ME : NEED TO PUT THE ID VILLAGE OF THE SQUAD
+					atkSquadContent = atkSquadContent + atkSquad;
+				});
+				
+				$("#dialogAtkSquad").append(atkSquadContent);
+				$("#dialogAtkSquad").dialog("open");
+				
+			
+			});
+			
+			///////////////////////////////////////////
+			
+			///////////////////////////////////////////
+			//RESULT OF THE ATTACK 
+			socket.on("onAtkVillage", function(rows, data){
+				console.log(rows);
+			});
+			
+			///////////////////////////////////////////
+			
             /////////////////
             // GAME CAMERA //
             /////////////////
@@ -95,21 +158,29 @@ var OutWorldScreen = me.ScreenObject.extend(
 						if(gameHandler.activeHuds.actionWorldMenu.attackRect != undefined){
 							//IF I CLICKED IN 'ATTACK' BUTTON
 							if(gameHandler.activeHuds.actionWorldMenu.attackRect.containsPointV(me.input.changedTouches[0])){
+								socket.emit('onListSquadAtk',userData.idVillage);
+								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
+								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}
 						}
+						if(gameHandler.activeHuds.actionWorldMenu.tradeRect != undefined){
+							//IF I CLICKED IN 'TRADE' BUTTON
+							if(gameHandler.activeHuds.actionWorldMenu.tradeRect.containsPointV(me.input.changedTouches[0])){
+							
+							}
+						}
+						if(gameHandler.activeHuds.actionWorldMenu.msgRect != undefined){
+							//IF I CLICKED IN 'SEND MSG' BUTTON
+							if(gameHandler.activeHuds.actionWorldMenu.msgRect.containsPointV(me.input.changedTouches[0])){
+							
+							}
+						}
+
 					}
-					//IF I CLICKED IN 'TRADE' BUTTON
-					if(gameHandler.activeHuds.actionWorldMenu.tradeRect.containsPointV(me.input.changedTouches[0])){
-					}
-				
-					//IF I CLICKED IN 'SEND MSG' BUTTON
-					else if(gameHandler.activeHuds.actionWorldMenu.msgRect.containsPointV(me.input.changedTouches[0])){
-					}
-					else{
-						//IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
-						me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
-						gameHandler.activeHuds.actionWorldMenu = undefined;
-					}
+					
+					//IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
+					me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
+					gameHandler.activeHuds.actionWorldMenu = undefined;
 					//
 				//IF I DONT HAVE ANY WORLD VILLAGE ACTION MENU OPEN
 				}else{
@@ -118,7 +189,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 					var pixelIs    = jsApp.getTileForPixels(tileIs.x,tileIs.y);
 					var tileid     = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					//IF I CLICKED IN SOMETHING I'LL SEE WHAT IT'S AND CREATE A ACTION MENU
-					if (tileid == 11){ 
+					if (tileid == 11){ //--> FIX ME THIS NEED TO FIND ALSO THE TEMPLE AND THE QUESTS
 						socket.emit("onVillageSelect",{"idUser" : userData.userId, "x" : tileIs.x, "y" : tileIs.y});
 					}
 				}
@@ -194,6 +265,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 			gameHandler.activeHuds.worldNames = undefined;
 			me.game.remove(this.gui,true);
 			me.game.sort();
+			
+			//Destroying websockets event before create a new one	
+			jsApp.destroy("onListWorldVillage");
+			jsApp.destroy("onVillageSelect");
+			jsApp.destroy("onListSquadAtk");
+			jsApp.destroy("onAtkVillage");
+			  
         }
     });
 
@@ -203,7 +281,6 @@ var OutWorldScreen = me.ScreenObject.extend(
 // Parameters
 // - String MapName
 function loadMap(mapname) {
-    //me.state.change(me.state.PLAY);
     me.levelDirector.loadLevel(mapname);
     me.game.sort();
 }

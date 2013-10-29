@@ -44,7 +44,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			iY += 50;
 			this.attackRect.buttonText = "Attack";
 			this.options.push(this.attackRect);//including button to the array
-		}
+			
 			//////////////////////
 			// TRADE
 			this.tradeRect = new me.Rect(
@@ -68,6 +68,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			);
 			this.msgRect.buttonText = "Send Msg";
 			this.options.push(this.msgRect);//including button to the array
+		}
+
 			
 			var totalHeight = iY+5;
 			

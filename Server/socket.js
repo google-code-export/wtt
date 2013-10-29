@@ -361,7 +361,7 @@ io.sockets.on('connection', function (socket) {
     // onBuyOffer  //
     ///////////////////
 	socket.on("onBuyOffer", function(data){
-		connection.query("CALL `BuyOffer`("+data.userId+","+data.idOffert+")", function(err, rows, fields){
+		connection.query("CALL `BuyOffer`("+data.userId+","+data.idOffert+","+data.Qtd+")", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
@@ -395,6 +395,34 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onVillageSelect",rows,data);
+            }
+        });
+	});	
+	////////////////////////////
+	
+	//////////////////////////
+    // onListSquadAtk      //
+    ////////////////////////
+	socket.on("onListSquadAtk", function(data){
+        connection.query("CALL `ViewVillageSquad`("+data+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListSquadAtk", rows, data);
+            }
+        });
+	});	
+	////////////////////////////
+	
+	////////////////////////////
+    // onAtkVillage        //
+    ///////////////////////////
+	socket.on("onAtkVillage", function(data){
+		connection.query("CALL `Battle`("+data.IdVillagAtk+","+data.IdSquadAtk+","+data.IdVillagDef+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onAtkVillage",rows,data);
             }
         });
 	});	

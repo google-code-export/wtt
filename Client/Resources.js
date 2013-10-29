@@ -16,7 +16,7 @@ var g_resources =
         {name: "Farmer"		,	type: "image",  src: "data/sprite/Characters/farmer.png"},
         {name: "Lumberjack" ,	type: "image",  src: "data/sprite/Characters/lumberjack.png"},
 		{name: "Ninja"		,	type: "image",  src: "data/sprite/Characters/ninja.png"},
-		{name: "Soldier"	,	type: "image",  src: "data/sprite/Characters/soldier.png"},
+		{name: "Soldier"	,	type: "image",  src: "data/sprite/Characters/soldierteste1.png"},
 		{name: "Archer"		,	type: "image",  src: "data/sprite/Characters/archer.png"},
 
         // faces
@@ -29,7 +29,7 @@ var g_resources =
         {name: "Stone" ,type: "image",  src: "data/sprite/Stone.png"},
         {name: "Iron"  ,type: "image",  src: "data/sprite/iron.png" },
         {name: "Food"  ,type: "image",  src: "data/sprite/Meat.png" },
-        {name: "Coin"  ,type: "image",  src: "data/sprite/coin.png" },
+        {name: "Gold"  ,type: "image",  src: "data/sprite/Gold.png" },
 
         //////////////
         // BASE TMX //

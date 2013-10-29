@@ -93,6 +93,7 @@ jsApp.BuildMenu = me.Renderable.extend({
 								/*me.game.add(new jsApp.BuildingDetail(),5000);
 								me.game.sort();*/
                                 //simply make the selector to build it
+								console.log(this.options[ct].info);
                                 this.building = new jsApp.BuildArea("mousedown",this.options[ct].info);// creating a new instance of the class BuildArea
                                 me.game.add(this.building,1000);// adding this to the screen
                                 me.game.remove(this); //removing the build hud

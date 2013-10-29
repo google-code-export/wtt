@@ -21,24 +21,26 @@ var UnityAI = {
         //pega distancia
         xDir =  xDir.clamp(-1,1);
         yDir =  yDir.clamp(-1,1);
-        //console.log(xDir);
         var modX = unit.accel.x * xDir;
+		var dirX = Math.round(unit.accel.x * xDir);
+		console.log
         var modY = unit.accel.y * yDir;
-        if(modX>0 && unit.dir != "right") {
+		
+        if(dirX>0 && unit.dir != "right") {
             unit.renderable.setCurrentAnimation('left');
             unit.flipX(false);
             unit.dir = "right";
         }
-        else if(modX < 0  &&  unit.dir != "left") {
+        else if(dirX < 0  &&  unit.dir != "left") {
             unit.renderable.setCurrentAnimation('left');
             unit.dir = "left"
             unit.flipX(true);
         }
-        else if(modX == 0 && modY > 0  &&  unit.dir != "up") {
+        else if(dirX == 0 && modY < 0  &&  unit.dir != "up") {
             unit.renderable.setCurrentAnimation('up');
             unit.dir = "up"
         }
-        else if(modX == 0 && modY < 0  && unit.dir != "down") {
+        else if(dirX == 0 && modY > 0  && unit.dir != "down") {
             unit.renderable.setCurrentAnimation('down');
             unit.dir = "down"
         }

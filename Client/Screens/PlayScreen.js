@@ -344,9 +344,13 @@ var PlayScreen = me.ScreenObject.extend(
 				//POPULATING THE ARMY CHECKBOXES
 				var squadContent = "Squad Name: <input type='text' name='squadName' id='squadName' length='20'></input>";
 				$.each(rows[0], function(i, obj) {
-					var unit =rows[0][i];
-					var unitCheckBox = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'>"+unit.Unit_Name+"("+unit.Description+")</input>";
-					squadContent = squadContent + unitCheckBox;
+					if(rows[0][i].Msg != undefined){
+						squadContent = squadContent + "<br>" + rows[0][i].Msg;
+					}else{
+						var unit =rows[0][i];
+						var unitCheckBox = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'>"+unit.Unit_Name+"("+unit.Description+")</input>";
+						squadContent = squadContent + unitCheckBox;
+					}
 				});
 				
 				$("#dialogArmy").append(squadContent);
@@ -383,13 +387,17 @@ var PlayScreen = me.ScreenObject.extend(
 				});
 				
 				//////////////////////////////////
-				//POPULATING THE ARMY CHECKBOXES
+				//POPULATING THE SQUADS LINK
 				var villageSquadContent = "";
 				$.each(rows[0], function(i, obj) {
-					var squad 		 = rows[0][i];
-					console.log(squad);
-					var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+");'>"+squad.SquadName+"</a>";
-					villageSquadContent = villageSquadContent + villageSquad;
+					if(rows[0].Msg != undefined){
+						villageSquadContent = villageSquadContent + "<br>" +rows[0].Msg;
+					}else{
+						var squad 		 = rows[0][i];
+						console.log(squad);
+						var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+");'>"+squad.SquadName+"</a>";
+						villageSquadContent = villageSquadContent + villageSquad;
+					}
 				});
 				
 				$("#dialogSquad").append(villageSquadContent);
@@ -447,12 +455,67 @@ var PlayScreen = me.ScreenObject.extend(
             ///////////////////////
             // LISTING BUILDINGS //
             ///////////////////////
-            jsApp.getSocket().on("onListBuilding", function(data) {
+            socket.on("onListBuilding", function(data) {
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				/*var div	= document.createElement("div");
+			
+				div.setAttribute("id","dialogBuild");
+				div.setAttribute("name","dialogBuild");
+				div.setAttribute("title","Select a building:");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogBuild" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Build" : function(){
+							//ADD THE GAME HUD TO PLAYER SELECT WHERE TO BUILD
+								
+							
+							$( "#dialogBuild" ).html('');
+							$( this ).dialog( "close" );
+						},
+						
+						Cancel: function() {
+							$( "#dialogBuild" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogBuild").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE BUILDING MENU
+				var buildContent = "<table boder=0 width=100%><tr>";
+				buildContent 	 = buildContent + "<td align='center' width=20%>BUILDING</td>";
+				buildContent 	 = buildContent + "<td align='center' width=40%>RESOURCES</td>";
+				buildContent 	 = buildContent + "<td align='center' width=40%></td></tr>";
+				buildContent 	 = buildContent + "</table><table boder=0 width=100%>";
+				$.each(data[0], function(i, obj) {
+					var build 	= data[0][i];
+					console.log(build);
+					var bldDetail  = "<tr><td width=20%>IMAGEM</td>";
+					bldDetail  = bldDetail + "<td width=40%></td>";
+					//var atkSquad = "<br> <input type='radio' name='buildOption' id='building_"+build.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					//atkSquad	 = atkSquad + "<input type=hidden id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"'  />"; -->FIX ME : NEED TO PUT THE ID VILLAGE OF THE SQUAD
+					//atkSquadContent = atkSquadContent + atkSquad;
+				});
+				
+				//$("#dialogAtkSquad").append(atkSquadContent);
+				//$("#dialogAtkSquad").dialog("open");*/
+				
 				console.log(data[0]);
                 this.buildMenu = new jsApp.BuildMenu(data[0]);
                 gameHandler.activeHuds.buildMenu = this;
                 me.game.add(this.buildMenu,1000);
                 me.game.sort();
+				
             });			
  
 			///////////////////////////////////////
@@ -628,7 +691,7 @@ var PlayScreen = me.ScreenObject.extend(
 								if( ($("#"+resource.idOffert+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) ){
 									var qtd 		= $("#"+resource.idOffert+"_qtd").val();
 									var userData	= jsApp.getUserData(); 
-									socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert});
+									socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd});
 								}else{
 								}
 							});
@@ -662,14 +725,14 @@ var PlayScreen = me.ScreenObject.extend(
 				$.each(rows[0], function(i, obj) {
 					var resource = rows[0][i];
 					console.log(resource);
-										
-					//resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description)); -->NEED TO FIX!
-					//resource.img = $(resource.img).attr("src"); -->NEED TO FIX!
-					//var resourceBuy = "<tr> <td align=center width=(100/4)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
+		
+					resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description));
+					resource.img = $(resource.img).attr("src");
+					
 					var resourceBuy = "<tr><td id='id_"+resource.idOffert+"'align=center width=(100/5)>"+resource.idOffert+"</td>";
-					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.idBasecResouce+"</td>";
+					resourceBuy = resourceBuy + "<td align=center width=(100/4)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
 					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.Qty+"</td>";
-					resourceBuy = resourceBuy + "<td align=center width=(100/5)><img src='data/sprite/coin.png' />"+resource.Money+"</td>";
+					resourceBuy = resourceBuy + "<td align=center width=(100/5)><img src='data/sprite/Gold.png' />"+resource.Money+"</td>";
 					resourceBuy	= resourceBuy + "<td align=center width=(100/5)><input type='number' name='"+resource.idOffert+"_qtd' id='"+resource.idOffert+"_qtd' size=5 /></td>";
 					buyContent  = buyContent + resourceBuy + "</tr>";
 				});
@@ -678,9 +741,10 @@ var PlayScreen = me.ScreenObject.extend(
 				$("#dialogBuy").dialog( "open" );
 			});
 			////////////////////////////////////
-			///////////////////////////////////////
+			
+			///////////////////////////////////
 			//after buy a offer				//
-			////						/////////
+			////						/////
 			socket.on('onBuyOffer', function(rows,data) {
 				//updating the resources
 				jsApp.send("onResourcesUpdate", jsApp.getUserData());
@@ -746,9 +810,9 @@ var PlayScreen = me.ScreenObject.extend(
                             if(menu.buildRect.containsPointV(me.input.changedTouches[0])) {
                                 ///////// PUT THE HUD INTO THE SCREEN
                                 // game.add(object, z)
-                                if(gameHandler.activeHuds.buildMenu!=undefined)
-                                    return;
-                                jsApp.send("onListBuilding", {"idVillage" : this.idVillage} );//->NEED TO SEE THIS BETTER!!
+                                //if(gameHandler.activeHuds.buildMenu!=undefined)
+                                //    return;
+                                socket.emit("onListBuilding", {"idVillage" : this.idVillage} );
                             } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON LIST UNITS
                                 socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});
