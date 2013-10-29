@@ -404,7 +404,7 @@ io.sockets.on('connection', function (socket) {
     // onListSquadAtk      //
     ////////////////////////
 	socket.on("onListSquadAtk", function(data){
-        connection.query("CALL `ViewVillageSquad`("+data+")",function(err, rows, fields){
+        connection.query("CALL `ViewVillageSquad`("+data.idUserVillage+")",function(err, rows, fields){
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
@@ -418,7 +418,8 @@ io.sockets.on('connection', function (socket) {
     // onAtkVillage        //
     ///////////////////////////
 	socket.on("onAtkVillage", function(data){
-		connection.query("CALL `Battle`("+data.IdVillagAtk+","+data.IdSquadAtk+","+data.IdVillagDef+")", function(err, rows, fields){
+		console.log(data);
+		connection.query("CALL `Battle`("+data.IdSquadAtk+","+data.IdVillagDef+","+data.userId+")", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{

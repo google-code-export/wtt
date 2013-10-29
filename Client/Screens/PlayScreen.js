@@ -1,7 +1,7 @@
 var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
-			me.game.reset();
+			//me.game.reset();
 			var socket = jsApp.getSocket();
 			var userData = jsApp.getUserData();
             this.idVillage = userData.idVillage;
@@ -32,11 +32,24 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadDetail");
 			 jsApp.destroy("onCreateOffer");
 			 jsApp.destroy("onBuyMenu");
+		
+			
 			
 			//LISTING VILLAGE UNITS AND BUILDINGS
 			socket.emit("onListVillageBuildings", this.idVillage);
 			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
-			
+			//////////////////////////
+			//IF IM BEING ATTACKED //
+			socket.on("onAlertUserAtk", function(data){
+				//if im the user being attacked
+				if(userData.userId == data.idUser){
+					socket.emit("onListWorldVillage");
+					me.game.remove(this, true);
+					me.state.change(me.state.OUTWORLD);
+					alert(data.Msg);
+				}
+			});
+			////////////////////////
 			
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
             socket.on("onListVillageBuildings", function(data){
@@ -764,8 +777,6 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-				console.log(~~me.input.changedTouches[0].x);
-				console.log(~~me.input.changedTouches[0].y);
                 //IF I HAVE CLIKED IN THE BUILDING HUD,DO NOT REMOVE IT
                 if(gameHandler.activeHuds.buildingHUD != undefined){
 					//IF I CLICKED IN THE UPDATE BUTTON

@@ -19,6 +19,18 @@ var OutWorldScreen = me.ScreenObject.extend(
 			//WORLD SOCKETS			         //
 			//////////////////////////////////
 			
+			//////////////////////////
+			//IF IM BEING ATTACKED //
+			socket.on("onAlertUserAtk", function(data){
+				//if im the user being attacked
+				if(userData.userId == data.idUser){
+					socket.emit("onListWorldVillage");
+					me.game.remove(this, true);
+					me.state.change(me.state.OUTWORLD);
+					alert(data.Msg);
+				}
+			});
+			////////////////////////
 			
 			//////////////////////////////////////////////
 			//LISTING THE USERS VILLAGES IN THE OUT WORLD
@@ -47,10 +59,11 @@ var OutWorldScreen = me.ScreenObject.extend(
 			//////////////////////////////////////////////////
 			//VERIFYING IN WHAT VILLAGE I CLICKED
 			socket.on("onVillageSelect", function(rows, data){
-				var pixelIs = jsApp.getTileForPixels(data.x,data.y);
+				//var pixelIs = jsApp.getTileForPixels(data.x,data.y);
 				if(rows[0][0].Msg == "Your Village"){var type = "Friend"; }else{var type = "Enemy";}
-				var idVillage = rows[0][0].idVillage;
-				var actionWorldMenu = new jsApp.WorldBuildingOptions(type,idVillage,pixelIs);
+				var idVillage    = rows[0][0].idVillage;
+				var villageOwner = rows[0][0].VillageOwner;
+				var actionWorldMenu = new jsApp.WorldBuildingOptions(type,idVillage,villageOwner,data.pixelIs);
 				me.game.add(actionWorldMenu,10);
 				me.game.sort();
 			
@@ -64,7 +77,6 @@ var OutWorldScreen = me.ScreenObject.extend(
 			socket.on("onListSquadAtk", function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
-				var idVillage 	   = data;
 				var div 	  	   = document.createElement("div");
 			
 				div.setAttribute("id","dialogAtkSquad");
@@ -81,12 +93,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 					buttons: {
 						"Send" : function(){
 							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
-							var idVillageAtk = 1;//  --> FIX ME!!
-							if(idVillageAtk == 1){var idVillageDef =2;}else{var idVillageDef =1;} // --> FIX ME!!
+							var idVillageDef = data.idAtkVillage;
+							var userData	 = jsApp.getUserData();
+							var villageOwner = data.villageOwner;
+							
 							$("input:radio[id*='atkSquad_']:checked").each(function(i, obj){
 								var idSquadVillage = $(this).val();
-								console.log(idSquadVillage);
-								socket.emit('onAtkVillage',{"IdVillagAtk" : idVillageAtk, "IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef});
+								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : userData.userId, "villageOwner" : villageOwner});
 							});
 							
 							$( "#dialogAtkSquad" ).html('');
@@ -110,7 +123,6 @@ var OutWorldScreen = me.ScreenObject.extend(
 					var squad 		 = rows[0][i];
 					console.log(squad);
 					var atkSquad = "<br> <input type='radio' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
-					//atkSquad	 = atkSquad + "<input type=hidden id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"'  />"; -->FIX ME : NEED TO PUT THE ID VILLAGE OF THE SQUAD
 					atkSquadContent = atkSquadContent + atkSquad;
 				});
 				
@@ -120,12 +132,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 			
 			});
 			
-			///////////////////////////////////////////
+			//////////////////////////////////////////
 			
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK 
 			socket.on("onAtkVillage", function(rows, data){
 				console.log(rows);
+				socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0].Msg});
 			});
 			
 			///////////////////////////////////////////
@@ -141,7 +154,6 @@ var OutWorldScreen = me.ScreenObject.extend(
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;
                 this.mousemove = new me.Vector2d(~~me.input.changedTouches[0].x,~~me.input.changedTouches[0].y);
-				
 				//IF I HAVE ANY WORLD VILLAGE ACTION MENU OPEN
 				if(gameHandler.activeHuds.actionWorldMenu != undefined){
 					//IF I CLICKED IN 'ENTER' BUTTON
@@ -158,7 +170,9 @@ var OutWorldScreen = me.ScreenObject.extend(
 						if(gameHandler.activeHuds.actionWorldMenu.attackRect != undefined){
 							//IF I CLICKED IN 'ATTACK' BUTTON
 							if(gameHandler.activeHuds.actionWorldMenu.attackRect.containsPointV(me.input.changedTouches[0])){
-								socket.emit('onListSquadAtk',userData.idVillage);
+								var idAtkVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
+								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
+								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}
@@ -190,7 +204,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 					var tileid     = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					//IF I CLICKED IN SOMETHING I'LL SEE WHAT IT'S AND CREATE A ACTION MENU
 					if (tileid == 11){ //--> FIX ME THIS NEED TO FIND ALSO THE TEMPLE AND THE QUESTS
-						socket.emit("onVillageSelect",{"idUser" : userData.userId, "x" : tileIs.x, "y" : tileIs.y});
+						socket.emit("onVillageSelect",{"idUser" : userData.userId, "x" : tileIs.x, "y" : tileIs.y, "pixelIs" : pixelIs});
 					}
 				}
 				
