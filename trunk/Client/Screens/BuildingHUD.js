@@ -17,7 +17,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Stoneimage = me.loader.getImage("Stone");
         this.Ironimage  = me.loader.getImage("Iron") ;
         this.Meatimage  = me.loader.getImage("Food") ;
-        this.Coinimage  = me.loader.getImage("Coin") ;
+        this.Coinimage  = me.loader.getImage("Gold") ;
 		this.Clockimage = me.loader.getImage("Clock") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
 		console.log(g_resources);
