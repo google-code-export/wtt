@@ -43,7 +43,7 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onAlertUserAtk", function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
-					socket.emit("onListWorldVillage");
+					//socket.emit("onListWorldVillage");
 					me.game.remove(this, true);
 					me.state.change(me.state.OUTWORLD);
 					alert(data.Msg);
@@ -74,9 +74,10 @@ var PlayScreen = me.ScreenObject.extend(
 						//IF IT'S A COLLECTOR 
 						if(type == "R"){
 							console.log(data[0][i]);
-							//var gatherTime = jsApp.timeToMs(data[0][i].gatherTime);
+							var gatherTime = jsApp.timeToMs(data[0][i].TimerColection);
+							//console.log("gatherTime :" + gatherTime);
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
-							var gatherTime = 30000;
+							//var gatherTime = 30000;
 							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime, "type" : idTile}) // --> Need to start the resource collect engine
 						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
@@ -841,7 +842,7 @@ var PlayScreen = me.ScreenObject.extend(
 								socket.emit("onBuyMenu",userData.userId);
                             }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
-								socket.emit("onListWorldVillage");
+								//socket.emit("onListWorldVillage");
 								me.game.remove(this, true);
 								me.state.change(me.state.OUTWORLD);
 							}

@@ -424,6 +424,7 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onAtkVillage",rows,data);
+				socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0][0].Msg});
             }
         });
 	});	

@@ -2,7 +2,6 @@ var OutWorldScreen = me.ScreenObject.extend(
     {
 		
         onResetEvent: function () {
-			me.game.reset();
 			var socket         			 = jsApp.getSocket();
             var idWorld        			 = 1; //-->NEED TO SEE THIS BETTER!!
 			var userData				 = jsApp.getUserData();
@@ -14,7 +13,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onVillageSelect");
 			 jsApp.destroy("onListSquadAtk");
 			 jsApp.destroy("onAtkVillage");
-			  
+			 
+			 socket.emit("onListWorldVillage");
 			////////////////////////////////////
 			//WORLD SOCKETS			         //
 			//////////////////////////////////
@@ -138,7 +138,6 @@ var OutWorldScreen = me.ScreenObject.extend(
 			//RESULT OF THE ATTACK 
 			socket.on("onAtkVillage", function(rows, data){
 				console.log(rows);
-				socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0].Msg});
 			});
 			
 			///////////////////////////////////////////
