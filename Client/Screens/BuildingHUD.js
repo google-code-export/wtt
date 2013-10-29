@@ -20,7 +20,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.Coinimage  = me.loader.getImage("Gold") ;
 		this.Clockimage = me.loader.getImage("Clock") ;
 		this.Buildimage = me.loader.getImage("BuildImg");
-		console.log(g_resources);
+
         this.rectangle = new me.Rect(
             new me.Vector2d(
                 0,
