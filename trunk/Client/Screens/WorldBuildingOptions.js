@@ -1,12 +1,14 @@
 jsApp.WorldBuildingOptions = me.Renderable.extend({
-    "init" : function init(type,idVillage,pixelIs) {
+    "init" : function init(type,idVillage,villageOwner,pixelIs) {
+	
         this.floating = false;
-        this.isPersistent = false;;
-		
+        this.isPersistent = false;
+		this.alwaysUpdate = true;
+
 		gameHandler.activeHuds.actionWorldMenu = this;
 		this.idVillage						   = idVillage;
-		console.log(idVillage);
-		console.log(type);
+		this.villageOwner				       = villageOwner;
+		
         // options that are displayed on the screen
         this.options = new Array();
 		var iY = 0;
