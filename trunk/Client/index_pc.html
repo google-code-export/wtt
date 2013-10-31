@@ -44,7 +44,9 @@
             window.onReady(function onReady() {
                 $.jStorage.flush();
 				socket = jsApp.getSocket();
-                socket.on('loginok', function (data) {
+				//////////////////////////
+				//login                //
+				var loginFun =  function (data) {
                     if(data[0][0].msg != undefined){
                         alert(data[0][0].msg);
                     }else{
@@ -56,10 +58,21 @@
                         $("#logo").hide();
                         jsApp.onload();
                     }
-                });
-                socket.on('message', function(data) {
-                   alert(data.msg);
-                });
+					//REMOVING LISTENER
+					//jsApp.destroy('loginok',loginFun);
+                }
+                socket.on('loginok',loginFun);
+				//////////////////////////////////
+				
+				///////////////////////////////////
+				// msg functions               ///
+				var msgFun = function(data) {
+                    alert(data.msg);
+					//REMOVING LISTENER
+					//jsApp.destroy('message', msgFun);
+                }
+                socket.on('message', msgFun);
+				/////////////////////////////////
                 //////// DEBUG MODE
                 //$("#divLogin").hide();
                 //$.jStorage.set("userData", {userId: 4, sessionId:34});

@@ -17,9 +17,9 @@ var Unit = me.ObjectEntity.extend(
             this.accel.y = 0.6;
             this.dir = "stand-up";
             this.renderable.addAnimation("stand-up", [0]);
-            this.renderable.addAnimation("down", [1,1,0,0,2,2,0,0]);
-            this.renderable.addAnimation("left", [4,4,3,3,5,5,3,3]);
-            this.renderable.addAnimation("up", [7,7,6,6,8,8,6,6]);
+            this.renderable.addAnimation("down", [1,1,0,2,2,0]);
+            this.renderable.addAnimation("left", [4,4,3,5,5,3]);
+            this.renderable.addAnimation("up", [7,7,6,8,8,6]);
             this.renderable.setCurrentAnimation('stand-up');
 			
         },

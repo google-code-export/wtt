@@ -8,6 +8,7 @@ var g_resources =
 		{name: "BuildImg"	 ,	type: "image",	src: "data/sprite/build.png"},
         {name: "WoodTexture" ,	type: "image",  src: "data/sprite/woodtexture.png"  },
 		{name: "Clock" 		 ,	type: "image",  src: "data/sprite/Clock.gif"},
+		{name: "Hammer" 	 ,	type: "image",  src: "data/sprite/Hammer.png"},
 
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},

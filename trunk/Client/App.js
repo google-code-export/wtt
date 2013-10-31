@@ -1,6 +1,7 @@
 gameW = 800;
 gameH = 600;
-var jsApp	=
+var timeouts = [];
+var jsApp	 =
 {
     // Initialize the jsApp
 	//get user information//
@@ -51,7 +52,21 @@ var jsApp	=
 	//THIS IS THE TIMER SCHEDULER TO ADD ANYTHING THAT NEED TO RUN IN TIME //
 	timeScheduler : function(data,time)
 	{
-		setTimeout(data,time);
+		timeouts.push(setTimeout(data,time));
+		console.log(data);
+	},
+	
+	clearTimeOuts : function(){	
+		var highestTimeoutId = setTimeout(";");
+		for (var i = 0 ; i < highestTimeoutId ; i++) {
+			clearTimeout(i); 
+		}
+		/*console.log(timeouts);
+		for ( i = 0; i < timeouts.lenght; i++){
+			clearTimeout(timeouts[i]);
+		}
+		console.log(timeouts);
+		timeouts = [];*/
 	},
 	
 	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS OR HH:MM:SS
@@ -179,7 +194,8 @@ var gameHandler =  {
 	activeHuds : {
 		buildMenu : undefined,
 		buildingArea : undefined,
-		buildingHUD: undefined
+		buildingHUD: undefined,
+		buildingList : undefined
 	}
 }
 
