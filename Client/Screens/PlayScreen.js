@@ -1,17 +1,23 @@
 var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
-			//me.game.reset();
+			me.game.reset();
 			var socket = jsApp.getSocket();
 			var userData = jsApp.getUserData();
             this.idVillage = userData.idVillage;
 			this.TMXTileMap = "Chunk";
-			
+			//////////////////////////////////////////
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
             loadMap("Chunk");
 			me.game.sort();
 			
-			//Destroying websockets event before create a new one
+			////////////////////////////////////////
+			
+			 //Destroying websockets event before create a new one	
+			 jsApp.destroy("onListWorldVillage");
+			 jsApp.destroy("onVillageSelect");
+			 jsApp.destroy("onListSquadAtk");
+			 jsApp.destroy("onAtkVillage");
 			 jsApp.destroy("onBuildingSelect");
              jsApp.destroy("onListVillageBuildings");
 			 jsApp.destroy("onListVillageUnits");
@@ -32,7 +38,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadDetail");
 			 jsApp.destroy("onCreateOffer");
 			 jsApp.destroy("onBuyMenu");
-		
+			 /////////////////////////////////////////
 			
 			
 			//LISTING VILLAGE UNITS AND BUILDINGS
@@ -40,7 +46,7 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
 			//////////////////////////
 			//IF IM BEING ATTACKED //
-			socket.on("onAlertUserAtk", function(data){
+			var AlertAtkFun = function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
 					//socket.emit("onListWorldVillage");
@@ -48,11 +54,12 @@ var PlayScreen = me.ScreenObject.extend(
 					me.state.change(me.state.OUTWORLD);
 					alert(data.Msg);
 				}
-			});
+			}
+			socket.on("onAlertUserAtk", AlertAtkFun);
 			////////////////////////
 			
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
-            socket.on("onListVillageBuildings", function(data){
+			var listVillageBldFun = function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
                 for (var i in data[0]){
                     if (i!="remove"){
@@ -75,18 +82,19 @@ var PlayScreen = me.ScreenObject.extend(
 						if(type == "R"){
 							console.log(data[0][i]);
 							var gatherTime = jsApp.timeToMs(data[0][i].TimerColection);
-							//console.log("gatherTime :" + gatherTime);
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
-							//var gatherTime = 30000;
 							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime, "type" : idTile}) // --> Need to start the resource collect engine
 						}
                         buildLayer.setTile(x,y,idTile);//changing the tile
                     }
                 }
-            });
-
+            }
+            socket.on("onListVillageBuildings", listVillageBldFun);
+			//////////////////////////////////////////////////////////
+			
+						
             //PLACING UNITS THE PLAYER HAS ON THE MAP
-            socket.on("onListVillageUnits", function(data){
+			var listVillageUnitsFun = function(data){
                 var unitList = data[0];
                 var classList = data[1];
                 if(data[2]=="openMenu") {
@@ -105,10 +113,12 @@ var PlayScreen = me.ScreenObject.extend(
 						me.game.sort();
                     }
                 }
-            });
-			
+            }
+            socket.on("onListVillageUnits", listVillageUnitsFun);
+			/////////////////////////////////////////////////////
+
 			 //HERE WE SEND THE UPDATE REQUEST
-			 socket.on("onRequestUpdate",function(rows, data){
+			 var rqstUpdateFun = function(rows, data){
 				var infobuild = data;
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
@@ -132,10 +142,13 @@ var PlayScreen = me.ScreenObject.extend(
                 me.game.remove(gameHandler.activeHuds.buildingHUD,true);
                 gameHandler.activeHuds.buildingHUD = undefined;
                 me.game.sort();
-			 });
-			 
+			 }
+			 socket.on("onRequestUpdate", rqstUpdateFun);
+			////////////////////////////////////////////////////
+			
+			 ///////////////////////////////////////////
 			 //CHECKING IF THE UPDATE ALREADY IS DONE
-			 socket.on("onCheckUpdate",function(rows, data){
+			 var checkUpdateFun = function(rows, data){
 				var infobuild = data;
 				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
@@ -145,18 +158,20 @@ var PlayScreen = me.ScreenObject.extend(
 				}else{
 					alert(rows[0][0].Msg);
 				}
-			 });
-			 //
-			 
+			 }
+			 socket.on("onCheckUpdate", checkUpdateFun);
+			 //////////////////////////////////////////
+
 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
-			 socket.on('onBuildingSelect', function(rows,data) {
+			 var bldSelectFun = function(rows,data) {
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
 					else{
 						if(gameHandler.activeHuds.buildingHUD==undefined) {
 							console.log(obj[i]);
+
 							//THIS WILL DO UNTIL WE FIX IT RIGHT
 							if(obj[i].posX == undefined){obj[i].posX = data.X}
 							if(obj[i].posY == undefined){obj[i].posY = data.Y}
@@ -168,13 +183,14 @@ var PlayScreen = me.ScreenObject.extend(
 						}
 					}
 				});
-            });
+			}
+			 socket.on('onBuildingSelect', bldSelectFun);
 			//
-			
+
 			//////////////////////////////////////////
 			//Request Construction//
 			//
-			socket.on("onConstructRequest", function(rows, data){
+			var constructRqstFun = function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -204,14 +220,14 @@ var PlayScreen = me.ScreenObject.extend(
 					}
 
 				});
-			});
+			}
+			socket.on("onConstructRequest", constructRqstFun);
 			//////////////////////////////////////////
 			
 			//////////////////////////////////////////
 			//constructing and updating resourcesHUD//
 			//
-
-			socket.on("onConstructCheck", function(rows, data){
+			var contruckChkFun = function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -245,13 +261,14 @@ var PlayScreen = me.ScreenObject.extend(
 					}
 
 				});
-			});
+			}
+			socket.on("onConstructCheck", contruckChkFun);
 			////////////////////////////////////
-			
+						
 			////////////////////////////////////////////////////////////////
 			//Creating Units
 			//
-			socket.on("onRequestUnit", function(rows, data){
+			var rqstUnitFun = function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -276,11 +293,13 @@ var PlayScreen = me.ScreenObject.extend(
 						}
 					}
 				});
-			});
+			}
+			socket.on("onRequestUnit", rqstUnitFun);
 			
+
 			/////////////////////////////////////////////
 			//checking if the unit it's already done
-			socket.on("onUnitCheck", function(rows, data){
+			var unitChkFun = function(rows, data){
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -296,18 +315,21 @@ var PlayScreen = me.ScreenObject.extend(
 							var unit 	       = data;
 							var time    	   = jsApp.timeToMs(obj[i].Msg);
 							var pixelIs 	   = jsApp.getTileForPixels(unit.buildingX, unit.buildingY);
-							this.progressBar    = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
-							var unitCheck = function(){socket.emit("onUnitCheck",unit);};
+							this.progressBar   = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
+							var unitCheck      = function(){socket.emit("onUnitCheck",unit);};
 							me.game.add(this.progressBar,10);// adding this to the screen
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 							me.game.sort();
 						}
 					}
 				});
-			});
+			}
+			socket.on("onUnitCheck", unitChkFun);
 			///////////////////////////////////////////////
+			
+
 			//creating the window to create the squad
-			socket.on("onOpenCreateSquad", function(rows, data){
+			var openSquadFun = function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var idVillage = data;
@@ -369,11 +391,12 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$("#dialogArmy").append(squadContent);
 				$( "#dialogArmy" ).dialog( "open" );
-			});
-			
+			}
+			socket.on("onOpenCreateSquad", openSquadFun);
+								
 			///////////////////////////////////////////////
 			//creating the window to create the squad
-			socket.on("onViewSquad", function(rows, data){
+			var viewSquadFun = function(rows, data){
 
 				//////////////////////////
 				//CREATING THE MODAL FORM
@@ -416,20 +439,19 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$("#dialogSquad").append(villageSquadContent);
 				$( "#dialogSquad" ).dialog( "open" );
-				
-			});
+			}
+			socket.on("onViewSquad", viewSquadFun);
 			
-
 			///////////////////////////////////////////////
 			//creating the window to create the squad
-			socket.on("onSquadDetail", function(rows, idSquad,squadName){
+			var squadDetailFun = function(rows, idSquad,squadName){
 
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
 				div.setAttribute("id","dialogSquadUnits");
 				div.setAttribute("name","dialogSquadUnits");
-				div.setAttribute("title",squadName);
+				div.setAttribute("title",squadName);//-->FIXME!
 				div.setAttribute("style","display:none");
 				
 				$("body").append(div);
@@ -451,34 +473,33 @@ var PlayScreen = me.ScreenObject.extend(
 				var unitSquadContent = "";
 				$.each(rows[0], function(i, obj) {
 					var unit 		 = rows[0][i];
-					var unitImg      = me.loader.getImage(unit.Image);
-					console.log(unit);
-					//console.log(unitImg);
+					var unitImg      = me.loader.getImage(unit.Image);//-->FIXME
 					var unitSquad = "<br> "+unit.qty+" X "+unit.Description;
 					unitSquadContent = unitSquadContent + unitSquad;
 				});
 				
 				$("#dialogSquadUnits").append(unitSquadContent);
 				$( "#dialogSquadUnits" ).dialog( "open" );
-				
-			});
+			}
+			socket.on("onSquadDetail", squadDetailFun);
 			//////////////////////////////////////////////////////////////
-			
 			
 
             ///////////////////////
             // LISTING BUILDINGS //
             ///////////////////////
-            socket.on("onListBuilding", function(data) {
+			var bldList = new Array();
+			var listBldFun = function(data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
-				/*var div	= document.createElement("div");
-			
+				var div		 = document.createElement("div");
 				div.setAttribute("id","dialogBuild");
 				div.setAttribute("name","dialogBuild");
 				div.setAttribute("title","Select a building:");
 				div.setAttribute("style","display:none");
-				
+				var sendBld = function(idBld){
+					console.log(bldArray[idBld][0]);
+				}
 				$("body").append(div);
 				$( "#dialogBuild" ).dialog({
 					autoOpen: false,
@@ -488,7 +509,12 @@ var PlayScreen = me.ScreenObject.extend(
 					buttons: {
 						"Build" : function(){
 							//ADD THE GAME HUD TO PLAYER SELECT WHERE TO BUILD
-								
+							$("input:radio[name*='bldSelect']:checked").each(function(i, obj){
+								var idBld   = $(this).val();
+								var bldArea = new jsApp.BuildArea("mousedown",bldList[idBld]);// creating a new instance of the class BuildArea
+                                me.game.add(bldArea,1000);// adding this to the screen
+								me.game.sort();
+							});
 							
 							$( "#dialogBuild" ).html('');
 							$( this ).dialog( "close" );
@@ -507,34 +533,73 @@ var PlayScreen = me.ScreenObject.extend(
 				//////////////////////////////////
 				//POPULATING THE BUILDING MENU
 				var buildContent = "<table boder=0 width=100%><tr>";
-				buildContent 	 = buildContent + "<td align='center' width=20%>BUILDING</td>";
-				buildContent 	 = buildContent + "<td align='center' width=40%>RESOURCES</td>";
-				buildContent 	 = buildContent + "<td align='center' width=40%></td></tr>";
-				buildContent 	 = buildContent + "</table><table boder=0 width=100%>";
+				buildContent 	 = buildContent + "<td align='center' width=20%><b>BUILDING</b></td>";
+				buildContent 	 = buildContent + "<td align='center' width=40%><b>RESOURCES</b></td>";
+				buildContent 	 = buildContent + "<td align='center' width=40%></td>";
+				buildContent 	 = buildContent + "</tr>";
+				
 				$.each(data[0], function(i, obj) {
-					var build 	= data[0][i];
-					console.log(build);
-					var bldDetail  = "<tr><td width=20%>IMAGEM</td>";
-					bldDetail  = bldDetail + "<td width=40%></td>";
-					//var atkSquad = "<br> <input type='radio' name='buildOption' id='building_"+build.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
-					//atkSquad	 = atkSquad + "<input type=hidden id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"'  />"; -->FIX ME : NEED TO PUT THE ID VILLAGE OF THE SQUAD
-					//atkSquadContent = atkSquadContent + atkSquad;
+					var build 	 = data[0][i];
+					bldList[build.idBuilding] = new Array();
+					bldList[build.idBuilding] = build;
+					var bldDetail  = "<tr><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='data/sprite/Buildings/building.png' /></input></p></td>";
+					bldDetail  	   = bldDetail + "<td width=40% align='center'>";
+					
+					//PLEASE,FIX ME 
+					if((build.gold != undefined) && (build.gold != 0)){
+						var img   = me.loader.getImage('Gold');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.gold+"</p>";
+					}
+					if((build.wood != undefined) && (build.wood != 0)){
+						var img   = me.loader.getImage('Wood');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.wood+"</p>";
+					}
+					if((build.iron != undefined) && (build.iron != 0)){
+						var img   = me.loader.getImage('Iron');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.iron+"</p>";					
+					}
+					if((build.stone != undefined) && (build.stone != 0)){
+						var img   = me.loader.getImage('Stone');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.stone+"</p>";	
+					}
+					if((build.food != undefined) && (build.food != 0)){
+						var img   = me.loader.getImage('Food');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.food+"</p>";
+					}
+					
+					bldDetail  = bldDetail + "</td><td width=40%>";
+					
+					if(build.buildTimer != undefined){
+						var img   = me.loader.getImage('Clock');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.buildTimer+"</p>";						
+					}
+					if((build.gatherTime != undefined) && (build.gatherTime != '00:00:00')){
+						var img   = me.loader.getImage('Hammer');
+						img       = $(img).attr("src");
+						bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.gatherTime+"</p>";						
+					}
+					
+					bldDetail  = bldDetail + "</td></tr><tr><td width=20%></td><td width=60% align=center><img src='data/sprite/division.png' width=50% height=50%/></td><td width=20%></td></tr>";
+					
+					buildContent = buildContent + bldDetail;
 				});
+				buildContent = buildContent + "</table>";
+				$("#dialogBuild").append(buildContent);
+				$("#dialogBuild").dialog("open");
 				
-				//$("#dialogAtkSquad").append(atkSquadContent);
-				//$("#dialogAtkSquad").dialog("open");*/
-				
-				console.log(data[0]);
-                this.buildMenu = new jsApp.BuildMenu(data[0]);
-                gameHandler.activeHuds.buildMenu = this;
-                me.game.add(this.buildMenu,1000);
-                me.game.sort();
-				
-            });			
- 
+            }
+            socket.on("onListBuilding", listBldFun);			
+			//////////////////////////////////////////
+			
 			///////////////////////////////////////
 			//getting the resources by websockets//
-			socket.on('onResourcesUpdate', function(data) {
+			var resourceUpdateFun = function(data) {
 				$.each(data, function(i, obj) {
 					if(i>0)
 						return false;
@@ -546,13 +611,13 @@ var PlayScreen = me.ScreenObject.extend(
 						gameHandler.activeHuds["resourceHud"].GoldValue  = obj[i].gold;
 					}
 				});
-
-			});
+			}
+			socket.on('onResourcesUpdate', resourceUpdateFun);
 			/////////////////////////////////////////
-		 
+
 			///////////////////////////////////////
 			//collecting the resources			//
-			socket.on('onResourcesCollect', function(rows, data) {
+			var resourceCltFun = function(rows, data) {
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -577,13 +642,14 @@ var PlayScreen = me.ScreenObject.extend(
 						}
 					}
 				});
-			});
+			}
+			socket.on('onResourcesCollect', resourceCltFun);
 			/////////////////////////////////////////
-		 
+
 			///////////////////////////////////////
 			//Opening sell menu					//
 			////						/////////
-			socket.on('onSellMenu', function(rows) {
+			var sellMenuFun = function(rows) {
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var userData  = jsApp.getUserData();
@@ -661,24 +727,27 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$("#dialogSell").append(sellContent);
 				$("#dialogSell").dialog( "open" );
-			});
+			}
+			socket.on('onSellMenu', sellMenuFun);
+
 			////////////////////////////////////
 			
 			///////////////////////////////////////
 			//after create a offer				//
 			////						/////////
-			socket.on('onCreateOffer', function(rows,data) {
+			var createOfferFun = function(rows,data) {
 				//updating the resources
 				jsApp.send("onResourcesUpdate", jsApp.getUserData());
 				//
 				console.log(rows);
-			});
+			}
+			socket.on('onCreateOffer', createOfferFun);
 			///////////////////////////////////
 			
 			///////////////////////////////////////
 			//Opening buy menu					//
 			////						/////////
-			socket.on('onBuyMenu', function(rows) {
+			var buyMenuFun = function(rows) {
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var userData  = jsApp.getUserData();
@@ -753,18 +822,21 @@ var PlayScreen = me.ScreenObject.extend(
 				buyContent	= buyContent + "</table>";
 				$("#dialogBuy").append(buyContent);
 				$("#dialogBuy").dialog( "open" );
-			});
+
+			}
+			socket.on('onBuyMenu', buyMenuFun);
 			////////////////////////////////////
 			
 			///////////////////////////////////
 			//after buy a offer				//
 			////						/////
-			socket.on('onBuyOffer', function(rows,data) {
+			var buyOfferFun = function(rows,data) {
 				//updating the resources
 				jsApp.send("onResourcesUpdate", jsApp.getUserData());
 				//
 				console.log(rows);
-			});
+			}
+			socket.on('onBuyOffer', buyOfferFun);
 			///////////////////////////////////
             this.parent();
             /////////////////
@@ -931,26 +1003,36 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.releasePointerEvent("mousemove", me.game.viewport);
 			me.game.remove(this.hud);
 			me.game.remove(this.gui);
-			 jsApp.destroy("onBuildingSelect");
-             jsApp.destroy("onListVillageBuildings");
-			 jsApp.destroy("onListVillageUnits");
-			 jsApp.destroy("onRequestUpdate");
-			 jsApp.destroy("onConstruct");
-			 jsApp.destroy("onResourcesUpdate");
-			 jsApp.destroy("onCheckUpdate");
-			 jsApp.destroy("onConstructRequest");
-			 jsApp.destroy("onConstructCheck");
-			 jsApp.destroy("onRequestUnit");
-			 jsApp.destroy("onUnitCheck");
-			 jsApp.destroy("onListBuilding");
-			 jsApp.destroy("onResourcesCollect");
-			 jsApp.destroy("onSellMenu");	
-			 jsApp.destroy("onOpenCreateSquad");
-			 jsApp.destroy("onCreateSquad");
-			 jsApp.destroy("onViewSquad");
-			 jsApp.destroy("onSquadDetail");
 			me.game.reset();
 			me.game.sort();
+			//clearing the timeouts set
+			jsApp.clearTimeOuts();
+			//Destroying websockets event before create a new one	
+			jsApp.destroy("onListWorldVillage");
+			jsApp.destroy("onVillageSelect");
+			jsApp.destroy("onListSquadAtk");
+			jsApp.destroy("onAtkVillage");
+			jsApp.destroy("onBuildingSelect");
+            jsApp.destroy("onListVillageBuildings");
+			jsApp.destroy("onListVillageUnits");
+			jsApp.destroy("onRequestUpdate");
+			jsApp.destroy("onConstruct");
+			jsApp.destroy("onResourcesUpdate");
+			jsApp.destroy("onCheckUpdate");
+			jsApp.destroy("onConstructRequest");
+			jsApp.destroy("onConstructCheck");
+			jsApp.destroy("onRequestUnit");
+			jsApp.destroy("onUnitCheck");
+			jsApp.destroy("onListBuilding");
+			jsApp.destroy("onResourcesCollect");
+			jsApp.destroy("onSellMenu");	
+			jsApp.destroy("onOpenCreateSquad");
+			jsApp.destroy("onCreateSquad");
+			jsApp.destroy("onViewSquad");
+			jsApp.destroy("onSquadDetail");
+			jsApp.destroy("onCreateOffer");
+			jsApp.destroy("onBuyMenu");
+			/////////////////////////////////////////
         }
     });
 

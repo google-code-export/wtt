@@ -8,7 +8,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 		gameHandler.activeHuds.actionWorldMenu = this;
 		this.idVillage						   = idVillage;
 		this.villageOwner				       = villageOwner;
-		
+		var pX = pixelIs.x;
+		var pY = pixelIs.y;
         // options that are displayed on the screen
         this.options = new Array();
 		var iY = 0;
@@ -25,8 +26,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			// ENTER
 			this.enterRect = new me.Rect(
 				new me.Vector2d(
-					pixelIs.x +65,
-					pixelIs.y
+					pX +65,
+					pY
 				 ),
 				 100, 50
 			);
@@ -38,8 +39,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			// ATTACK
 			this.attackRect = new me.Rect(
 				new me.Vector2d(
-					pixelIs.x +65,
-					pixelIs.y+iY
+					pX +65,
+					pY+iY
 				 ),
 				 100, 50
 			);
@@ -51,8 +52,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			// TRADE
 			this.tradeRect = new me.Rect(
 				new me.Vector2d(
-					pixelIs.x +65,
-					pixelIs.y+iY
+					pX +65,
+					pY+iY
 				 ),
 				 100, 50
 			);
@@ -63,8 +64,8 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			// SEND MSG
 			this.msgRect = new me.Rect(
 				new me.Vector2d(
-					pixelIs.x +65,
-					pixelIs.y+iY
+					pX +65,
+					pY+iY
 				 ),
 				 100, 50
 			);
@@ -84,7 +85,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			this.font = new me.Font("verdana", 14, "lime", "right");
 			this.font.textBaseline = "bottom";
 			
-			this.parent(new me.Vector2d(pixelIs.x,pixelIs.y), 110, iY);
+			this.parent(new me.Vector2d(pX,pY), 110, iY);
     },
 
     "destroy" : function destroy() {

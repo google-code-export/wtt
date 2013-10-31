@@ -41,7 +41,7 @@ jsApp.BuildArea = me.Renderable.extend({
 			var tileid = buildLayer.getTileId(me.input.changedTouches[0].x, me.input.changedTouches[0].y);// getting the current tileid we've clicked on
             building.x = buildPos.x;
             building.y = buildPos.y;
-			building.idVillage = building.idVillage; // --> NEED TO SEE THIS BETTER
+			building.idVillage = building.idVillage;
 			building.idTile = building.idTile + 1; // --> NEED TO SEE THIS BETTER
 			console.log("FROM Build Area --- idVillage:"+building.idVillage+" idBuilding:"+building.idBuilding+" x:"+building.x+" y:"+building.y+" buildTimer:"+building.buildTimer);
 			socket.emit("onConstructRequest", building);

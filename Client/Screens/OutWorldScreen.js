@@ -2,17 +2,19 @@ var OutWorldScreen = me.ScreenObject.extend(
     {
 		
         onResetEvent: function () {
+			me.game.reset();
 			var socket         			 = jsApp.getSocket();
             var idWorld        			 = 1; //-->NEED TO SEE THIS BETTER!!
 			var userData				 = jsApp.getUserData();
 			this.TMXTileMap   			 = "Chunk";
 			this.font          			 = new me.Font("verdana", 18, "white", "left");
 			
-			//Destroying websockets event before create a new one	
+			 //Destroying websockets event before create a new one	
 			 jsApp.destroy("onListWorldVillage");
 			 jsApp.destroy("onVillageSelect");
 			 jsApp.destroy("onListSquadAtk");
 			 jsApp.destroy("onAtkVillage");
+			 /////////////////////////////////////////
 			 
 			 socket.emit("onListWorldVillage");
 			////////////////////////////////////
@@ -21,7 +23,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			
 			//////////////////////////
 			//IF IM BEING ATTACKED //
-			socket.on("onAlertUserAtk", function(data){
+			var alertAtkFun = function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
 					socket.emit("onListWorldVillage");
@@ -29,12 +31,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 					me.state.change(me.state.OUTWORLD);
 					alert(data.Msg);
 				}
-			});
+			}
+			socket.on("onAlertUserAtk", alertAtkFun);
 			////////////////////////
 			
 			//////////////////////////////////////////////
 			//LISTING THE USERS VILLAGES IN THE OUT WORLD
-			socket.on("onListWorldVillage", function(rows){
+			var listWorldVillageFun = function(rows){
 				var worldNames    =  new Array();
                 var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
                 for (var i in rows[0]){
@@ -54,11 +57,13 @@ var OutWorldScreen = me.ScreenObject.extend(
                 }
 				gameHandler.activeHuds.worldNames = worldNames;
 				console.log(gameHandler.activeHuds.worldNames);
-            });
+            }
+			socket.on("onListWorldVillage", listWorldVillageFun);
+			////////////////////////////////////////////////////
 			
 			//////////////////////////////////////////////////
 			//VERIFYING IN WHAT VILLAGE I CLICKED
-			socket.on("onVillageSelect", function(rows, data){
+			var villageSelectFun = function(rows, data){
 				//var pixelIs = jsApp.getTileForPixels(data.x,data.y);
 				if(rows[0][0].Msg == "Your Village"){var type = "Friend"; }else{var type = "Enemy";}
 				var idVillage    = rows[0][0].idVillage;
@@ -66,15 +71,15 @@ var OutWorldScreen = me.ScreenObject.extend(
 				var actionWorldMenu = new jsApp.WorldBuildingOptions(type,idVillage,villageOwner,data.pixelIs);
 				me.game.add(actionWorldMenu,10);
 				me.game.sort();
-			
-			});
+			}
+			socket.on("onVillageSelect", villageSelectFun);
 			
 			///////////////////////////////////////////
 			
 			
 			//////////////////////////////////////////////////
 			//LISTING SQUADS TO ATTACK THE VILLAGE THAT I CLIKED
-			socket.on("onListSquadAtk", function(rows, data){
+			var listSquadAtkFun = function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
@@ -128,17 +133,19 @@ var OutWorldScreen = me.ScreenObject.extend(
 				
 				$("#dialogAtkSquad").append(atkSquadContent);
 				$("#dialogAtkSquad").dialog("open");
-				
-			
-			});
+			}
+			socket.on("onListSquadAtk", listSquadAtkFun);
 			
 			//////////////////////////////////////////
 			
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK 
-			socket.on("onAtkVillage", function(rows, data){
+			var atkVillageFun =  function(rows, data){
 				console.log(rows);
-			});
+				//REMOVING LISTENER
+				//jsApp.destroy("onAtkVillage",atkVillageFun);
+			}
+			socket.on("onAtkVillage",atkVillageFun);
 			
 			///////////////////////////////////////////
 			
@@ -157,7 +164,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 				if(gameHandler.activeHuds.actionWorldMenu != undefined){
 					//IF I CLICKED IN 'ENTER' BUTTON
 					if(gameHandler.activeHuds.actionWorldMenu.enterRect != undefined){
-						if(gameHandler.activeHuds.actionWorldMenu.enterRect.containsPointV(me.input.changedTouches[0])){
+						if(gameHandler.activeHuds.actionWorldMenu.enterRect.containsPoint(~~e.gameWorldX, ~~e.gameWorldY)){
+						
 								userData.idVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
 								$.jStorage.set("userData", userData);					
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
@@ -168,7 +176,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 					if(gameHandler.activeHuds.actionWorldMenu != undefined){
 						if(gameHandler.activeHuds.actionWorldMenu.attackRect != undefined){
 							//IF I CLICKED IN 'ATTACK' BUTTON
-							if(gameHandler.activeHuds.actionWorldMenu.attackRect.containsPointV(me.input.changedTouches[0])){
+							if(gameHandler.activeHuds.actionWorldMenu.attackRect.containsPoint(~~e.gameWorldX, ~~e.gameWorldY)){
+							
 								var idAtkVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
 								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
 								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner});
@@ -178,13 +187,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 						}
 						if(gameHandler.activeHuds.actionWorldMenu.tradeRect != undefined){
 							//IF I CLICKED IN 'TRADE' BUTTON
-							if(gameHandler.activeHuds.actionWorldMenu.tradeRect.containsPointV(me.input.changedTouches[0])){
+							if(gameHandler.activeHuds.actionWorldMenu.tradeRect.containsPoint(~~e.gameWorldX, ~~e.gameWorldY)){
 							
 							}
 						}
 						if(gameHandler.activeHuds.actionWorldMenu.msgRect != undefined){
 							//IF I CLICKED IN 'SEND MSG' BUTTON
-							if(gameHandler.activeHuds.actionWorldMenu.msgRect.containsPointV(me.input.changedTouches[0])){
+							if(gameHandler.activeHuds.actionWorldMenu.msgRect.containsPoint(~~e.gameWorldX, ~~e.gameWorldY)){
 							
 							}
 						}
@@ -198,9 +207,10 @@ var OutWorldScreen = me.ScreenObject.extend(
 				//IF I DONT HAVE ANY WORLD VILLAGE ACTION MENU OPEN
 				}else{
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var tileIs     = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
-					var pixelIs    = jsApp.getTileForPixels(tileIs.x,tileIs.y);
-					var tileid     = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
+					var tileIs     = jsApp.getPixelsForTile(~~e.gameScreenX, ~~e.gameScreenY);
+					var pixelIs	   = jsApp.getTileForPixels(tileIs.x, tileIs.y);
+					var tileid     = buildLayer.getTileId(~~e.gameWorldX, ~~e.gameWorldY);// getting the current tileid we've clicked on
+
 					//IF I CLICKED IN SOMETHING I'LL SEE WHAT IT'S AND CREATE A ACTION MENU
 					if (tileid == 11){ //--> FIX ME THIS NEED TO FIND ALSO THE TEMPLE AND THE QUESTS
 						socket.emit("onVillageSelect",{"idUser" : userData.userId, "x" : tileIs.x, "y" : tileIs.y, "pixelIs" : pixelIs});
@@ -284,7 +294,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onVillageSelect");
 			jsApp.destroy("onListSquadAtk");
 			jsApp.destroy("onAtkVillage");
-			  
+			/////////////////////////////////////////
         }
     });
 
