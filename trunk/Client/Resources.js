@@ -13,12 +13,47 @@ var g_resources =
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},
 
-        // units //
-        {name: "Farmer"		,	type: "image",  src: "data/sprite/Characters/farmer.png"},
-        {name: "Lumberjack" ,	type: "image",  src: "data/sprite/Characters/lumberjack.png"},
-		{name: "Ninja"		,	type: "image",  src: "data/sprite/Characters/ninja.png"},
-		{name: "Soldier"	,	type: "image",  src: "data/sprite/Characters/soldierteste1.png"},
-		{name: "Archer"		,	type: "image",  src: "data/sprite/Characters/archer.png"},
+        // units /////////////////////////////////////////////////////////////////////////////////////
+		
+		//ARCHER//
+		{name: "Archer_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Archer_24x20.png"		},
+		{name: "Archer_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Archer_48x40.png"		},
+		{name: "Archer_Front" 	 	,	type: "image",  src: "data/sprite/Characters/Archer_Front.png"		},
+		//
+		//ARCHER MOUNT//
+		{name: "Archer_Mount_39x37" ,	type: "image",  src: "data/sprite/Characters/Archer_Mount_39x37.png"},
+		{name: "Archer_Mount_78x75" ,	type: "image",  src: "data/sprite/Characters/Archer_Mount_78x75.png"},
+		{name: "Archer_Mount_Front" ,	type: "image",  src: "data/sprite/Characters/Archer_Mount_Front.png"},
+        //
+		//DEAD//
+		{name: "Dead_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Dead_24x20.png"		},
+		{name: "Dead_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Dead_48x40.png"		},
+		//
+		//FARMER//
+		{name: "Farmer_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Farmer_24x20.png"		},
+		{name: "Farmer_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Farmer_48x40.png"		},
+		{name: "Farmer_Front" 	 	,	type: "image",  src: "data/sprite/Characters/Farmer_Front.png"		},
+		//
+		//MONK//
+		{name: "Monk_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Monk_24x20.png"		},
+		{name: "Monk_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Monk_48x40.png"		},
+		{name: "Monk_Front" 	 	,	type: "image",  src: "data/sprite/Characters/Monk_Front.png"		},
+		//
+		//NINJA//
+		{name: "Ninja_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Ninja_24x20.png"		},
+		{name: "Ninja_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Ninja_48x40.png"		},
+		{name: "Ninja_Front" 	 	,	type: "image",  src: "data/sprite/Characters/Ninja_Front.png"		},		
+		//
+		//PIKEMAN//
+		{name: "Pikeman_24x20" 	 	,	type: "image",  src: "data/sprite/Characters/Pikeman_24x20.png"		},
+		{name: "Pikeman_48x40" 	 	,	type: "image",  src: "data/sprite/Characters/Pikeman_48x40.png"		},
+		{name: "Pikeman_Front" 	 	,	type: "image",  src: "data/sprite/Characters/Pikeman_Front.png"		},	
+		//
+		//SWORDMAN//
+		{name: "Swordman_24x20" 	,	type: "image",  src: "data/sprite/Characters/Swordman_24x20.png"	},
+		{name: "Swordman_48x40" 	,	type: "image",  src: "data/sprite/Characters/Swordman_48x40.png"	},
+		{name: "Swordman_Front" 	,	type: "image",  src: "data/sprite/Characters/Swordman_Front.png"	},
+		///////////////////////////////////////////////////////////////////////////////////////////////
 
         // faces
         {name: "maleFaces",type: "image",  src: "data/sprite/Characters/maleFaces.png"},

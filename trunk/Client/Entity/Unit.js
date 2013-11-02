@@ -1,12 +1,29 @@
 //Npc Entity
 var Unit = me.ObjectEntity.extend(
     {
-        init:function (x, y, settings,classType)
+        init:function (x, y, settings)
         {
-            settings.name = classType;
-            settings.image = classType;
-            settings.spritewidth = 20;
-            settings.spriteheight = 24;
+			
+			var classType = settings.Description;
+			var image	  = classType.replace(" ","_");
+			//VERIFYING IF THE UNIT IT'S A MOUNT
+			var isMount = settings.Description.indexOf('Mount'); 
+			//if not
+			if( isMount == -1){
+				var imgConf 		  = "_24x20";
+				settings.spritewidth  = 20;
+				settings.spriteheight = 24;
+				settings.name 		  = classType;
+				settings.image 		  = image+imgConf;
+			}else{
+				var imgConf 		  = "_39x37";
+				settings.spritewidth  = 37.5;
+				settings.spriteheight = 39;	
+				settings.name         = classType;
+				settings.image 		  = image+imgConf;
+			}
+			//
+			console.log(settings);
 			this.isPersistent = false;
             this.parent(x, y , settings);
 

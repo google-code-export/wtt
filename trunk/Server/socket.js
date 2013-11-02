@@ -242,13 +242,21 @@ io.sockets.on('connection', function (socket) {
 					var idBuilding = rows[0][0].idBasicBuild;
 				}
 				
-				console.log("idBuilding:"+idBuilding);
-				console.log(rows[0][0]);
 				connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
 					if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
 					}else{
-						rows[0][0].listUnitsCanMake = rows2[0];
-
+						rows[0][0].listUnitsCanMake = rows2[0]; 
+						for(var i=0;i<rows[0][0].listUnitsCanMake.length;i++){
+							connection.query("CALL `ResourceByUnit`('"+rows[0][0].listUnitsCanMake[i].idUnit+"')",function(err3, rows3, fields3){
+								rows[0][0].listUnitsCanMake[i].Resources = rows3[0];
+							});
+						}
+						//rows = rows[0][0].listUnitsCanMake;
+						console.log(rows);
+						/*for(var i=0;allUnits.length;i++){
+							var thisUnit = allUnits[i];
+							console.log(thisUnit);
+						}*/
 					}
 					socket.emit("onBuildingSelect",rows,data);
 				});				
