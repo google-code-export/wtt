@@ -108,7 +108,7 @@ var PlayScreen = me.ScreenObject.extend(
                     while(unit--) {
                         var thisUnit = unitList[unit];
                         var pos = jsApp.getRandomPointInScreen();
-                        var piece = new Unit(pos.x , pos.y , me.ObjectSettings , thisUnit.image);
+                        var piece = new Unit(pos.x , pos.y , thisUnit);
                         me.game.add(piece, 10);
 						me.game.sort();
                     }
@@ -308,7 +308,7 @@ var PlayScreen = me.ScreenObject.extend(
 							// Aqui pra criar o carinha , onde tiver a casa que criou
 							// a casa que criou ta no this.building
 							var pixelIs = jsApp.getTileForPixels(data.buildingX, data.buildingY);
-							var piece   = new Unit(pixelIs.x,pixelIs.y, me.ObjectSettings, data.unitImg);
+							var piece   = new Unit(pixelIs.x,pixelIs.y, data);
 							me.game.add(piece, 10);
 							me.game.sort();
 						}else{
@@ -867,14 +867,126 @@ var PlayScreen = me.ScreenObject.extend(
                         if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
                             if(gameHandler.activeHuds.buildingHUD.createUnitButton.containsPointV(me.input.changedTouches[0])) {
                                 var unitsICanMake = gameHandler.activeHuds.buildingHUD.upInfo.listUnitsCanMake;
-								console.log(gameHandler.activeHuds.buildingHUD);
-                                if(gameHandler.activeHuds.unitMenu==undefined) {
-                                    gameHandler.activeHuds.unitMenu = new jsApp.BuildUnitMenu(unitsICanMake, gameHandler.activeHuds.buildingHUD.upInfo);
-                                    me.game.add(gameHandler.activeHuds.unitMenu, 1100);
-                                    me.game.sort();
-                                }
+								var thisBuilding  = gameHandler.activeHuds.buildingHUD.upInfo;
+								console.log(unitsICanMake);
+								//////////////////////////
+								//CREATING THE MODAL FORM
+								var div		 = document.createElement("div");
+								div.setAttribute("id","dialogTrainUnit");
+								div.setAttribute("name","dialogTrainUnit");
+								div.setAttribute("title","Select the unit you want to train:");
+								div.setAttribute("style","display:none");
+
+								$("body").append(div);
+								$( "#dialogTrainUnit" ).dialog({
+									autoOpen: false,
+									height: 480,
+									width: 600,
+									modal: true,
+									buttons: {
+										"Train" : function(){
+											//SEND THE UNIT TO TRAIN
+											$("input:radio[name*='unitSelect']:checked").each(function(i, obj){
+												var idUnit   = $(this).val();
+												var unitImg  = $('#unitImg_'+idUnit).val();
+												var unitDesc = $('#unitDesc_'+idUnit).val();
+												var data = {
+													idBuildingBuilt  : thisBuilding.idBuildingBuilt,
+													buildingX		 : thisBuilding.posX,
+													buildingY		 : thisBuilding.posY,
+													idUnit 			 : idUnit,
+													Image			 : unitImg,
+													Description		 : unitDesc,
+													userId 			 : jsApp.getUserData().userId,
+													idVillage		 : jsApp.getUserData().idVillage
+												}
+												socket.emit("onRequestUnit", data);
+											});
+											
+											$( "#dialogTrainUnit" ).html('');
+											$( this ).dialog( "close" );
+										},
+										
+										Cancel: function() {
+											$( "#dialogTrainUnit" ).html('');
+											$( this ).dialog( "close" );
+										}
+									},
+									close: function() {
+										$("#dialogTrainUnit").html('');
+									}
+								});
+								
+								//////////////////////////////////
+								//POPULATING THE BUILDING MENU
+								var trainUnitContent = "<table boder=0 width=100%><tr>";
+								trainUnitContent 	 = trainUnitContent + "<td align='center' width=20%><b>UNIT</b></td>";
+								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%><b>RESOURCES</b></td>";
+								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%></td>";
+								trainUnitContent 	 = trainUnitContent + "</tr>";
+								var newUnit;
+								var lastRsc;
+								var lastUnit;
+								$.each(unitsICanMake, function(i, obj) {
+									var unit 	    = unitsICanMake[i];
+									console.log(unit);
+									if(newUnit == ""){
+										var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></input></p></td>";
+										unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
+										unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
+										unitDetail  	= unitDetail + "<td width=40% align='center'>";
+										newUnit 		= "N";
+									}else{
+										
+									
+									}
+
+									
+									//PLEASE,FIX ME 
+									/*if((build.gold != undefined) && (build.gold != 0)){
+										var img   = me.loader.getImage('Gold');
+										img       = $(img).attr("src");
+										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.gold+"</p>";
+									}
+									if((build.wood != undefined) && (build.wood != 0)){
+										var img   = me.loader.getImage('Wood');
+										img       = $(img).attr("src");
+										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.wood+"</p>";
+									}
+									if((build.iron != undefined) && (build.iron != 0)){
+										var img   = me.loader.getImage('Iron');
+										img       = $(img).attr("src");
+										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.iron+"</p>";					
+									}
+									if((build.stone != undefined) && (build.stone != 0)){
+										var img   = me.loader.getImage('Stone');
+										img       = $(img).attr("src");
+										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.stone+"</p>";	
+									}
+									if((build.food != undefined) && (build.food != 0)){
+										var img   = me.loader.getImage('Food');
+										img       = $(img).attr("src");
+										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.food+"</p>";
+									}*/
+									
+									unitDetail  = unitDetail + "</td><td width=40%>";
+									
+									if(unit.Time_Creat != undefined){
+										var img   = me.loader.getImage('Clock');
+										img       = $(img).attr("src");
+										unitDetail = unitDetail + "<p><img src='"+img+"'/>"+unit.Time_Creat+"</p>";						
+									}
+									
+									unitDetail  = unitDetail + "</td></tr><tr><td width=20%></td><td width=60% align=center><img src='data/sprite/division.png' width=50% height=50%/></td><td width=20%></td></tr>";
+									
+									trainUnitContent = trainUnitContent + unitDetail;
+								});
+								trainUnitContent = trainUnitContent + "</table>";
+								$("#dialogTrainUnit").append(trainUnitContent);
+								$("#dialogTrainUnit").dialog("open");
                             }
                         }
+						
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);
                         gameHandler.activeHuds.buildingHUD = undefined;
@@ -914,7 +1026,6 @@ var PlayScreen = me.ScreenObject.extend(
 								socket.emit("onBuyMenu",userData.userId);
                             }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
-								//socket.emit("onListWorldVillage");
 								me.game.remove(this, true);
 								me.state.change(me.state.OUTWORLD);
 							}

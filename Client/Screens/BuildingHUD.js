@@ -64,6 +64,15 @@ jsApp.BuildingHUD = me.Renderable.extend({
         var titletext = undefined;
 		//if this is contructing or updating do this//
 		if(this.upInfo.idUnit != undefined){
+			this.upInfo.Image = this.upInfo.Image.replace(" ","_");
+			var isMount = this.upInfo.Image.indexOf('Mount');
+			if( isMount == -1){
+				var imgH = 48;
+				var imgW = 40;
+			}else{
+				var imgH = 78;
+				var imgW = 75;
+			}
 			this.unit = new me.Rect(
                 new me.Vector2d(
                     this.pos.x+128,
@@ -73,13 +82,12 @@ jsApp.BuildingHUD = me.Renderable.extend({
             );
             this.unit.icon = new me.AnimationSheet(
                 0, 0,
-                me.loader.getImage(this.upInfo.Image),
-                14, 18
+                me.loader.getImage(this.upInfo.Image+"_Front"),
+                imgW, imgH
             );
             this.unit.icon.floating = true;
 			this.unit.icon.addAnimation("anim", [0]);
             this.unit.icon.setCurrentAnimation('anim');
-            this.unit.icon.resize(3);
             this.unit.icon.setAnimationFrame(0);
 			this.DescRect.buildDesc = this.upInfo.Image.toUpperCase();
 		}else{
@@ -144,14 +152,14 @@ jsApp.BuildingHUD = me.Renderable.extend({
        //DESCRIPTION RECT//
         this.font.draw(context,this.DescRect.TitleText,this.pos.x+128, this.pos.y );
 		if(this.upInfo.idUnit != undefined){
-			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+155, this.pos.y+64 );
+			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+215, this.pos.y+64 );
 				if(this.unit.icon != undefined) {
                     if(this.unit.hasRendered == undefined) {
                         this.unit.hasRendered = true;
-                        this.unit.icon.pos.x = this.pos.x+150;
-                        this.unit.icon.pos.y = this.pos.y+64;
-                        this.unit.width = this.unit.icon.width*3;
-                        this.unit.height = this.unit.icon.height*3;
+                        this.unit.icon.pos.x = this.pos.x+160;
+                        this.unit.icon.pos.y = this.pos.y+30;
+                        this.unit.width = this.unit.icon.width;
+                        this.unit.height = this.unit.icon.height;
                         me.game.add(this.unit.icon, 10000);
                         me.game.sort();
                     }
