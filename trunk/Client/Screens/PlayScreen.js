@@ -61,7 +61,8 @@ var PlayScreen = me.ScreenObject.extend(
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
 			var listVillageBldFun = function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
-                for (var i in data[0]){
+                //console.log(data[0]);
+				for (var i in data[0]){
                     if (i!="remove"){
                         var idTile  = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         var x       = data[0][i].posX;
@@ -70,17 +71,25 @@ var PlayScreen = me.ScreenObject.extend(
 						var timer   = data[0][i].Timer;
 						var type    = data[0][i].Type;
 						var idVillage = jsApp.getUserData().idVillage;
+						console.log(data[0][i]);
+						if(timer == null){ timer = "00:00:00";}
 						//if the construction still pending, add a new progress bar and a timeScheduler event//
                         if(pending == "Y"){
-                            idTile   	   = 5;
-							changeTile     = data[0][i].idTile + 1;
-							time    	   = jsApp.timeToMs(timer);
-							pixelIs 	   = jsApp.getTileForPixels(x,y);
-							socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});
+							//if it's traning a unit or doing upgrade
+							if(data[0][i].JobDescription != undefined){
+								var unitDetails = {"buildingX" : x, "buildingY" : y, "idVillage" : idVillage, "Description" : data[0][i].JobDescription};
+								socket.emit("onUnitCheck",unitDetails);
+							}else{
+								idTile   	   = 5;
+								changeTile     = data[0][i].idTile + 1;
+								time    	   = jsApp.timeToMs(timer);
+								pixelIs 	   = jsApp.getTileForPixels(x,y);
+								socket.emit("onConstructCheck",{"x" : x, "y" : y, "idVillage" : idVillage, "idTile" : changeTile});
+							}
                         }
 						//IF IT'S A COLLECTOR 
 						if(type == "R"){
-							console.log(data[0][i]);
+							//console.log(data[0][i]);
 							var gatherTime = jsApp.timeToMs(data[0][i].TimerColection);
 							pixelIs 	   = jsApp.getTileForPixels(x,y);
 							socket.emit("onResourcesCollect",{"idVillage": idVillage, "x" : x, "y" : y, "gatherTime" : gatherTime, "type" : idTile}) // --> Need to start the resource collect engine
@@ -165,6 +174,8 @@ var PlayScreen = me.ScreenObject.extend(
 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 var bldSelectFun = function(rows,data) {
+				console.log(rows);
+				console.log(data);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -241,9 +252,9 @@ var PlayScreen = me.ScreenObject.extend(
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
 							//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER
 							if(building.Type == "R"){
-								var gatherTime     = jsApp.timeToMs(building.TimerColection);
+								var gatherTime     = jsApp.timeToMs(building.gatherTime);
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": userData.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : TimerColection, "type" : idTile})};
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": userData.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime, "type" : idTile})};
 								jsApp.timeScheduler(resourceColect,gatherTime);
 							}
 							
@@ -282,6 +293,7 @@ var PlayScreen = me.ScreenObject.extend(
 							var pixelIs = jsApp.getTileForPixels(unitInfo.buildingX,unitInfo.buildingY);
 							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(this.progressBar,10);// adding this to the screen
+							console.log(data);
 							var unitCheck = function(){socket.emit("onUnitCheck",data);};
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 
@@ -300,6 +312,7 @@ var PlayScreen = me.ScreenObject.extend(
 			/////////////////////////////////////////////
 			//checking if the unit it's already done
 			var unitChkFun = function(rows, data){
+				console.log(data);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -402,7 +415,7 @@ var PlayScreen = me.ScreenObject.extend(
 				//CREATING THE MODAL FORM
 				var idVillage 	   = data;
 				var div 	  	   = document.createElement("div");
-				var squadFunction  = "<script>function showSquadDetail(idSquad){socket.emit('onSquadDetail',idSquad);$('#dialogSquad').dialog('close');$('#dialogSquad').html('');}</script>";
+				var squadFunction  = "<script>function showSquadDetail(idSquad,squadName){socket.emit('onSquadDetail',idSquad,squadName);$('#dialogSquad').dialog('close');$('#dialogSquad').html('');}</script>";
 				div.setAttribute("id","dialogSquad");
 				div.setAttribute("name","dialogSquad");
 				div.setAttribute("title","View Squad");
@@ -427,12 +440,12 @@ var PlayScreen = me.ScreenObject.extend(
 				//POPULATING THE SQUADS LINK
 				var villageSquadContent = "";
 				$.each(rows[0], function(i, obj) {
-					if(rows[0].Msg != undefined){
-						villageSquadContent = villageSquadContent + "<br>" +rows[0].Msg;
+					if(rows[0][0].Msg != undefined){
+						villageSquadContent = villageSquadContent + "<br>" +rows[0][0].Msg;
 					}else{
 						var squad 		 = rows[0][i];
 						console.log(squad);
-						var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+");'>"+squad.SquadName+"</a>";
+						var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+","+'"'+squad.SquadName+'"'+");'>"+squad.SquadName+"</a>";
 						villageSquadContent = villageSquadContent + villageSquad;
 					}
 				});
@@ -918,7 +931,7 @@ var PlayScreen = me.ScreenObject.extend(
 								});
 								
 								//////////////////////////////////
-								//POPULATING THE BUILDING MENU
+								//POPULATING THE UNIT MENU
 								var trainUnitContent = "<table boder=0 width=100%><tr>";
 								trainUnitContent 	 = trainUnitContent + "<td align='center' width=20%><b>UNIT</b></td>";
 								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%><b>RESOURCES</b></td>";
@@ -930,44 +943,19 @@ var PlayScreen = me.ScreenObject.extend(
 								$.each(unitsICanMake, function(i, obj) {
 									var unit 	    = unitsICanMake[i];
 									console.log(unit);
-									if(newUnit == ""){
-										var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></input></p></td>";
-										unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
-										unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
-										unitDetail  	= unitDetail + "<td width=40% align='center'>";
-										newUnit 		= "N";
-									}else{
-										
-									
-									}
+									var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></input></p></td>";
+									unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
+									unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
+									unitDetail  	= unitDetail + "<td width=40% align='center'>";
 
-									
-									//PLEASE,FIX ME 
-									/*if((build.gold != undefined) && (build.gold != 0)){
-										var img   = me.loader.getImage('Gold');
-										img       = $(img).attr("src");
-										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.gold+"</p>";
+									totalResources = unit.Resources.length;
+									for(var i =0;i<totalResources;i++){
+										var rscDescription = unit.Resources[i].Description;
+										var rscQty		   = unit.Resources[i].Qty;
+										var rscImg		   = me.loader.getImage(jsApp.toTitleCase(rscDescription));
+										rscImg			   = $(rscImg).attr("src");
+										unitDetail = unitDetail + "<p><img src='"+rscImg+"'/>"+rscQty+"</p>";
 									}
-									if((build.wood != undefined) && (build.wood != 0)){
-										var img   = me.loader.getImage('Wood');
-										img       = $(img).attr("src");
-										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.wood+"</p>";
-									}
-									if((build.iron != undefined) && (build.iron != 0)){
-										var img   = me.loader.getImage('Iron');
-										img       = $(img).attr("src");
-										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.iron+"</p>";					
-									}
-									if((build.stone != undefined) && (build.stone != 0)){
-										var img   = me.loader.getImage('Stone');
-										img       = $(img).attr("src");
-										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.stone+"</p>";	
-									}
-									if((build.food != undefined) && (build.food != 0)){
-										var img   = me.loader.getImage('Food');
-										img       = $(img).attr("src");
-										bldDetail = bldDetail + "<p><img src='"+img+"'/>"+build.food+"</p>";
-									}*/
 									
 									unitDetail  = unitDetail + "</td><td width=40%>";
 									

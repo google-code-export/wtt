@@ -52,13 +52,13 @@ io.sockets.on('connection', function (socket) {
     ///////////////////
     // Request Chunk //
     ///////////////////
-    socket.on('onResourcesUpdate', function(data) {
+    //socket.on('onResourcesUpdate', function(data) {
         //var chunk = data.chunk;
         //console.log("getting chunk data for chunk zone ="+chunk.zoneId+" and chunk XY = "+chunk.x+","+chunk.y);
         //if(false) {
         //
         //}
-    });
+    //});
 
   //////////////////////////
   // onResourcesUpdate    //
@@ -244,21 +244,29 @@ io.sockets.on('connection', function (socket) {
 				
 				connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
 					if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
+						alert('rows');
 					}else{
-						rows[0][0].listUnitsCanMake = rows2[0]; 
-						for(var i=0;i<rows[0][0].listUnitsCanMake.length;i++){
-							connection.query("CALL `ResourceByUnit`('"+rows[0][0].listUnitsCanMake[i].idUnit+"')",function(err3, rows3, fields3){
-								rows[0][0].listUnitsCanMake[i].Resources = rows3[0];
-							});
+						if(rows2[0] == ""){//-->FIXME
+							rows[0][0].listUnitsCanMake = ""; 
+							socket.emit("onBuildingSelect",rows,data);
+						}else{
+							rows[0][0].listUnitsCanMake = rows2[0]; 
+							var ct = rows[0][0].listUnitsCanMake.length;
+							var cT = ct-1;
+							while(ct--) {//--->FIXME
+								var idUnit = rows[0][0].listUnitsCanMake[ct].idUnit
+								connection.query("CALL `ResourceByUnit`('"+idUnit+"')",function(err3, rows3, fields3){
+									rows[0][0].listUnitsCanMake[cT].Resources = rows3[0];
+									cT--;
+									if(cT == -1){
+										socket.emit("onBuildingSelect",rows,data);
+									}
+								});
+							}
+						
 						}
-						//rows = rows[0][0].listUnitsCanMake;
-						console.log(rows);
-						/*for(var i=0;allUnits.length;i++){
-							var thisUnit = allUnits[i];
-							console.log(thisUnit);
-						}*/
+
 					}
-					socket.emit("onBuildingSelect",rows,data);
 				});				
 			}
 		});
