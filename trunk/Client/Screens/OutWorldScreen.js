@@ -9,6 +9,12 @@ var OutWorldScreen = me.ScreenObject.extend(
 			this.TMXTileMap   			 = "Chunk";
 			this.font          			 = new me.Font("verdana", 18, "white", "left");
 			
+			//GAME CAMERA
+			this.mousedown = false;
+            this.mousemoved = false;
+            this.mousemove = new me.Vector2d();
+            this.mousedelta = new me.Vector2d();
+			
 			 //Destroying websockets event before create a new one	
 			 jsApp.destroy("onListWorldVillage");
 			 jsApp.destroy("onVillageSelect");
@@ -53,10 +59,14 @@ var OutWorldScreen = me.ScreenObject.extend(
 						me.game.add(names,10);
 						me.game.sort();
 						worldNames.push(names);
+						//SENDING USER SCREEN TO HIS VILLAGE POSITION.
+						if(rows[0][i].idVillage == userData.idVillage){
+							me.game.viewport.move(pixelIs.x,pixelIs.y);
+						}
                     }
                 }
 				gameHandler.activeHuds.worldNames = worldNames;
-				console.log(gameHandler.activeHuds.worldNames);
+				//console.log(gameHandler.activeHuds.worldNames);
             }
 			socket.on("onListWorldVillage", listWorldVillageFun);
 			////////////////////////////////////////////////////
@@ -96,16 +106,24 @@ var OutWorldScreen = me.ScreenObject.extend(
 					width: 600,
 					modal: true,
 					buttons: {
+						"Check all": function() {
+							$("input:checkbox[id*='atkSquad_']").attr("checked",true);
+						},
+
 						"Send" : function(){
 							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
 							var idVillageDef = data.idAtkVillage;
 							var userData	 = jsApp.getUserData();
 							var villageOwner = data.villageOwner;
 							
-							$("input:radio[id*='atkSquad_']:checked").each(function(i, obj){
-								var idSquadVillage = $(this).val();
-								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : userData.userId, "villageOwner" : villageOwner});
+							var idSquadVillage   = "";
+							$("input:checkbox[id*='atkSquad_']:checked").each(function(i, obj){
+								idSquadVillage = idSquadVillage + $(this).val()+",";
 							});
+							
+							//clearing the last char
+							idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
+							socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : userData.userId, "villageOwner" : villageOwner});
 							
 							$( "#dialogAtkSquad" ).html('');
 							$( this ).dialog( "close" );
@@ -127,7 +145,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 				$.each(rows[0], function(i, obj) {
 					var squad 		 = rows[0][i];
 					console.log(squad);
-					var atkSquad = "<br> <input type='radio' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					var atkSquad = "<br> <input type='checkbox' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
 					atkSquadContent = atkSquadContent + atkSquad;
 				});
 				
@@ -152,10 +170,6 @@ var OutWorldScreen = me.ScreenObject.extend(
             /////////////////
             // GAME CAMERA //
             /////////////////
-            this.mousedown = false;
-            this.mousemoved = false;
-            this.mousemove = new me.Vector2d();
-            this.mousedelta = new me.Vector2d();
 
             me.input.registerPointerEvent("mousedown", me.game.viewport, (function (e) {
                 this.mousedown = true;

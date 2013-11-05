@@ -186,13 +186,13 @@ io.sockets.on('connection', function (socket) {
 	/////////////////////////
     // onSquadDetail      //
     ///////////////////////
-    socket.on('onSquadDetail', function(data) {
+    socket.on('onSquadDetail', function(data,squadName) {
         console.log("Viewing units from squads: "+data);
         connection.query("CALL `CountUnitSquad`("+data+")",function(err, rows, fields){
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onSquadDetail", rows, data);
+                socket.emit("onSquadDetail", rows, data, squadName);
             }
         });
     });
@@ -435,7 +435,7 @@ io.sockets.on('connection', function (socket) {
     ///////////////////////////
 	socket.on("onAtkVillage", function(data){
 		console.log(data);
-		connection.query("CALL `Battle`("+data.IdSquadAtk+","+data.IdVillagDef+","+data.userId+")", function(err, rows, fields){
+		connection.query("CALL `Battle`('"+data.IdSquadAtk+"',"+data.IdVillagDef+","+data.userId+")", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{

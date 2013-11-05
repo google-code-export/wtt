@@ -458,19 +458,22 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////////
 			//creating the window to create the squad
 			var squadDetailFun = function(rows, idSquad,squadName){
-
+				console.log(squadName);
+				console.log(idSquad);
+				console.log(rows);
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
 				div.setAttribute("id","dialogSquadUnits");
 				div.setAttribute("name","dialogSquadUnits");
-				div.setAttribute("title",squadName);//-->FIXME!
+				div.setAttribute("title",squadName);
 				div.setAttribute("style","display:none");
 				
 				$("body").append(div);
 				$("#dialogSquadUnits").dialog({
 					autoOpen: false,
 					height: 480,
+					title: squadName,
 					width: 600,
 					modal: true,
 					buttons: {
@@ -482,12 +485,14 @@ var PlayScreen = me.ScreenObject.extend(
 				});
 				
 				//////////////////////////////////
-				//POPULATING THE ARMY CHECKBOXES
+				//POPULATING THE ARMY LIST
 				var unitSquadContent = "";
 				$.each(rows[0], function(i, obj) {
 					var unit 		 = rows[0][i];
-					var unitImg      = me.loader.getImage(unit.Image);//-->FIXME
-					var unitSquad = "<br> "+unit.qty+" X "+unit.Description;
+					var imgStr       = unit.Description.replace(" ","_");
+					var unitImg      = me.loader.getImage(imgStr+"_Front");
+					unitImg       	 = $(unitImg).attr("src");
+					var unitSquad = "<br> "+unit.qty+" X "+unit.Description + " <img src='"+unitImg+"' />";
 					unitSquadContent = unitSquadContent + unitSquad;
 				});
 				
