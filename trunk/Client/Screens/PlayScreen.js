@@ -884,9 +884,10 @@ var PlayScreen = me.ScreenObject.extend(
 						//IF I CLICKED IN THE TRAIN UNIT BUTTON
                         if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
                             if(gameHandler.activeHuds.buildingHUD.createUnitButton.containsPointV(me.input.changedTouches[0])) {
+								this.mousedown = false;
+								this.mousemoved = false;
                                 var unitsICanMake = gameHandler.activeHuds.buildingHUD.upInfo.listUnitsCanMake;
 								var thisBuilding  = gameHandler.activeHuds.buildingHUD.upInfo;
-								console.log(unitsICanMake);
 								//////////////////////////
 								//CREATING THE MODAL FORM
 								var div		 = document.createElement("div");
@@ -1002,9 +1003,9 @@ var PlayScreen = me.ScreenObject.extend(
                                 //if(gameHandler.activeHuds.buildMenu!=undefined)
                                 //    return;
                                 socket.emit("onListBuilding", {"idVillage" : this.idVillage} );
-                            } else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
+                            /*} else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON LIST UNITS
-                                socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});
+                                socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});*/
 							} else if(menu.squadRect.containsPointV(me.input.changedTouches[0])) {
 								// IF I CLIKED ON CREATE ARMY
 								socket.emit("onOpenCreateSquad", this.idVillage);

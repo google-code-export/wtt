@@ -61,12 +61,6 @@ var jsApp	 =
 		for (var i = 0 ; i < highestTimeoutId ; i++) {
 			clearTimeout(i); 
 		}
-		/*console.log(timeouts);
-		for ( i = 0; i < timeouts.lenght; i++){
-			clearTimeout(timeouts[i]);
-		}
-		console.log(timeouts);
-		timeouts = [];*/
 	},
 	
 	//THIS GET THE ACTUAL SYSTEM TIME AND RETURN IN YYYY-MM-DD HH:MM:SS OR HH:MM:SS

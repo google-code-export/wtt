@@ -22,7 +22,7 @@ jsApp.ResourcesHUD = me.Renderable.extend({
         gameHandler.activeHuds["resourceHud"] = this;
 		
         jsApp.send("onResourcesUpdate", jsApp.getUserData()); //
-
+		this.background = me.loader.getImage("WoodTexture");
     },
 
     distance : 60,
@@ -36,10 +36,11 @@ jsApp.ResourcesHUD = me.Renderable.extend({
     {
         var iX = 20;
 		var alpha = context.globalAlpha; 
+		context.drawImage(this.background, 0, 0, gameW, 30);
         context.globalAlpha = 0.6;
         context.fillStyle = "#00066";
 
-        context.fillRect(0,0,gameW, 28);
+        //context.fillRect(0,0,gameW, 28);
         context.globalAlpha = 1;
         context.drawImage(this.Coinimage, this.pos.x, this.pos.y);
         this.font.draw (context, this.GoldValue, iX+this.pos.x , this.pos.y);

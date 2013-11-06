@@ -40,14 +40,14 @@ jsApp.ActionMenu = me.Renderable.extend({
 			iX+=55;
 			/////////////////////
 			// VIEW UNITS
-			this.unitsRect = new me.Rect(
+			/*this.unitsRect = new me.Rect(
 				new me.Vector2d(
 					this.pos.x +iX,
 					this.pos.y+5
 				),
 				50, 30
 			);
-			iX+=55;
+			iX+=55;*/
 			///////////////////////
 			//CREATE SQUAD
 			this.squadRect = new me.Rect(
@@ -96,7 +96,7 @@ jsApp.ActionMenu = me.Renderable.extend({
 				50, 30
 			);
 			
-			this.unitsRect.buttonText      = "Units";
+			//this.unitsRect.buttonText      = "Units";
 			this.squadRect.buttonText      = "Create Squad";
 			this.viewSquadRect.buttonText  = "View Squad";
 			this.buildRect.buttonText  	   = "Build";
@@ -105,7 +105,7 @@ jsApp.ActionMenu = me.Renderable.extend({
 			this.worldRect.buttonText      = "World";
 			
 			this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
-			this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
+			//this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.squadRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.viewSquadRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
@@ -135,6 +135,7 @@ jsApp.ActionMenu = me.Renderable.extend({
 			this.font = new me.Font("verdana", 14, "lime", "right");
 			this.font.textBaseline = "bottom";
 		}
+		this.background = me.loader.getImage("WoodTexture");
     },
 
     "destroy" : function destroy() {
@@ -151,7 +152,8 @@ jsApp.ActionMenu = me.Renderable.extend({
         context.globalAlpha = 0.6;
         context.fillStyle = "#000";
         context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
-
+		context.drawImage(this.background, 0, gameH-40, gameW, 40);
+		
         if(this.options!=undefined) {
             var ct = this.options.length;
             while(ct--) {
