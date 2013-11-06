@@ -132,7 +132,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.buttonfont = new me.Font("verdana", 14, "lime", "right");
         this.buttonfont.textBaseline = "bottom";
         ////////
-
+		this.background = me.loader.getImage("WoodTexture");
 		gameHandler.activeHuds.buildingHUD = this;
 	},
 
@@ -143,7 +143,8 @@ jsApp.BuildingHUD = me.Renderable.extend({
         context.fillStyle = "#00066";
 
         //BUILDING RECTS//
-        context.fillRect(0,gameH-128,gameW, 128);
+		context.drawImage(this.background,0,gameH-128,gameW, 128);
+        //context.fillRect(0,gameH-128,gameW, 128);
         context.globalAlpha = 1;
 
 		context.drawImage(this.Buildimage, this.pos.x, this.pos.y);

@@ -1,73 +1,87 @@
 <!DOCTYPE html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
-    <title>WTT: Way of The Temple</title>
-    <meta name="keywords" content=""    />
-    <meta name="description" content="" />
-    <link   rel="stylesheet" href="css/styles_mobile.css"      type="text/css" media="screen" />
-	<script type="text/javascript" src="lib/socket.js"></script>
-	<script type="text/javascript" src="lib/jq.js"></script>
-	<script type="text/javascript" src="lib/jstorage.js"></script>
-	<script type="text/javascript" src="lib/Melon.js"></script>
-	<script type="text/javascript" src="Screens/PlayScreen.js"></script>
-	<script type="text/javascript" src="Screens/TitleScreen.js"></script>
-	<script type="text/javascript" src="Entity/Unit.js"></script>
-	<script type="text/javascript" src="Resources.js"></script>
-	<script type="text/javascript" src="App.js"></script>
-	<script type="text/javascript" src="UnityAI.js"></script>
-	<script type="text/javascript" src="Screens/ActionMenu.js"></script>
-	<script type="text/javascript" src="Screens/SimpleDialog.js"></script>
-	<script type="text/javascript" src="Screens/ResourcesHUD.js"></script>
-	<script type="text/javascript" src="Screens/BuildMenu.js"></script>
-	<script type="text/javascript" src="Screens/BuildUnitMenu.js"></script>
-	<script type="text/javascript" src="Screens/GenericMenu.js"></script>
-	<script type="text/javascript" src="Screens/ListUnitInClass.js"></script>
-	<script type="text/javascript" src="Screens/BuildArea.js"></script>
-	<script type="text/javascript" src="Screens/BuildingHUD.js"></script>
-	<script type="text/javascript" src="Screens/VillageUnitsGeneral.js"></script>
-	<script type="text/javascript" src="Screens/ProgressBar.js"></script>
-	<script type="text/javascript" src="Screens/ColectAlert.js"></script>
-	<script type="text/javascript" src="Screens/BuildingDetail.js"></script>
-	<script type="text/javascript" src="Screens/MarketMenu.js"></script>
-	<script type="text/javascript" src="Screens/SellMenu.js"></script>
-</head>
+   <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <title>WTT: Way of The Temple</title>
+        <meta name="keywords" content=""    />
+        <meta name="description" content="" />
+        <link   rel="stylesheet" href="css/styles_mobile.css"      type="text/css" media="screen" />
+		<link   rel="stylesheet" href="css/jquery-ui.css"   type="text/css" media="screen" />
+		<script type="text/javascript" src="lib/socket.js"></script>
+        <script type="text/javascript" src="lib/jq.js"></script>
+		<script type="text/javascript" src="lib/jquery-ui.js"></script>
+        <script type="text/javascript" src="lib/jstorage.js"></script>
+		<script type="text/javascript" src="lib/Melon.js"></script>
+        <script type="text/javascript" src="Screens/PlayScreen.js"></script>
+        <script type="text/javascript" src="Screens/TitleScreen.js"></script>
+		<script type="text/javascript" src="Screens/OutWorldScreen.js"></script>
+        <script type="text/javascript" src="Entity/Unit.js"></script>
+        <script type="text/javascript" src="Resources.js"></script>
+        <script type="text/javascript" src="App.js"></script>
+       <script type="text/javascript"  src="UnityAI.js"></script>
+        <script type="text/javascript" src="Screens/ActionMenu.js"></script>
+        <!--script type="text/javascript" src="Screens/SimpleDialog.js"></script-->
+        <script type="text/javascript" src="Screens/ResourcesHUD.js"></script>
+		<script type="text/javascript" src="Screens/BuildMenu.js"></script>
+       <script type="text/javascript"  src="Screens/BuildUnitMenu.js"></script>
+       <script type="text/javascript"  src="Screens/GenericMenu.js"></script>
+       <script type="text/javascript"  src="Screens/ListUnitInClass.js"></script>
+        <script type="text/javascript" src="Screens/BuildArea.js"></script>
+		<script type="text/javascript" src="Screens/BuildingHUD.js"></script>
+       <script type="text/javascript"  src="Screens/VillageUnitsGeneral.js"></script>
+		<script type="text/javascript" src="Screens/ProgressBar.js"></script>
+		<script type="text/javascript" src="Screens/ColectAlert.js"></script>
+		<script type="text/javascript" src="Screens/BuildingDetail.js"></script>
+		<script type="text/javascript" src="Screens/MarketMenu.js"></script>
+		<script type="text/javascript" src="Screens/SellMenu.js"></script>
+		<script type="text/javascript" src="Screens/WorldNames.js"></script>
+		<script type="text/javascript" src="Screens/WorldBuildingOptions.js"></script>
+   </head>
 <body>
 <script>
-    var socket;
-    window.onReady(function onReady() {
-        $.jStorage.flush();
-        socket = io.connect('http://199.115.231.229');
-        socket.on('loginok', function (data) {
-            if(data[0][0].msg != undefined){
-                alert(data[0][0].msg);
-            }else{
-                var d0 = data[0][0];
-                console.log("loggin in with userId "+d0.userId +" and session id "+d0.sessionId);
-                $.jStorage.set("userData", d0);
-                //$.jStorage.get("userData").sessionId;
-                $("#divLogin").hide();
-                $("#footer_bot").hide();
-                $("#logo").hide();
-                //$("#logo").hide();
-                jsApp.onload();
-            }
-        });
-        socket.on('message', function(data) {
-            alert(data.msg);
-        });
-        //////// DEBUG MODE
-        //$("#divLogin").hide();
-        //$.jStorage.set("userData", {userId: 4, sessionId:34});
-        //jsApp.onload();
-    });
+	var socket;
+	window.onReady(function onReady() {
+		$.jStorage.flush();
+		socket = jsApp.getSocket();
+		//////////////////////////
+		//login                //
+		var loginFun =  function (data) {
+			if(data[0][0].msg != undefined){
+				alert(data[0][0].msg);
+			}else{
+				var d0 = data[0][0];
+				console.log("loggin in with userId "+d0.userId +" and session id "+d0.sessionId);
+				$.jStorage.set("userData", d0);
+				$("#divLogin").hide();
+				$("#footer_bot").hide();
+				$("#logo").hide();
+				jsApp.onload();
+			}
+		}
+		socket.on('loginok',loginFun);
+		//////////////////////////////////
+		
+		///////////////////////////////////
+		// msg functions               ///
+		var msgFun = function(data) {
+			alert(data.msg);
+			//REMOVING LISTENER
+			//jsApp.destroy('message', msgFun);
+		}
+		socket.on('message', msgFun);
+		/////////////////////////////////
+		//////// DEBUG MODE
+		//$("#divLogin").hide();
+		//$.jStorage.set("userData", {userId: 4, sessionId:34});
+		//jsApp.onload();
+	});
 
-    function go(){
-        socket = io.connect('http://199.115.231.229');
-        var user =  $("#username").val();
-        var pass = $("#password").val();
-        socket.emit("login",  { p1:user,p2:pass });
-    }
+	function go(){
+	   socket = jsApp.getSocket();
+	   var user =  $("#username").val();
+	   var pass = $("#password").val();
+	   socket.emit("login",  { p1:user,p2:pass });
+	}
     // Mobile browser hacks
     if (me.sys.isMobile && !navigator.isCocoonJS) {
         // Prevent the webview from moving on a swipe
