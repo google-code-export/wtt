@@ -6,7 +6,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			var socket         			 = jsApp.getSocket();
             var idWorld        			 = 1; //-->NEED TO SEE THIS BETTER!!
 			var userData				 = jsApp.getUserData();
-			this.TMXTileMap   			 = "Chunk";
+			this.TMXTileMap   			 = "OutWorld";
 			this.font          			 = new me.Font("verdana", 18, "white", "left");
 			
 			//GAME CAMERA
@@ -159,9 +159,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK 
 			var atkVillageFun =  function(rows, data){
-				console.log(rows);
-				//REMOVING LISTENER
-				//jsApp.destroy("onAtkVillage",atkVillageFun);
+				alert(rows[0][0].Msg);
 			}
 			socket.on("onAtkVillage",atkVillageFun);
 			
@@ -260,7 +258,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			me.game.add(this.gui, 3000);
 			me.game.sort();
             // LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
-            loadMap("Chunk");
+            loadMap("OutWorld");
             // SORT GRAPHICS RENDERED TO THE SCREEN (SO IT CAN REDRAW IN THE RIGHT ORDER)
             
 			this.parent();

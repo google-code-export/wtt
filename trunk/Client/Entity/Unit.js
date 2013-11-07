@@ -4,22 +4,36 @@ var Unit = me.ObjectEntity.extend(
         init:function (x, y, settings)
         {
 			
-			var classType = settings.Description;
-			var image	  = classType.replace(" ","_");
+			var classType  = settings.Description;
+			var image	   = classType.replace(" ","_");
 			//VERIFYING IF THE UNIT IT'S A MOUNT
-			var isMount = settings.Description.indexOf('Mount'); 
+			var isMount    = settings.Description.indexOf('Mount'); 
+			var isLadder   = settings.Description.indexOf('Ladder');
+			var isCatapult = settings.Description.indexOf('Catapult');
 			//if not
-			if( isMount == -1){
-				var imgConf 		  = "_24x20";
-				settings.spritewidth  = 20;
-				settings.spriteheight = 24;
-				settings.name 		  = classType;
-				settings.image 		  = image+imgConf;
-			}else{
+			if( isMount != -1){
 				var imgConf 		  = "_39x37";
 				settings.spritewidth  = 37.5;
 				settings.spriteheight = 39;	
 				settings.name         = classType;
+				settings.image 		  = image+imgConf;
+			}else if( isLadder != -1){
+				var imgConf 		  = "_32x75";
+				settings.spritewidth  = 32.5;
+				settings.spriteheight = 75;	
+				settings.name         = classType;
+				settings.image 		  = image+imgConf;
+			}else if( isCatapult != -1){
+				var imgConf 		  = "_42x55";
+				settings.spritewidth  = 42;
+				settings.spriteheight = 55;	
+				settings.name         = classType;
+				settings.image 		  = image+imgConf;
+			}else{
+				var imgConf 		  = "_24x20";
+				settings.spritewidth  = 20;
+				settings.spriteheight = 24;
+				settings.name 		  = classType;
 				settings.image 		  = image+imgConf;
 			}
 			//

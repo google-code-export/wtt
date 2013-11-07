@@ -5,14 +5,26 @@ jsApp.ColectAlert = me.Renderable.extend({
 		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y),8,16);// position on the screen
 		this.font = new me.BitmapFont("BaseFont", 16);
 		
-		
-		if(type == 4){
+		//FIXME!
+		if(type == 14){
 			this.image  = me.loader.getImage("Wood") ;
 			this.Value	= 100;
 		}
-		if(type == 14){
+		if(type == 15){
 			this.image  = me.loader.getImage("Stone") ;
-			this.Value	= 50;
+			this.Value	= 100;
+		}
+		if(type == 16){
+			this.image  = me.loader.getImage("Gold") ;
+			this.Value	= 100;
+		}
+		if(type == 17){
+			this.image  = me.loader.getImage("Iron") ;
+			this.Value	= 100;
+		}
+		if(type == 18){
+			this.image  = me.loader.getImage("Food") ;
+			this.Value	= 100;
 		}
         this.floating = false;
 		this.isPersistent = false;;
