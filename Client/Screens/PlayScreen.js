@@ -5,10 +5,10 @@ var PlayScreen = me.ScreenObject.extend(
 			var socket = jsApp.getSocket();
 			var userData = jsApp.getUserData();
             this.idVillage = userData.idVillage;
-			this.TMXTileMap = "Chunk";
+			this.TMXTileMap = "VillageArea";
 			//////////////////////////////////////////
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
-            loadMap("Chunk");
+            loadMap("VillageArea");
 			me.game.sort();
 			
 			////////////////////////////////////////
@@ -44,6 +44,17 @@ var PlayScreen = me.ScreenObject.extend(
 			//LISTING VILLAGE UNITS AND BUILDINGS
 			socket.emit("onListVillageBuildings", this.idVillage);
 			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
+			
+			///////////////////////
+			//IF SOMEBODY BUY MY OFFER
+			/*var AlertBuy = function(data){
+				console.log(data);
+				if(userData.userId == data){
+					//update resources hud
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				}
+			}*/
+			/*socket.on("onAlertBuy", AlertBuy);*/
 			//////////////////////////
 			//IF IM BEING ATTACKED //
 			var AlertAtkFun = function(data){
@@ -52,7 +63,7 @@ var PlayScreen = me.ScreenObject.extend(
 					//socket.emit("onListWorldVillage");
 					me.game.remove(this, true);
 					me.state.change(me.state.OUTWORLD);
-					alert(data.Msg);
+					alert(data.Msg);	
 				}
 			}
 			socket.on("onAlertUserAtk", AlertAtkFun);
@@ -64,6 +75,7 @@ var PlayScreen = me.ScreenObject.extend(
                 //console.log(data[0]);
 				for (var i in data[0]){
                     if (i!="remove"){
+						console.log(data[0][i]);
                         var idTile  = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         var x       = data[0][i].posX;
                         var y       = data[0][i].posY;
@@ -80,7 +92,7 @@ var PlayScreen = me.ScreenObject.extend(
 								var unitDetails = {"buildingX" : x, "buildingY" : y, "idVillage" : idVillage, "Description" : data[0][i].JobDescription};
 								socket.emit("onUnitCheck",unitDetails);
 							}else{
-								idTile   	   = 5;
+								idTile   	   = 37;
 								changeTile     = data[0][i].idTile + 1;
 								time    	   = jsApp.timeToMs(timer);
 								pixelIs 	   = jsApp.getTileForPixels(x,y);
@@ -133,7 +145,7 @@ var PlayScreen = me.ScreenObject.extend(
 				if(rows[0][0].Msg == "Done"){
 					var time 	   = jsApp.timeToMs(infobuild.buildTimer);
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var idTile 	   = 5; // NEED TO SEE THIS BETTER VERY QUICK!
+					var idTile 	   = 37; // NEED TO SEE THIS BETTER VERY QUICK!
                     var pixelIs    = jsApp.getTileForPixels(infobuild.posX,infobuild.posY);
 					infobuild.x    = infobuild.posX;
 					infobuild.y    = infobuild.posY;
@@ -213,9 +225,9 @@ var PlayScreen = me.ScreenObject.extend(
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							var time = jsApp.timeToMs(data.buildTimer);
                             var pixelIs = jsApp.getTileForPixels(building.x,building.y);
-							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 5");
+							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 37");
 							
-							buildLayer.setTile(building.x,building.y,5);//changing the tile for the construction zone
+							buildLayer.setTile(building.x,building.y,37);//changing the tile for the construction zone
 							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(this.progressBar,10);// adding this to the screen
 							var vconstructCheck = function(){socket.emit("onConstructCheck",data);};
@@ -345,6 +357,7 @@ var PlayScreen = me.ScreenObject.extend(
 			var openSquadFun = function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
+				console.log(rows);
 				var idVillage = data;
 				var div 	  = document.createElement("div");
 				div.setAttribute("id","dialogArmy");
@@ -396,9 +409,23 @@ var PlayScreen = me.ScreenObject.extend(
 					if(rows[0][i].Msg != undefined){
 						squadContent = squadContent + "<br>" + rows[0][i].Msg;
 					}else{
-						var unit =rows[0][i];
-						var unitCheckBox = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'>"+unit.Unit_Name+"("+unit.Description+")</input>";
-						squadContent = squadContent + unitCheckBox;
+						var unit 		   = rows[0][i];
+						var imgStr 		   = unit.Description.replace(" ","_");
+						
+						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
+						unitFace       	   = $(unitFace).attr("src");
+						
+						var lifeImg        = me.loader.getImage("Life");
+						lifeImg       	   = $(lifeImg).attr("src");
+						
+						var atkImg         = me.loader.getImage("Sword");
+						atkImg       	   = $(atkImg).attr("src");
+						
+						var defImg         = me.loader.getImage("Shield");
+						defImg			   = $(defImg).attr("src");
+						
+						var unitCheckBox   = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") <img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <img src='"+lifeImg+"' alt='Life' /> : "+unit.Life;
+						squadContent 	   = squadContent + unitCheckBox;
 					}
 				});
 				
@@ -560,7 +587,12 @@ var PlayScreen = me.ScreenObject.extend(
 					var build 	 = data[0][i];
 					bldList[build.idBuilding] = new Array();
 					bldList[build.idBuilding] = build;
-					var bldDetail  = "<tr><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='data/sprite/Buildings/building.png' /></input></p></td>";
+					
+					var imgStr 		   		  = build.Description.replace(" ","_");
+					var bdlImg      		  = me.loader.getImage(imgStr);
+					bdlImg       	   		  = $(bdlImg).attr("src");
+					
+					var bldDetail  = "<tr><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='"+bdlImg+"' /></input></p></td>";
 					bldDetail  	   = bldDetail + "<td width=40% align='center'>";
 					
 					//PLEASE,FIX ME 
@@ -757,7 +789,7 @@ var PlayScreen = me.ScreenObject.extend(
 				//updating the resources
 				jsApp.send("onResourcesUpdate", jsApp.getUserData());
 				//
-				console.log(rows);
+				alert(rows[0][0].Msg);
 			}
 			socket.on('onCreateOffer', createOfferFun);
 			///////////////////////////////////
@@ -849,10 +881,13 @@ var PlayScreen = me.ScreenObject.extend(
 			//after buy a offer				//
 			////						/////
 			var buyOfferFun = function(rows,data) {
-				//updating the resources
-				jsApp.send("onResourcesUpdate", jsApp.getUserData());
-				//
-				console.log(rows);
+				if(rows[0][0].Msg != "Done"){
+					alert(rows[0][0].Msg);
+				}else{
+					//updating the resources
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+					//
+				}
 			}
 			socket.on('onBuyOffer', buyOfferFun);
 			///////////////////////////////////
@@ -915,6 +950,7 @@ var PlayScreen = me.ScreenObject.extend(
 													buildingY		 : thisBuilding.posY,
 													idUnit 			 : idUnit,
 													Image			 : unitImg,
+													faceImg			 : unitImg,
 													Description		 : unitDesc,
 													userId 			 : jsApp.getUserData().userId,
 													idVillage		 : jsApp.getUserData().idVillage
