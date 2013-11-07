@@ -255,10 +255,12 @@ var PlayScreen = me.ScreenObject.extend(
 					if(i>0)
 						return false;
 					else{
+						console.log(obj[i]);
+						console.log(data);
 						if(obj[i].Msg == "Done"){
 							var building  = data;
 							var idTile    = building.idTile; 
-							var userData  = jsApp.getUserData().idVillage;
+							var userData  = jsApp.getUserData();
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
@@ -266,7 +268,7 @@ var PlayScreen = me.ScreenObject.extend(
 							if(building.Type == "R"){
 								var gatherTime     = jsApp.timeToMs(building.gatherTime);
 								var pixelIs 	   = jsApp.getTileForPixels(building.x,building.y);
-								var resourceColect = function(){socket.emit("onResourcesCollect",{"villageId": userData.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime, "type" : idTile})};
+								var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": userData.idVillage, "x" : building.x, "y" : building.y, "gatherTime" : gatherTime, "type" : idTile})};
 								jsApp.timeScheduler(resourceColect,gatherTime);
 							}
 							
@@ -668,6 +670,7 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////
 			//collecting the resources			//
 			var resourceCltFun = function(rows, data) {
+				console.log(rows);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -1068,7 +1071,7 @@ var PlayScreen = me.ScreenObject.extend(
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var tileIs = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
 					var tileid = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
-					if (tileid != null){ // 22 it's for the construction tile
+					if (tileid != null){ 
                         this.tileWhereBuildingIs = tileIs;
 						socket.emit("onBuildingSelect",{idVillage: this.idVillage, X: tileIs.x, Y: tileIs.y});
 					}

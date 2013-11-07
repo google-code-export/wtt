@@ -1,15 +1,17 @@
 jsApp.WorldBuildingOptions = me.Renderable.extend({
-    "init" : function init(type,idVillage,villageOwner,pixelIs) {
+    "init" : function init(type,idVillage,villageOwner,pixelIs,x,y) {
 	
         this.floating = false;
         this.isPersistent = false;
 		this.alwaysUpdate = true;
 
-		gameHandler.activeHuds.actionWorldMenu = this;
-		this.idVillage						   = idVillage;
-		this.villageOwner				       = villageOwner;
-		var pX = pixelIs.x;
-		var pY = pixelIs.y;
+		console.log(this);
+		this.idVillage	    = idVillage;
+		this.villageOwner	= villageOwner;
+		this.x				= x;
+		this.y				= y;
+		var pX 				= pixelIs.x;
+		var pY 				= pixelIs.y;
         // options that are displayed on the screen
         this.options = new Array();
 		var iY = 0;
@@ -35,42 +37,58 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			this.enterRect.buttonText = "Enter";
 			this.options.push(this.enterRect);//including button to the array
 		}else{
-			//////////////////////
-			// ATTACK
-			this.attackRect = new me.Rect(
-				new me.Vector2d(
-					pX +65,
-					pY+iY
-				 ),
-				 100, 50
-			);
-			iY += 50;
-			this.attackRect.buttonText = "Attack";
-			this.options.push(this.attackRect);//including button to the array
-			
-			//////////////////////
-			// TRADE
-			this.tradeRect = new me.Rect(
-				new me.Vector2d(
-					pX +65,
-					pY+iY
-				 ),
-				 100, 50
-			);
-			iY += 50;
-			this.tradeRect.buttonText = "Trade";
-			this.options.push(this.tradeRect);//including button to the array
-			//////////////////////
-			// SEND MSG
-			this.msgRect = new me.Rect(
-				new me.Vector2d(
-					pX +65,
-					pY+iY
-				 ),
-				 100, 50
-			);
-			this.msgRect.buttonText = "Send Msg";
-			this.options.push(this.msgRect);//including button to the array
+			//IF THIS IS A QUEST
+			if(this.villageOwner == null){
+				//////////////////////
+				// EXPLORE
+				this.exploreRect = new me.Rect(
+					new me.Vector2d(
+						pX +65,
+						pY+iY
+					 ),
+					 100, 50
+				);
+				iY += 50;
+				this.exploreRect.buttonText = "Explore...";
+				this.options.push(this.exploreRect);//including button to the array			
+			}else{
+				//////////////////////
+				// ATTACK
+				this.attackRect = new me.Rect(
+					new me.Vector2d(
+						pX +65,
+						pY+iY
+					 ),
+					 100, 50
+				);
+				iY += 50;
+				this.attackRect.buttonText = "Attack";
+				this.options.push(this.attackRect);//including button to the array
+				
+				//////////////////////
+				// TRADE
+				this.tradeRect = new me.Rect(
+					new me.Vector2d(
+						pX +65,
+						pY+iY
+					 ),
+					 100, 50
+				);
+				iY += 50;
+				this.tradeRect.buttonText = "Trade";
+				this.options.push(this.tradeRect);//including button to the array
+				//////////////////////
+				// SEND MSG
+				this.msgRect = new me.Rect(
+					new me.Vector2d(
+						pX +65,
+						pY+iY
+					 ),
+					 100, 50
+				);
+				this.msgRect.buttonText = "Send Msg";
+				this.options.push(this.msgRect);//including button to the array
+			}
 		}
 
 			
@@ -86,6 +104,7 @@ jsApp.WorldBuildingOptions = me.Renderable.extend({
 			this.font.textBaseline = "bottom";
 			
 			this.parent(new me.Vector2d(pX,pY), 110, iY);
+			gameHandler.activeHuds.actionWorldMenu = this;
     },
 
     "destroy" : function destroy() {

@@ -445,6 +445,21 @@ io.sockets.on('connection', function (socket) {
         });
 	});	
 	////////////////////////////
+	
+	////////////////////////////
+    // onAtkQuest        //
+    ///////////////////////////
+	socket.on("onAtkQuest", function(data){
+		console.log(data);
+		connection.query("CALL `CreatHorde`('"+data.IdSquadAtk+"',"+data.x+","+data.y+","+data.userId+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onAtkQuest",rows,data);
+            }
+        });
+	});	
+	////////////////////////////
 });
 
 // gotta put some more names here or try to use this:
