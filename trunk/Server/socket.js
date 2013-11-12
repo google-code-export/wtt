@@ -170,15 +170,15 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	/////////////////////////
-    // onViewSquad        //
+    // onViewVillageSquad        //
     ///////////////////////
-    socket.on('onViewSquad', function(data) {
-        console.log("Viewing squads from idVillage: "+data);
-        connection.query("CALL `ViewVillageSquad`("+data+")",function(err, rows, fields){
+    socket.on('onViewVillageSquad', function(data) {
+        console.log(data);
+        connection.query("CALL `ViewVillageSquad`("+data.idVillage+")",function(err, rows, fields){
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onViewSquad", rows, data);
+                socket.emit("onViewVillageSquad", rows, data);
             }
         });
     });
@@ -244,7 +244,6 @@ io.sockets.on('connection', function (socket) {
 				
 				connection.query("CALL `UnitBuildingCanBuild`('"+idBuilding+"')",function(err2, rows2, fields2){
 					if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
-						alert('rows');
 					}else{
 						if(rows2[0] == ""){//-->FIXME
 							rows[0][0].listUnitsCanMake = ""; 
@@ -420,7 +419,7 @@ io.sockets.on('connection', function (socket) {
     // onListSquadAtk      //
     ////////////////////////
 	socket.on("onListSquadAtk", function(data){
-        connection.query("CALL `ViewVillageSquad`("+data.idUserVillage+")",function(err, rows, fields){
+        connection.query("CALL `ViewUserSquad`("+data.userId+")",function(err, rows, fields){
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{

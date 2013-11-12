@@ -130,11 +130,11 @@ var OutWorldScreen = me.ScreenObject.extend(
 							idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
 							//if im attacking a village
 							if(villageOwner != null){
-								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : userData.userId, "villageOwner" : villageOwner});
+								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : jsApp.getUserData().userId, "villageOwner" : villageOwner});
 							}else{
 							//if im attacking a dungeon
 								console.log(data);
-								socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : userData.userId});
+								socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : jsApp.getUserData().userId});
 							}
 							$( "#dialogAtkSquad" ).html('');
 							$( this ).dialog( "close" );
@@ -154,10 +154,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 				//POPULATING THE SQUAD RADIOBOXES
 				var atkSquadContent = "";
 				$.each(rows[0], function(i, obj) {
-					var squad 		 = rows[0][i];
-					console.log(squad);
-					var atkSquad = "<br> <input type='checkbox' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
-					atkSquadContent = atkSquadContent + atkSquad;
+					if(rows[0][i].Msg != undefined){
+						var atkSquad = 	rows[0][i].Msg; 
+					}else{
+						var squad 	 = rows[0][i];
+						var atkSquad = "<br> <input type='checkbox' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					}
+					atkSquadContent  = atkSquadContent + atkSquad;
 				});
 				
 				$("#dialogAtkSquad").append(atkSquadContent);
@@ -181,8 +184,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK QUEST
 			var atkQuestFun =  function(rows, data){
-				console.log(rows);
-				alert('há');
+				alert(rows[0][0].Msg);
 				me.game.remove(this, true);
 				me.state.change(me.state.OUTWORLD);
 			}
@@ -217,7 +219,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 							
 								var idAtkVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
 								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
-								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner});
+								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "userId" : userData.userId});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}
@@ -245,7 +247,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
 								var x			 = gameHandler.activeHuds.actionWorldMenu.x;
 								var y			 = gameHandler.activeHuds.actionWorldMenu.y;
-								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y});
+								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}

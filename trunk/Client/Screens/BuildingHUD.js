@@ -68,19 +68,19 @@ jsApp.BuildingHUD = me.Renderable.extend({
 			var isMount       = this.upInfo.Image.indexOf('Mount');
 			var isLadder      = this.upInfo.Image.indexOf('Ladder');
 			var isCatapult    = this.upInfo.Image.indexOf('Catapult');
+			var imgH = 48;
+			var imgW = 40;
 			if( isMount != -1){
 				var imgH = 78;
 				var imgW = 75;
-
-			}else if( isLadder != -1){
+			}
+			if( isLadder != -1){
 				var imgH = 75;
 				var imgW = 32.5;
-			}else if( isCatapult != -1 ){
+			}
+			if( isCatapult != -1 ){
 				var imgH = 55;
 				var imgW = 42;			
-			}else{
-				var imgH = 48;
-				var imgW = 40;			
 			}
 			this.unit = new me.Rect(
                 new me.Vector2d(
