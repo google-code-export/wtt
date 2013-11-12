@@ -34,7 +34,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSellMenu");	
 			 jsApp.destroy("onOpenCreateSquad");
 			 jsApp.destroy("onCreateSquad");
-			 jsApp.destroy("onViewSquad");
+			 jsApp.destroy("onViewVillageSquad");
 			 jsApp.destroy("onSquadDetail");
 			 jsApp.destroy("onCreateOffer");
 			 jsApp.destroy("onBuyMenu");
@@ -381,19 +381,23 @@ var PlayScreen = me.ScreenObject.extend(
 						"Send": function() {
 							//creating the new squad
 							var squadName = $("#squadName").val();
-							var idUnits   = "";
-							$("input:checkbox:checked").each(function(i, obj){
-								idUnits = idUnits + $(this).val()+",";
-							});
-							//clearing the last char
-							idUnits = idUnits.substring(0,(idUnits.length - 1));
-							
-							//sending to the server
-							socket.emit("onCreateSquad",{"idVillage" : idVillage, "squadName" : squadName, "idUnits" :  idUnits});
-							
-							//clearing the form
-							$( "#dialogArmy" ).html('');
-							$( this ).dialog( "close" );
+							if(squadName == "" || squadName == null){
+								alert('Please, give a name to the squad!');
+							}else{
+								var idUnits   = "";
+								$("input:checkbox:checked").each(function(i, obj){
+									idUnits = idUnits + $(this).val()+",";
+								});
+								//clearing the last char
+								idUnits = idUnits.substring(0,(idUnits.length - 1));
+								
+								//sending to the server
+								socket.emit("onCreateSquad",{"idVillage" : idVillage, "squadName" : squadName, "idUnits" :  idUnits});
+								
+								//clearing the form
+								$( "#dialogArmy" ).html('');
+								$( this ).dialog( "close" );
+							}
 						},
 						Cancel: function() {
 							$( "#dialogArmy" ).html('');
@@ -482,7 +486,7 @@ var PlayScreen = me.ScreenObject.extend(
 				$("#dialogSquad").append(villageSquadContent);
 				$( "#dialogSquad" ).dialog( "open" );
 			}
-			socket.on("onViewSquad", viewSquadFun);
+			socket.on("onViewVillageSquad", viewSquadFun);
 			
 			///////////////////////////////////////////////
 			//creating the window to create the squad
@@ -729,10 +733,13 @@ var PlayScreen = me.ScreenObject.extend(
 								}else{
 									//if it's a valid number, send to the server
 									if( ($("#"+resource.Description+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) && ($("#"+resource.Description+"_prc").val() !="" && $("#"+resource.Description+"_prc").val() !=0) ){
-										var qtd = $("#"+resource.Description+"_qtd").val();
-										var prc	= $("#"+resource.Description+"_prc").val();
-										socket.emit('onCreateOffer',{"userId" : userData.userId, "idResource" : resource.idBasecResouce, "qtd" : qtd, "prc" : prc});
-									}else{
+										if((!isNaN($("#"+resource.Description+"_qtd").val())) && (!isNaN($("#"+resource.Description+"_prc").val()))){
+											var qtd = $("#"+resource.Description+"_qtd").val();
+											var prc	= $("#"+resource.Description+"_prc").val();
+											socket.emit('onCreateOffer',{"userId" : userData.userId, "idResource" : resource.idBasecResouce, "qtd" : qtd, "prc" : prc});
+										}else{
+											alert("Invalid type of input!");
+										}
 									}
 								}
 							});
@@ -769,8 +776,8 @@ var PlayScreen = me.ScreenObject.extend(
 						resource.img = $(resource.img).attr("src");
 						
 						var resourceSell = "<tr> <td align=center width=(100/3)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
-						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input type='number' name='"+resource.Description+"_qtd' id='"+resource.Description+"_qtd' size=5 /></td>";
-						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input type='number' name='"+resource.Description+"_prc' id='"+resource.Description+"_prc' size=5 /></td>";
+						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input  type='number' name='"+resource.Description+"_qtd' id='"+resource.Description+"_qtd' size=5 /></td>";
+						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input  type='number' name='"+resource.Description+"_prc' id='"+resource.Description+"_prc' size=5 /></td>";
 						resourceSell 	 = resourceSell +"</tr>";
 						sellContent		 = sellContent + resourceSell;
 					}
@@ -825,10 +832,13 @@ var PlayScreen = me.ScreenObject.extend(
 								var resource = rows[0][i];
 								//if it's a valid number, send to the server
 								if( ($("#"+resource.idOffert+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) ){
-									var qtd 		= $("#"+resource.idOffert+"_qtd").val();
-									var userData	= jsApp.getUserData(); 
-									socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd});
-								}else{
+									if((!isNaN($("#"+resource.idOffert+"_qtd").val())) && (!isNaN($("#"+resource.Description+"_qtd").val()))){
+										var qtd 		= $("#"+resource.idOffert+"_qtd").val();
+										var userData	= jsApp.getUserData(); 
+										socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd});
+									}else{
+										alert("Invalid type of input!");
+									}
 								}
 							});
 							//clearing the form
@@ -1050,7 +1060,7 @@ var PlayScreen = me.ScreenObject.extend(
 								socket.emit("onOpenCreateSquad", this.idVillage);
 							} else if(menu.viewSquadRect.containsPointV(me.input.changedTouches[0])) {
 								//IF I CLIKED ON VIEW SQUAD
-								socket.emit("onViewSquad", this.idVillage);
+								socket.emit("onViewVillageSquad", {"idVillage" : this.idVillage, "userId" : userData.userId});
                             } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
                                 // IF I CLIKED ON SELL
 								socket.emit("onSellMenu");
@@ -1172,7 +1182,7 @@ var PlayScreen = me.ScreenObject.extend(
 			jsApp.destroy("onSellMenu");	
 			jsApp.destroy("onOpenCreateSquad");
 			jsApp.destroy("onCreateSquad");
-			jsApp.destroy("onViewSquad");
+			jsApp.destroy("onViewVillageSquad");
 			jsApp.destroy("onSquadDetail");
 			jsApp.destroy("onCreateOffer");
 			jsApp.destroy("onBuyMenu");
