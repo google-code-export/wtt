@@ -685,7 +685,7 @@ var PlayScreen = me.ScreenObject.extend(
 							//
 							var userData       = jsApp.getUserData();
 							var pixelIs 	   = jsApp.getTileForPixels(data.x,data.y);
-							var ColectAlert    = new jsApp.ColectAlert(pixelIs, data.type);
+							var ColectAlert    = new jsApp.ColectAlert(pixelIs, data.type, obj[i].Qtd);
 							var resourceColect = function(){socket.emit("onResourcesCollect",{"idVillage": data.idVillage, "x" : data.x, "y" : data.y, "gatherTime" : data.gatherTime, "type" : data.type})};
 							me.game.add(ColectAlert,10); 
 							jsApp.timeScheduler(resourceColect,data.gatherTime);	
@@ -811,7 +811,6 @@ var PlayScreen = me.ScreenObject.extend(
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var userData  = jsApp.getUserData();
-				console.log(rows);
 				var div 	  = document.createElement("div");
 				div.setAttribute("id","dialogBuy");
 				div.setAttribute("name","dialogBuy");
@@ -926,8 +925,6 @@ var PlayScreen = me.ScreenObject.extend(
 						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPointV(me.input.changedTouches[0])){
 						}
-
-
                     }else{
 						//IF I CLICKED IN THE TRAIN UNIT BUTTON
                         if(gameHandler.activeHuds.buildingHUD.createUnitButton != undefined) {
@@ -1029,12 +1026,45 @@ var PlayScreen = me.ScreenObject.extend(
 								$("#dialogTrainUnit").dialog("open");
                             }
                         }
+						///////////////////////////////////
+
+						//IF I CLICKED ON THE SELL BUTTON ON MARKET
+						if(gameHandler.activeHuds.buildingHUD.sellMarketButton != undefined) {
+							if(gameHandler.activeHuds.buildingHUD.sellMarketButton.containsPointV(me.input.changedTouches[0])){
+								socket.emit("onSellMenu");
+							}
+						}
+						/////////////////////////////////////////
 						
+						//IF I CLICKED ON THE BUY BUTTON ON MARKET
+						if(gameHandler.activeHuds.buildingHUD.buyMarketButton != undefined) {
+							if(gameHandler.activeHuds.buildingHUD.buyMarketButton.containsPointV(me.input.changedTouches[0])){
+								socket.emit("onBuyMenu",userData.userId);
+							}
+						}
+						/////////////////////////////////////////
+						
+						//IF I CLICKED ON THE SELL BUTTON ON MERCENARY DEN
+						if(gameHandler.activeHuds.buildingHUD.sellDenButton != undefined) {
+							if(gameHandler.activeHuds.buildingHUD.sellDenButton.containsPointV(me.input.changedTouches[0])){
+								alert('Cliquei no sell MERCENARY DEN');
+							}
+						}
+						/////////////////////////////////////////
+						
+						//IF I CLICKED ON THE BUY BUTTON ON MERCENARY DEN
+						if(gameHandler.activeHuds.buildingHUD.buyDenButton != undefined) {
+							if(gameHandler.activeHuds.buildingHUD.buyDenButton.containsPointV(me.input.changedTouches[0])){
+								alert('Cliquei no buy MERCENARY DEN');
+							}
+						}
+						/////////////////////////////////////////
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);
                         gameHandler.activeHuds.buildingHUD = undefined;
                         me.game.sort();
-                        //
+						
+                        ///////////////////////////////////////////////
                     }
                 }
                 else if(gameHandler.activeHuds.unitMenu!=undefined) {
@@ -1052,21 +1082,12 @@ var PlayScreen = me.ScreenObject.extend(
                                 //if(gameHandler.activeHuds.buildMenu!=undefined)
                                 //    return;
                                 socket.emit("onListBuilding", {"idVillage" : this.idVillage} );
-                            /*} else if(menu.unitsRect.containsPointV(me.input.changedTouches[0])) {
-                                // IF I CLIKED ON LIST UNITS
-                                socket.emit("onListVillageUnits", {"idVillage" : this.idVillage, "openMenu" : "true"});*/
 							} else if(menu.squadRect.containsPointV(me.input.changedTouches[0])) {
 								// IF I CLIKED ON CREATE ARMY
 								socket.emit("onOpenCreateSquad", this.idVillage);
 							} else if(menu.viewSquadRect.containsPointV(me.input.changedTouches[0])) {
 								//IF I CLIKED ON VIEW SQUAD
 								socket.emit("onViewVillageSquad", {"idVillage" : this.idVillage, "userId" : userData.userId});
-                            } else if(menu.sellRect.containsPointV(me.input.changedTouches[0])) {
-                                // IF I CLIKED ON SELL
-								socket.emit("onSellMenu");
-                            }else if(menu.buyRect.containsPointV(me.input.changedTouches[0])) {
-                                // IF I CLIKED ON BUY
-								socket.emit("onBuyMenu",userData.userId);
                             }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
 								me.game.remove(this, true);

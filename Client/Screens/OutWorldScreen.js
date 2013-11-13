@@ -184,6 +184,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK QUEST
 			var atkQuestFun =  function(rows, data){
+				console.log(rows);
 				alert(rows[0][0].Msg);
 				me.game.remove(this, true);
 				me.state.change(me.state.OUTWORLD);

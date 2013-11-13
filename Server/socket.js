@@ -28,6 +28,15 @@ function handler (req, res) {
 
 io.sockets.on('connection', function (socket) {
 
+
+  //////////////////////
+  // onCreateNewUser //
+  ////////////////////
+	socket.on('onCreateNewUser', function(data) {
+		connection.query("CALL `RegisterUser`('"+data.firstName+"','"+data.lastName+"','"+data.email+"','"+data.nick+"','"+data.password+"')", function(err, rows, fields){
+			socket.emit("onCreateNewUser", rows, data);
+		});
+	});
   /////////////
   // onLogin //
   /////////////
