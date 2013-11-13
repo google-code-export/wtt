@@ -70,7 +70,7 @@ jsApp.ActionMenu = me.Renderable.extend({
 			iX+=110;
 			///////////////////////
 			//MARKET
-			this.sellRect = new me.Rect(
+			/*this.sellRect = new me.Rect(
 				new me.Vector2d(
 					this.pos.x +iX,
 					this.pos.y+5
@@ -85,7 +85,7 @@ jsApp.ActionMenu = me.Renderable.extend({
 				),
 				50, 30
 			);
-			iX+=55;
+			iX+=55;*/
 			//////////////////
 			//OUTWORLD
 			this.worldRect = new me.Rect(
@@ -100,16 +100,16 @@ jsApp.ActionMenu = me.Renderable.extend({
 			this.squadRect.buttonText      = "Create Squad";
 			this.viewSquadRect.buttonText  = "View Squad";
 			this.buildRect.buttonText  	   = "Build";
-			this.sellRect.buttonText   	   = "Sell";
-			this.buyRect.buttonText        = "Buy";
+			//this.sellRect.buttonText   	 = "Sell";
+			//this.buyRect.buttonText        = "Buy";
 			this.worldRect.buttonText      = "World";
 			
 			this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
 			//this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.squadRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.viewSquadRect);//incluindo os botões no vetor
-			this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
-			this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
+			//this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
+			//this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.worldRect);//incluindo os botões no vetor
 			this.options = this.mainOptions;
 			this.font = new me.Font("verdana", 14, "lime", "right");

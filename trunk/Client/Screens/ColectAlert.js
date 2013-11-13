@@ -1,6 +1,6 @@
 jsApp.ColectAlert = me.Renderable.extend({
 	//INIT OF THE CLASS, TIME = MS AND PIXELIS = X AND Y //
-	"init" : function init(pixelIs,type)
+	"init" : function init(pixelIs,type,value)
 	{
 		this.parent(new me.Vector2d(pixelIs.x,pixelIs.y),8,16);// position on the screen
 		this.font = new me.BitmapFont("BaseFont", 16);
@@ -8,23 +8,23 @@ jsApp.ColectAlert = me.Renderable.extend({
 		//FIXME!
 		if(type == 14){
 			this.image  = me.loader.getImage("Wood") ;
-			this.Value	= 100;
+			this.Value	= value;
 		}
 		if(type == 15){
 			this.image  = me.loader.getImage("Stone") ;
-			this.Value	= 100;
+			this.Value	= value;
 		}
 		if(type == 16){
 			this.image  = me.loader.getImage("Gold") ;
-			this.Value	= 100;
+			this.Value	= value;
 		}
 		if(type == 17){
 			this.image  = me.loader.getImage("Iron") ;
-			this.Value	= 100;
+			this.Value	= value;
 		}
 		if(type == 18){
 			this.image  = me.loader.getImage("Food") ;
-			this.Value	= 100;
+			this.Value	= value;
 		}
         this.floating = false;
 		this.isPersistent = false;;

@@ -28,7 +28,49 @@ jsApp.BuildingHUD = me.Renderable.extend({
             )
             ,gameW,128
         )
-
+		
+		//IF THIS BUILDING IT'S A MARKET
+		if(infoBuild.idBuilding == 11){
+			this.sellMarketButton = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+132,
+                    this.pos.y+21
+                ),
+                70, 30
+            );
+			
+			this.buyMarketButton = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+222,
+                    this.pos.y+21
+                ),
+                70, 30
+            );
+		}		
+		
+		//	
+		
+		//IF THIS BUILDING IT'S A MERCENARY DEN
+		if(infoBuild.idBuilding == 12){
+			this.sellDenButton = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+132,
+                    this.pos.y+21
+                ),
+                70, 30
+            );
+			
+			this.buyDenButton = new me.Rect(
+                new me.Vector2d(
+                    this.pos.x+222,
+                    this.pos.y+21
+                ),
+                70, 30
+            );
+		}
+		//	
+		
+		//IF THIS BUILDING HAVE UNITS
         this.createUnitButton = undefined;
         if(infoBuild.listUnitsCanMake.length >0) {
             this.createUnitButton = new me.Rect(
@@ -128,7 +170,13 @@ jsApp.BuildingHUD = me.Renderable.extend({
             ),
             (gameW/3), 128
         );
-        this.UPRect.TitleText = "UPDATE";
+        if(this.upInfo.idUnit != undefined){
+			this.UPRect.TitleText = "TRAINING";
+		}else if(this.upInfo.Timer != undefined){
+			this.UPRect.TitleText = "UPDATING";
+		}else{
+			this.UPRect.TitleText = "";
+		}
         this.UPRect.buildDesc = infoBuild.Description.toUpperCase();
         this.buildRect = new me.Rect(
             new me.Vector2d(
@@ -176,12 +224,41 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 }
 		}else{
 			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
+			// BUILD MARKET BUTTONS
+			if( this.sellMarketButton != undefined ) {
+				context.fillStyle = "green";
+				context.fillRect(this.sellMarketButton.pos.x, this.sellMarketButton.pos.y, this.sellMarketButton.width, this.sellMarketButton.height);
+				this.font.draw(context,"SELL",this.sellMarketButton.pos.x+1, this.sellMarketButton.pos.y +5 );
+			}
+			
+			if( this.buyMarketButton != undefined ) {
+				context.fillStyle = "green";
+				context.fillRect(this.buyMarketButton.pos.x, this.buyMarketButton.pos.y, this.buyMarketButton.width, this.buyMarketButton.height);
+				this.font.draw(context,"BUY",this.buyMarketButton.pos.x+1, this.buyMarketButton.pos.y +5 );
+			}
+			////////////////////////////
+			
+			// BUILD DEN BUTTONS
+			if( this.sellDenButton != undefined ) {
+				context.fillStyle = "green";
+				context.fillRect(this.sellDenButton.pos.x, this.sellDenButton.pos.y, this.sellDenButton.width, this.sellDenButton.height);
+				this.font.draw(context,"SELL",this.sellDenButton.pos.x+1, this.sellDenButton.pos.y +5 );
+			}
+			
+			if( this.buyDenButton != undefined ) {
+				context.fillStyle = "green";
+				context.fillRect(this.buyDenButton.pos.x, this.buyDenButton.pos.y, this.buyDenButton.width, this.buyDenButton.height);
+				this.font.draw(context,"BUY",this.buyDenButton.pos.x+1, this.buyDenButton.pos.y +5 );
+			}
+			////////////////////////////
+			
 			// BUILD UNIT BUTTON
 			if( this.createUnitButton != undefined ) {
 				context.fillStyle = "green";
 				context.fillRect(this.createUnitButton.pos.x, this.createUnitButton.pos.y, this.createUnitButton.width, this.createUnitButton.height);
 				this.font.draw(context,"TRAIN UNIT",this.createUnitButton.pos.x+1, this.createUnitButton.pos.y +5 );
 			}
+			////////////////////////////
 			context.fillStyle = "#00066";
 		}
         //
