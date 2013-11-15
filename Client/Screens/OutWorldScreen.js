@@ -49,11 +49,13 @@ var OutWorldScreen = me.ScreenObject.extend(
                 var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
                 for (var i in rows[0]){
                     if (i!="remove"){
+						console.log(rows[0][i]);
                         var idTile      = rows[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 						var pixelIs     = jsApp.getTileForPixels(rows[0][i].posX,rows[0][i].posY);
 						var x		    = rows[0][i].posX;
 						var y		    = rows[0][i].posY;
 						var playerName  = rows[0][i].Nick;
+						if(idTile == 38){playerName = "The Temple";}
 						var villageInfo = {"playerName" : playerName, "x" : pixelIs.x, "y" : pixelIs.y};
                         buildLayer.setTile(x,y,idTile);//changing the tile
 						var names = new jsApp.WorldNames(villageInfo);
@@ -184,7 +186,6 @@ var OutWorldScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK QUEST
 			var atkQuestFun =  function(rows, data){
-				console.log(rows);
 				alert(rows[0][0].Msg);
 				me.game.remove(this, true);
 				me.state.change(me.state.OUTWORLD);

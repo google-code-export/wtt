@@ -69,6 +69,26 @@ jsApp.ActionMenu = me.Renderable.extend({
 			);
 			iX+=110;
 			///////////////////////
+			// CHANGE SQUAD
+			this.changeSquadRect = new me.Rect(
+				new me.Vector2d(
+					this.pos.x +iX,
+					this.pos.y+5
+				),
+				110, 30
+			);
+			iX+=120;
+			///////////////////////
+			// TRANSFER SQUAD
+			this.transferSquadRect = new me.Rect(
+				new me.Vector2d(
+					this.pos.x +iX,
+					this.pos.y+5
+				),
+				115, 30
+			);
+			iX+=125;
+			///////////////////////
 			//MARKET
 			/*this.sellRect = new me.Rect(
 				new me.Vector2d(
@@ -96,18 +116,19 @@ jsApp.ActionMenu = me.Renderable.extend({
 				50, 30
 			);
 			
-			//this.unitsRect.buttonText      = "Units";
-			this.squadRect.buttonText      = "Create Squad";
-			this.viewSquadRect.buttonText  = "View Squad";
-			this.buildRect.buttonText  	   = "Build";
-			//this.sellRect.buttonText   	 = "Sell";
-			//this.buyRect.buttonText        = "Buy";
-			this.worldRect.buttonText      = "World";
+			this.squadRect.buttonText         = "Create Squad";
+			this.viewSquadRect.buttonText     = "View Squad";
+			this.changeSquadRect.buttonText   = "Change Squad";
+			this.transferSquadRect.buttonText = "Transfer Squad";
+			this.buildRect.buttonText  	      = "Build";
+			this.worldRect.buttonText         = "World";
 			
 			this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
 			//this.mainOptions.push(this.unitsRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.squadRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.viewSquadRect);//incluindo os botões no vetor
+			this.mainOptions.push(this.changeSquadRect);//incluindo os botões no vetor
+			this.mainOptions.push(this.transferSquadRect);//incluindo os botões no vetor
 			//this.mainOptions.push(this.buyRect);//incluindo os botões no vetor
 			//this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.worldRect);//incluindo os botões no vetor

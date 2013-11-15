@@ -12,6 +12,7 @@ var g_resources =
 		{name: "Sword" 	     ,	type: "image",  src: "data/sprite/sword.png"},
 		{name: "Shield" 	 ,	type: "image",  src: "data/sprite/shield.png"},
 		{name: "Life" 	     ,	type: "image",  src: "data/sprite/life.png"},
+		{name: "Selected" 	 ,	type: "image",  src: "data/sprite/selected.png"},
 
         // FONTS TITLES //
         {name: "BaseFont",type: "image",  src: "data/sprite/font.png"},

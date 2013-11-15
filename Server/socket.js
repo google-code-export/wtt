@@ -205,6 +205,46 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
+	
+	///////////////////////////////
+    // onSquadTransferView      //
+    /////////////////////////////
+    socket.on('onSquadTransferView', function(data) {
+        connection.query("CALL `ViewUserSquad`("+data.userId+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onSquadTransferView", rows);
+            }
+        });
+    });
+	
+	///////////////////////////////
+    // onListUserVillages      //
+    /////////////////////////////
+    socket.on('onListUserVillages', function(data) {
+        connection.query("CALL `getUserVillages`("+data.userId+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListUserVillages", rows, data);
+            }
+        });
+    });
+	
+	///////////////////////////////
+    // onTransferSquads      //
+    /////////////////////////////
+    socket.on('onTransferSquads', function(data) {
+        connection.query("CALL `TransferSquad`('"+data.idSquads+"','"+data.idVillageTransf+"')",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onTransferSquads", rows, data);
+            }
+        });
+    });
+	
     //////////////////////////
     // onConstructCheck     //
     //////////////////////////
@@ -382,7 +422,7 @@ io.sockets.on('connection', function (socket) {
 	/////////////////////////////
 	
 	/////////////////////
-    // onBuyOffer  //
+    // onBuyOffer     //
     ///////////////////
 	socket.on("onBuyOffer", function(data){
 		connection.query("CALL `BuyOffer`("+data.userId+","+data.idOffert+","+data.Qtd+")", function(err, rows, fields){
@@ -390,6 +430,63 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onBuyOffer",rows,data);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////////
+    // onSellUnitMenu     //
+    ///////////////////////
+	socket.on("onSellUnitMenu", function(data){
+		connection.query("CALL `ViewSellArmy`("+data+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onSellUnitMenu",rows);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////////
+    // onCreateUnitOffer  //
+    ///////////////////////
+	socket.on("onCreateUnitOffer", function(data){
+		connection.query("CALL `doOfferArmy`("+data.userId+","+data.idUnit+","+data.prc+");", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCreateUnitOffer",rows,data);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	/////////////////////////
+    // onBuyUnitMenu      //
+    ///////////////////////
+	socket.on("onBuyUnitMenu", function(data){
+		connection.query("CALL `ViewOfferArmy`("+data.userId+");", function(err, rows, fields){
+			console.log(data);
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onBuyUnitMenu",rows,data);
+            }
+        });
+	});
+	/////////////////////////////
+	
+	//////////////////////
+    // onBuyUnitOffer  //
+    ////////////////////
+	socket.on("onBuyUnitOffer", function(data){
+		connection.query("CALL `BuyOfferArmy`("+data.userId+","+data.idUnitOffer+","+data.idVillageDen+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onBuyUnitOffer",rows,data);
             }
         });
 	});
