@@ -1,9 +1,9 @@
 jsApp.BuildingHUD = me.Renderable.extend({
 
-    "init" : function init(infoBuild) {
+    "init" : function init(infoBuild,data) {
         var socket  = jsApp.getSocket();
         this.upInfo = infoBuild ;
-        console.log("Opening info building ");
+		this.pixelIs = data.pixelIs
 		console.log(infoBuild);
 		this.mouseAction = undefined;
 		this.parent(new me.Vector2d(0,gameH-128));
@@ -189,7 +189,9 @@ jsApp.BuildingHUD = me.Renderable.extend({
         this.buttonfont = new me.Font("verdana", 14, "lime", "right");
         this.buttonfont.textBaseline = "bottom";
         ////////
-		this.background = me.loader.getImage("WoodTexture");
+		this.background  = me.loader.getImage("WoodTexture");
+		this.selectedImg = me.loader.getImage("Selected");
+		//this.selectedImg.parent(new me.Vector2d(pixelIs.x,pixelIs.y), 64, 64);
 		gameHandler.activeHuds.buildingHUD = this;
 	},
 
@@ -198,13 +200,17 @@ jsApp.BuildingHUD = me.Renderable.extend({
         var iX = 20;
 		context.globalAlpha = 0.9;
         context.fillStyle = "#00066";
-
+		
+		//PRINTING SELECTED IMG ON THE BUILDING//
+		context.drawImage(this.selectedImg, this.pixelIs.x-me.game.viewport.pos.x, this.pixelIs.y-me.game.viewport.pos.y, 64,64);
+		
         //BUILDING RECTS//
 		context.drawImage(this.background,0,gameH-128,gameW, 128);
         //context.fillRect(0,gameH-128,gameW, 128);
         context.globalAlpha = 1;
 
 		context.drawImage(this.Buildimage, this.pos.x, this.pos.y);
+		
         //
 
        //DESCRIPTION RECT//
@@ -314,6 +320,7 @@ jsApp.BuildingHUD = me.Renderable.extend({
 
     "destroy" : function() {
 		me.game.remove(this.unit.icon);
+		me.game.remove(this.selectedImg);
         gameHandler.activeHuds.buildingHUD = undefined;
 		me.input.releasePointerEvent("mousedown", this);
 		me.input.releasePointerEvent("mouseup", this);

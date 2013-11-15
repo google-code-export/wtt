@@ -15,6 +15,9 @@ var PlayScreen = me.ScreenObject.extend(
 			
 			 //Destroying websockets event before create a new one	
 			 jsApp.destroy("onListWorldVillage");
+			 jsApp.destroy("onListUserVillages");
+			 jsApp.destroy("onTransferSquads");
+			 jsApp.destroy("onSquadTransferView");
 			 jsApp.destroy("onVillageSelect");
 			 jsApp.destroy("onListSquadAtk");
 			 jsApp.destroy("onAtkVillage");
@@ -38,6 +41,12 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadDetail");
 			 jsApp.destroy("onCreateOffer");
 			 jsApp.destroy("onBuyMenu");
+			 jsApp.destroy("onSellUnitMenu");
+			 jsApp.destroy("onCreateUnitOffer");
+			 jsApp.destroy("onBuyUnitMenu");
+			 jsApp.destroy("onBuyUnitOffer");
+			 
+			 
 			 /////////////////////////////////////////
 			
 			
@@ -75,7 +84,6 @@ var PlayScreen = me.ScreenObject.extend(
                 //console.log(data[0]);
 				for (var i in data[0]){
                     if (i!="remove"){
-						console.log(data[0][i]);
                         var idTile  = data[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
                         var x       = data[0][i].posX;
                         var y       = data[0][i].posY;
@@ -83,7 +91,6 @@ var PlayScreen = me.ScreenObject.extend(
 						var timer   = data[0][i].Timer;
 						var type    = data[0][i].Type;
 						var idVillage = jsApp.getUserData().idVillage;
-						console.log(data[0][i]);
 						if(timer == null){ timer = "00:00:00";}
 						//if the construction still pending, add a new progress bar and a timeScheduler event//
                         if(pending == "Y"){
@@ -141,7 +148,6 @@ var PlayScreen = me.ScreenObject.extend(
 			 //HERE WE SEND THE UPDATE REQUEST
 			 var rqstUpdateFun = function(rows, data){
 				var infobuild = data;
-				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
 					var time 	   = jsApp.timeToMs(infobuild.buildTimer);
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
@@ -171,7 +177,6 @@ var PlayScreen = me.ScreenObject.extend(
 			 //CHECKING IF THE UPDATE ALREADY IS DONE
 			 var checkUpdateFun = function(rows, data){
 				var infobuild = data;
-				console.log("updating building idVillage:"+infobuild.idVillage+" x:"+infobuild.posX+" y:"+infobuild.posY+" idBuilding:"+infobuild.idBuilding);
 				if(rows[0][0].Msg == "Done"){
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 					var idTile 	   = infobuild.idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
@@ -186,20 +191,17 @@ var PlayScreen = me.ScreenObject.extend(
 
              //HERE WE VERIFY IF THE CLICK RESULTS IN A BUILDING AND GET ALL THE DATA TO BUILD THE BUILDING HUD!
 			 var bldSelectFun = function(rows,data) {
-				console.log(rows);
-				console.log(data);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
 					else{
 						if(gameHandler.activeHuds.buildingHUD==undefined) {
-							console.log(obj[i]);
 
 							//THIS WILL DO UNTIL WE FIX IT RIGHT
 							if(obj[i].posX == undefined){obj[i].posX = data.X}
 							if(obj[i].posY == undefined){obj[i].posY = data.Y}
 							//
-							gameHandler.activeHuds.buildingHUD 			 = new jsApp.BuildingHUD(obj[i]);
+							gameHandler.activeHuds.buildingHUD 			 = new jsApp.BuildingHUD(obj[i],data);
 							gameHandler.activeHuds.buildingHUD.idVillage = this.idVillage; 	
 							me.game.add(gameHandler.activeHuds.buildingHUD, 1100);
 							me.game.sort();
@@ -225,7 +227,6 @@ var PlayScreen = me.ScreenObject.extend(
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
 							var time = jsApp.timeToMs(data.buildTimer);
                             var pixelIs = jsApp.getTileForPixels(building.x,building.y);
-							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile: 37");
 							
 							buildLayer.setTile(building.x,building.y,37);//changing the tile for the construction zone
 							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
@@ -255,14 +256,11 @@ var PlayScreen = me.ScreenObject.extend(
 					if(i>0)
 						return false;
 					else{
-						console.log(obj[i]);
-						console.log(data);
 						if(obj[i].Msg == "Done"){
 							var building  = data;
 							var idTile    = building.idTile; 
 							var userData  = jsApp.getUserData();
 							var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-							console.log("Changing Tile buildLayer:"+buildLayer+" x:"+building.x+" y:"+building.y+" idTile:"+idTile);
 							buildLayer.setTile(building.x,building.y,idTile);//changing the tile
 							//IF IT'S A COLLECTOR --> NEED TO SEE THIS BETTER
 							if(building.Type == "R"){
@@ -302,12 +300,10 @@ var PlayScreen = me.ScreenObject.extend(
 						alert(obj[i].Msg);
 						}else{
 							var unitInfo = data;
-							console.log(unitInfo);
 							var time = jsApp.timeToMs(obj[i].Timer);
 							var pixelIs = jsApp.getTileForPixels(unitInfo.buildingX,unitInfo.buildingY);
 							this.progressBar = new jsApp.ProgressBar(time,pixelIs);// creating a new instance of the class ProgressBar
 							me.game.add(this.progressBar,10);// adding this to the screen
-							console.log(data);
 							var unitCheck = function(){socket.emit("onUnitCheck",data);};
 							jsApp.timeScheduler(unitCheck,time);// sending the construction to the scheduler.
 
@@ -326,7 +322,6 @@ var PlayScreen = me.ScreenObject.extend(
 			/////////////////////////////////////////////
 			//checking if the unit it's already done
 			var unitChkFun = function(rows, data){
-				console.log(data);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -359,7 +354,6 @@ var PlayScreen = me.ScreenObject.extend(
 			var openSquadFun = function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
-				console.log(rows);
 				var idVillage = data;
 				var div 	  = document.createElement("div");
 				div.setAttribute("id","dialogArmy");
@@ -410,7 +404,12 @@ var PlayScreen = me.ScreenObject.extend(
 
 				//////////////////////////////////
 				//POPULATING THE ARMY CHECKBOXES
-				var squadContent = "Squad Name: <input type='text' name='squadName' id='squadName' length='20'></input>";
+				var squadContent = "<center><b>Squad Name:</b> <input type='text' name='squadName' id='squadName' length='20'></input></center><br><br>";
+				squadContent     = squadContent + "<table boder=0 width=100%><tr>";
+				squadContent 	 = squadContent + "<td align='center' width=80%><b>UNIT</b></td>";
+				squadContent 	 = squadContent + "<td align='center' width=20%><b>ATTRIBUTES</b></td>";
+				squadContent 	 = squadContent + "</tr>";
+				
 				$.each(rows[0], function(i, obj) {
 					if(rows[0][i].Msg != undefined){
 						squadContent = squadContent + "<br>" + rows[0][i].Msg;
@@ -430,7 +429,9 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var unitCheckBox   = "<br> <input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") <img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <img src='"+lifeImg+"' alt='Life' /> : "+unit.Life;
+						var unitCheckBox   = "<tr><td width=80% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						unitCheckBox       = unitCheckBox + "<td width=20% align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
+						unitCheckBox       = unitCheckBox + "<tr><td width=80% align=right><img src='data/sprite/division.png' width=60% height=60%/></td><td></td></tr>";
 						squadContent 	   = squadContent + unitCheckBox;
 					}
 				});
@@ -441,7 +442,7 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onOpenCreateSquad", openSquadFun);
 								
 			///////////////////////////////////////////////
-			//creating the window to create the squad
+			//creating the window to view the village squads
 			var viewSquadFun = function(rows, data){
 
 				//////////////////////////
@@ -476,9 +477,8 @@ var PlayScreen = me.ScreenObject.extend(
 					if(rows[0][0].Msg != undefined){
 						villageSquadContent = villageSquadContent + "<br>" +rows[0][0].Msg;
 					}else{
-						var squad 		 = rows[0][i];
-						console.log(squad);
-						var villageSquad = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+","+'"'+squad.SquadName+'"'+");'>"+squad.SquadName+"</a>";
+						var squad 		    = rows[0][i];
+						var villageSquad    = "<br> <a   href='#' name='squad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' onclick='javascript:showSquadDetail("+squad.idSquadVillage+","+'"'+squad.SquadName+'"'+");'>"+squad.SquadName+"</a>";
 						villageSquadContent = villageSquadContent + villageSquad;
 					}
 				});
@@ -489,11 +489,8 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onViewVillageSquad", viewSquadFun);
 			
 			///////////////////////////////////////////////
-			//creating the window to create the squad
+			//creating the window to view the squad detail
 			var squadDetailFun = function(rows, idSquad,squadName){
-				console.log(squadName);
-				console.log(idSquad);
-				console.log(rows);
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
@@ -535,7 +532,144 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onSquadDetail", squadDetailFun);
 			//////////////////////////////////////////////////////////////
 			
+			///////////////////////////////////////////////
+			//creating the window to view the user squads
+			var transferSquadFun = function(rows){
+				console.log(rows);
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+	
+				div.setAttribute("id","dialogTransferSquad");
+				div.setAttribute("name","dialogTransferSquad");
+				div.setAttribute("title","Select the Squad you want to swap between your Villages");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogTransferSquad" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
+						"Next" : function(){
+							var idSquads   = "";
+							$("input:checkbox:checked").each(function(i, obj){
+								idSquads = idSquads + $(this).val()+",";
+							});
+							//clearing the last char
+							idSquads = idSquads.substring(0,(idSquads.length - 1));
+							
+							//sending to the server to list the villages to transfer
+							socket.emit("onListUserVillages",{"idSquads" : idSquads, "userId" : userData.userId});
+							
+							//clearing the form
+							$( "#dialogArmy" ).html('');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( "#dialogTransferSquad" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogTransferSquad").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUADS LINK
+				var userSquadContent = "";
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][0].Msg != undefined){
+						userSquadContent = userSquadContent + "<br>" +rows[0][0].Msg;
+					}else{
+						var squad 		    = rows[0][i];
+						var userSquad    = "<br> <input type='checkbox' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
+						userSquadContent = userSquadContent + userSquad;
+					}
+				});
+				
+				$("#dialogTransferSquad").append(userSquadContent);
+				$( "#dialogTransferSquad" ).dialog( "open" );
+			}
+			socket.on("onSquadTransferView", transferSquadFun);			
+			/////////////////////////////////////////////////////////////
+			
+			///////////////////////////////////////////////
+			//creating the window to view the user villages
+			var viewVillagesFun = function(rows, data){
+				console.log(rows);
+				console.log(data);
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+	
+				div.setAttribute("id","dialogTransferVillage");
+				div.setAttribute("name","dialogTransferVillage");
+				div.setAttribute("title","Select the Village you want to swap the Squads :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogTransferVillage" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Send" : function(){
+							var idVillageTransf   = "";
+							$("input:radio:checked").each(function(i, obj){
+								idVillageTransf = $(this).val();
+								//sending to the server to list the villages to transfer
+								socket.emit("onTransferSquads",{"idSquads" : data.idSquads, "idVillageTransf" : idVillageTransf});
+							});
 
+							//clearing the form
+							$( "#dialogTransferVillage" ).html('');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( "#dialogTransferVillage" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogTransferVillage").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUADS LINK
+				var villageTransfContent = "";
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][0].Msg != undefined){
+						villageTransfContent = villageTransfContent + "<br>" +rows[0][0].Msg;
+					}else{
+						var village 		 = rows[0][i];
+						if(village.VillageNick == "The Temple"){ var img = 'data/sprite/temple_icon.png';}else{ var img = 'data/sprite/village_icon.png';}
+						var villageSquad     = "<br> <input type='radio' name='transferVillage' id='transferVillage_"+village.idVillage+"' value='"+village.idVillage+"' /> "+village.VillageNick+" <img src='"+img+"' width='32' height='32'/>";
+						villageTransfContent = villageTransfContent + villageSquad;
+					}
+				});
+				
+				$("#dialogTransferVillage").append(villageTransfContent);
+				$( "#dialogTransferVillage" ).dialog( "open" );
+			}
+			socket.on("onListUserVillages", viewVillagesFun);			
+			/////////////////////////////////////////////////////////////	
+			
+			///////////////////////////////////////////
+			//AFTER THE TRANSF IT'S DONE
+			 var transfCheckFun = function(rows, data){
+				console.log(rows);
+			 }
+			 socket.on("onTransferSquads", transfCheckFun);
+			 //////////////////////////////////////////
+			 
             ///////////////////////
             // LISTING BUILDINGS //
             ///////////////////////
@@ -548,9 +682,7 @@ var PlayScreen = me.ScreenObject.extend(
 				div.setAttribute("name","dialogBuild");
 				div.setAttribute("title","Select a building:");
 				div.setAttribute("style","display:none");
-				var sendBld = function(idBld){
-					console.log(bldArray[idBld][0]);
-				}
+
 				$("body").append(div);
 				$( "#dialogBuild" ).dialog({
 					autoOpen: false,
@@ -674,7 +806,6 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////
 			//collecting the resources			//
 			var resourceCltFun = function(rows, data) {
-				console.log(rows);
 				$.each(rows, function(i, obj) {
 					if(i>0)
 						return false;
@@ -710,7 +841,6 @@ var PlayScreen = me.ScreenObject.extend(
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var userData  = jsApp.getUserData();
-				console.log(userData);
 				var div 	  = document.createElement("div");
 				div.setAttribute("id","dialogSell");
 				div.setAttribute("name","dialogSell");
@@ -777,8 +907,9 @@ var PlayScreen = me.ScreenObject.extend(
 						
 						var resourceSell = "<tr> <td align=center width=(100/3)> <img src='"+resource.img+"' alt='"+resource.Description+"' height='32' width='32'></img> </td>";
 						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input  type='number' name='"+resource.Description+"_qtd' id='"+resource.Description+"_qtd' size=5 /></td>";
-						resourceSell	 = resourceSell + "<td align=center width=(100/3)><input  type='number' name='"+resource.Description+"_prc' id='"+resource.Description+"_prc' size=5 /></td>";
+						resourceSell	 = resourceSell + "<td align=center width=(100/3)><img src='data/sprite/Gold.png' /><input  type='number' name='"+resource.Description+"_prc' id='"+resource.Description+"_prc' size=5 /></td>";
 						resourceSell 	 = resourceSell +"</tr>";
+						resourceSell     = resourceSell + "<tr><td ></td><td align=center><img src='data/sprite/division.png' width=60% height=60%/></td><td></td></tr>";
 						sellContent		 = sellContent + resourceSell;
 					}
 				});
@@ -831,7 +962,7 @@ var PlayScreen = me.ScreenObject.extend(
 								var resource = rows[0][i];
 								//if it's a valid number, send to the server
 								if( ($("#"+resource.idOffert+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) ){
-									if((!isNaN($("#"+resource.idOffert+"_qtd").val())) && (!isNaN($("#"+resource.Description+"_qtd").val()))){
+									if(!isNaN($("#"+resource.Description+"_qtd").val())){
 										var qtd 		= $("#"+resource.idOffert+"_qtd").val();
 										var userData	= jsApp.getUserData(); 
 										socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd});
@@ -869,8 +1000,6 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$.each(rows[0], function(i, obj) {
 					var resource = rows[0][i];
-					console.log(resource);
-		
 					resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description));
 					resource.img = $(resource.img).attr("src");
 					
@@ -879,7 +1008,9 @@ var PlayScreen = me.ScreenObject.extend(
 					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.Qty+"</td>";
 					resourceBuy = resourceBuy + "<td align=center width=(100/5)><img src='data/sprite/Gold.png' />"+resource.Money+"</td>";
 					resourceBuy	= resourceBuy + "<td align=center width=(100/5)><input type='number' name='"+resource.idOffert+"_qtd' id='"+resource.idOffert+"_qtd' size=5 /></td>";
+					resourceBuy = resourceBuy + "<tr><td></td><td></td><td  align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td></td><td></td></tr>";
 					buyContent  = buyContent + resourceBuy + "</tr>";
+					
 				});
 				buyContent	= buyContent + "</table>";
 				$("#dialogBuy").append(buyContent);
@@ -903,6 +1034,214 @@ var PlayScreen = me.ScreenObject.extend(
 			}
 			socket.on('onBuyOffer', buyOfferFun);
 			///////////////////////////////////
+			
+			///////////////////////////////////////
+			//Opening sell Unit menu			//
+			////						/////////
+			var sellUnitMenuFun = function(rows) {
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogSellUnit");
+				div.setAttribute("name","dialogSellUnit");
+				div.setAttribute("title","What unit do you want to sell ?");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogSellUnit" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
+						"Send": function() {
+							//creating the new offer
+							$("input:checkbox:checked").each(function(i, obj){
+								//sending to the server
+								var idUnit = $(this).val();
+								var prc    = $("#unitPrc_"+idUnit).val();
+								socket.emit("onCreateUnitOffer",{"userId" : userData.userId, "idUnit" : idUnit, "prc" : prc });
+							});
+							
+							//clearing the form
+							$( "#dialogSellUnit" ).html('');
+							$( this ).dialog( "close" );
+							
+						},
+						Cancel: function() {
+							$( "#dialogSellUnit" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var sellUnitContent = '';
+				sellUnitContent     = "<table border=0 width=100%><tr>";
+				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Unit</b></td>";
+				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Attributes</b></td>";
+				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Price</b></td>";
+				sellUnitContent     = sellUnitContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						sellUnitContent = sellUnitContent + "<br>" + rows[0][i].Msg;
+					}else{
+						var unit 		   = rows[0][i];
+						var imgStr 		   = unit.Description.replace(" ","_");
+						
+						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
+						unitFace       	   = $(unitFace).attr("src");
+						
+						var lifeImg        = me.loader.getImage("Life");
+						lifeImg       	   = $(lifeImg).attr("src");
+						
+						var atkImg         = me.loader.getImage("Sword");
+						atkImg       	   = $(atkImg).attr("src");
+						
+						var defImg         = me.loader.getImage("Shield");
+						defImg			   = $(defImg).attr("src");
+						
+						var sellUnitCheckBox   = "<tr><td><div style='line-height: 55px;'><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</div></td>" ;
+						sellUnitCheckBox       = sellUnitCheckBox + "<td><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
+						sellUnitCheckBox	   = sellUnitCheckBox + "<td><div style='line-height: 55px;'><img src='data/sprite/Gold.png' /> : <input type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 /></div>";
+						//sellUnitCheckBox	   = sellUnitCheckBox + "<tr><td></td><td align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td ></td></tr>";
+						sellUnitContent 	   = sellUnitContent  + sellUnitCheckBox + "</tr>";
+					}
+				});
+				sellUnitContent = sellUnitContent + "</table>";
+				$("#dialogSellUnit").append(sellUnitContent);
+				$( "#dialogSellUnit" ).dialog( "open" );
+			}
+			socket.on('onSellUnitMenu', sellUnitMenuFun);
+
+			////////////////////////////////////
+			
+			///////////////////////////////////////
+			//after create a unit offer				//
+			////						/////////
+			var createUnitOfferFun = function(rows,data) {
+				alert(rows[0][0].Msg);
+			}
+			socket.on('onCreateUnitOffer', createUnitOfferFun);
+			///////////////////////////////////
+			
+			///////////////////////////////////////
+			//Opening buy Unit menu			//
+			////						/////////
+			var buyUnitMenuFun = function(rows,data) {
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogBuyUnit");
+				div.setAttribute("name","dialogBuyUnit");
+				div.setAttribute("title","What unit do you want to buy ?");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogBuyUnit" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
+						"Send": function() {
+							//creating the new offer
+							
+							$("input:checkbox:checked").each(function(i, obj){
+								//sending to the server
+								var idUnitOffer  = $(this).val();
+								var idVillageDen = data.idVillageDen;
+								socket.emit("onBuyUnitOffer",{"userId" : userData.userId, "idUnitOffer" : idUnitOffer, "idVillageDen" : idVillageDen });
+							});
+							
+							//clearing the form
+							$( "#dialogBuyUnit" ).html('');
+							$( this ).dialog( "close" );
+							
+						},
+						Cancel: function() {
+							$( "#dialogBuyUnit" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var buyUnitContent = '';
+				buyUnitContent     = "<table border=0 width=100%><tr>";
+				buyUnitContent     = buyUnitContent + "<td width=15 align=center><b>Id Offer</b></td>";
+				buyUnitContent     = buyUnitContent + "<td width=25 align=center><b>Unit</b></td>";
+				buyUnitContent     = buyUnitContent + "<td width=25 align=center><b>Attributes</b></td>";
+				buyUnitContent     = buyUnitContent + "<td width=20 align=center><b>Price</b></td>";
+				buyUnitContent     = buyUnitContent + "<td width=15 align=center><b>Buy</b></td>";
+				buyUnitContent     = buyUnitContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						buyUnitContent = buyUnitContent + "<br>" + rows[0][i].Msg;
+					}else{
+						var unit 		   = rows[0][i];
+						var imgStr 		   = unit.Description.replace(" ","_");
+						
+						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
+						unitFace       	   = $(unitFace).attr("src");
+						
+						var lifeImg        = me.loader.getImage("Life");
+						lifeImg       	   = $(lifeImg).attr("src");
+						
+						var atkImg         = me.loader.getImage("Sword");
+						atkImg       	   = $(atkImg).attr("src");
+						
+						var defImg         = me.loader.getImage("Shield"); 
+						defImg			   = $(defImg).attr("src");
+						
+						var buyUnitCheckBox   = "<tr><td width=15 align=center ><div style='line-height: 55px;'>"+unit.idArmyOffert+"</div></td>";
+						buyUnitCheckBox       = buyUnitCheckBox + "<td width=25 align=center ><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</div></td>";
+						buyUnitCheckBox       = buyUnitCheckBox + "<td width=25 align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</div></td>";
+						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=30 align=center ><img src='data/sprite/Gold.png' /> : "+unit.Money+"</div>";
+						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=15 align=center ><div style='line-height: 55px;'><input type='checkbox' name='idUnitOffer_"+unit.idArmyOffert+"' id='idUnitOffer_"+unit.idArmyOffert+"' value='"+unit.idArmyOffert+"'></div></td>";
+						buyUnitContent 	      = buyUnitContent  + buyUnitCheckBox + "</tr>";
+						buyUnitContent		  = buyUnitContent  + "<tr><td></td><td><img src='data/sprite/division.png' width=80% height=80%/></td><td></td><td></td><td></td></tr>";
+					}
+				});
+				buyUnitContent = buyUnitContent + "</table>";
+				$("#dialogBuyUnit").append(buyUnitContent);
+				$( "#dialogBuyUnit" ).dialog( "open" );
+			}
+			socket.on('onBuyUnitMenu', buyUnitMenuFun);
+
+			////////////////////////////////////
+			
+			///////////////////////////////////////
+			//after buy a unit offer			//
+			////						/////////
+			var buyUnitOfferFun = function(rows,data) {
+				if(rows[0][0].Msg != "Done"){
+					alert(rows[0][0].Msg);
+				}else{
+					//updating the resources
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+					//
+				}
+			}
+			socket.on('onBuyUnitOffer', buyUnitOfferFun);
+			///////////////////////////////////			
+			
             this.parent();
             /////////////////
             // GAME CAMERA //
@@ -921,7 +1260,6 @@ var PlayScreen = me.ScreenObject.extend(
                     if(gameHandler.activeHuds.buildingHUD.UPRect.containsPointV(me.input.changedTouches[0])){
 						var updatebuild = gameHandler.activeHuds.buildingHUD.upInfo;
 						updatebuild.idVillage = this.idVillage;
-						console.log(" request update building x:"+updatebuild.posX+" y:"+updatebuild.posY+" idBuilding:"+updatebuild.idBuilding);
 						socket.emit("onRequestUpdate",updatebuild);
 						if(gameHandler.activeHuds.buildingHUD.buildRect.containsPointV(me.input.changedTouches[0])){
 						}
@@ -994,7 +1332,6 @@ var PlayScreen = me.ScreenObject.extend(
 								var lastUnit;
 								$.each(unitsICanMake, function(i, obj) {
 									var unit 	    = unitsICanMake[i];
-									console.log(unit);
 									var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></input></p></td>";
 									unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
 									unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
@@ -1047,7 +1384,7 @@ var PlayScreen = me.ScreenObject.extend(
 						//IF I CLICKED ON THE SELL BUTTON ON MERCENARY DEN
 						if(gameHandler.activeHuds.buildingHUD.sellDenButton != undefined) {
 							if(gameHandler.activeHuds.buildingHUD.sellDenButton.containsPointV(me.input.changedTouches[0])){
-								alert('Cliquei no sell MERCENARY DEN');
+								socket.emit('onSellUnitMenu', userData.userId);
 							}
 						}
 						/////////////////////////////////////////
@@ -1055,7 +1392,7 @@ var PlayScreen = me.ScreenObject.extend(
 						//IF I CLICKED ON THE BUY BUTTON ON MERCENARY DEN
 						if(gameHandler.activeHuds.buildingHUD.buyDenButton != undefined) {
 							if(gameHandler.activeHuds.buildingHUD.buyDenButton.containsPointV(me.input.changedTouches[0])){
-								alert('Cliquei no buy MERCENARY DEN');
+								socket.emit('onBuyUnitMenu', {"userId" : userData.userId, "idVillageDen" : gameHandler.activeHuds.buildingHUD.upInfo.idBuildingBuilt});
 							}
 						}
 						/////////////////////////////////////////
@@ -1088,7 +1425,13 @@ var PlayScreen = me.ScreenObject.extend(
 							} else if(menu.viewSquadRect.containsPointV(me.input.changedTouches[0])) {
 								//IF I CLIKED ON VIEW SQUAD
 								socket.emit("onViewVillageSquad", {"idVillage" : this.idVillage, "userId" : userData.userId});
-                            }else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
+                            } else if(menu.changeSquadRect.containsPointV(me.input.changedTouches[0])) {
+								//IF I CLIKED ON SQUAD CHANGE VIEW 
+								socket.emit("onOpenChangeSquad", {"userId" : userData.userId});
+                            } else if(menu.transferSquadRect.containsPointV(me.input.changedTouches[0])) {
+								//IF I CLIKED ON SQUAD CHANGE VIEW 
+								socket.emit("onSquadTransferView", {"userId" : userData.userId});
+                            } else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
 								me.game.remove(this, true);
 								me.state.change(me.state.OUTWORLD);
@@ -1100,11 +1443,12 @@ var PlayScreen = me.ScreenObject.extend(
 				else if((gameHandler.activeHuds.buildMenu == undefined) && (gameHandler.activeHuds.buildingArea == undefined)){
 
 					var buildLayer = me.game.currentLevel.getLayerByName("Transp");	//getting the correct map layer to tile changes
-					var tileIs = jsApp.getPixelsForTile(me.input.changedTouches[0].x, me.input.changedTouches[0].y);
-					var tileid = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
+					var tileIs     = jsApp.getPixelsForTile(~~e.gameScreenX, ~~e.gameScreenY);
+					var pixelIs	   = jsApp.getTileForPixels(tileIs.x, tileIs.y);
+					var tileid     = buildLayer.getTileId(me.input.changedTouches[0].x+me.game.viewport.pos.x, me.input.changedTouches[0].y+me.game.viewport.pos.y);// getting the current tileid we've clicked on
 					if (tileid != null){ 
                         this.tileWhereBuildingIs = tileIs;
-						socket.emit("onBuildingSelect",{idVillage: this.idVillage, X: tileIs.x, Y: tileIs.y});
+						socket.emit("onBuildingSelect",{"idVillage" : this.idVillage, "X" : tileIs.x, "Y" : tileIs.y, "pixelIs" : pixelIs});
 					}
 
 				}
@@ -1183,30 +1527,37 @@ var PlayScreen = me.ScreenObject.extend(
 			//clearing the timeouts set
 			jsApp.clearTimeOuts();
 			//Destroying websockets event before create a new one	
-			jsApp.destroy("onListWorldVillage");
-			jsApp.destroy("onVillageSelect");
-			jsApp.destroy("onListSquadAtk");
-			jsApp.destroy("onAtkVillage");
-			jsApp.destroy("onBuildingSelect");
-            jsApp.destroy("onListVillageBuildings");
-			jsApp.destroy("onListVillageUnits");
-			jsApp.destroy("onRequestUpdate");
-			jsApp.destroy("onConstruct");
-			jsApp.destroy("onResourcesUpdate");
-			jsApp.destroy("onCheckUpdate");
-			jsApp.destroy("onConstructRequest");
-			jsApp.destroy("onConstructCheck");
-			jsApp.destroy("onRequestUnit");
-			jsApp.destroy("onUnitCheck");
-			jsApp.destroy("onListBuilding");
-			jsApp.destroy("onResourcesCollect");
-			jsApp.destroy("onSellMenu");	
-			jsApp.destroy("onOpenCreateSquad");
-			jsApp.destroy("onCreateSquad");
-			jsApp.destroy("onViewVillageSquad");
-			jsApp.destroy("onSquadDetail");
-			jsApp.destroy("onCreateOffer");
-			jsApp.destroy("onBuyMenu");
+			 jsApp.destroy("onListWorldVillage");
+			 jsApp.destroy("onListUserVillages");
+			 jsApp.destroy("onTransferSquads");
+			 jsApp.destroy("onSquadTransferView");
+			 jsApp.destroy("onVillageSelect");
+			 jsApp.destroy("onListSquadAtk");
+			 jsApp.destroy("onAtkVillage");
+			 jsApp.destroy("onBuildingSelect");
+             jsApp.destroy("onListVillageBuildings");
+			 jsApp.destroy("onListVillageUnits");
+			 jsApp.destroy("onRequestUpdate");
+			 jsApp.destroy("onConstruct");
+			 jsApp.destroy("onResourcesUpdate");
+			 jsApp.destroy("onCheckUpdate");
+			 jsApp.destroy("onConstructRequest");
+			 jsApp.destroy("onConstructCheck");
+			 jsApp.destroy("onRequestUnit");
+			 jsApp.destroy("onUnitCheck");
+			 jsApp.destroy("onListBuilding");
+			 jsApp.destroy("onResourcesCollect");
+			 jsApp.destroy("onSellMenu");	
+			 jsApp.destroy("onOpenCreateSquad");
+			 jsApp.destroy("onCreateSquad");
+			 jsApp.destroy("onViewVillageSquad");
+			 jsApp.destroy("onSquadDetail");
+			 jsApp.destroy("onCreateOffer");
+			 jsApp.destroy("onBuyMenu");
+			 jsApp.destroy("onSellUnitMenu");
+			 jsApp.destroy("onCreateUnitOffer");
+			 jsApp.destroy("onBuyUnitMenu");
+			 jsApp.destroy("onBuyUnitOffer");
 			/////////////////////////////////////////
         }
     });
