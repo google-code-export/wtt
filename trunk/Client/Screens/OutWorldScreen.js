@@ -21,6 +21,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onListSquadAtk");
 			jsApp.destroy("onAtkVillage");
 			jsApp.destroy("onAtkQuest");
+			jsApp.destroy("onAtkTemple");
 			 /////////////////////////////////////////
 			 
 			 socket.emit("onListWorldVillage");
@@ -79,9 +80,11 @@ var OutWorldScreen = me.ScreenObject.extend(
 			var villageSelectFun = function(rows, data){
 				//var pixelIs = jsApp.getTileForPixels(data.x,data.y);
 				if(rows[0][0].Msg == "Your Village"){var type = "Friend"; }else{var type = "Enemy";}
+				console.log(rows[0][0]);
 				var idVillage    = rows[0][0].idVillage;
 				var villageOwner = rows[0][0].VillageOwner;
-				var actionWorldMenu = new jsApp.WorldBuildingOptions(type,idVillage,villageOwner,data.pixelIs,data.x,data.y);
+				var isTemple	 = rows[0][0].isTemple;
+				var actionWorldMenu = new jsApp.WorldBuildingOptions(type,idVillage,villageOwner,data.pixelIs,data.x,data.y,isTemple);
 				me.game.add(actionWorldMenu,10);
 				me.game.sort();
 			}
@@ -99,6 +102,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 				//IF I CLICKED IN AN QUEST
 				if(data.villageOwner == null){
 					var dialogTitle = "Select the Squad to explore :";
+				}else if(isTemple != 'N'){
+					var dialogTitle = "Select the Squad to attack The Temple :"
 				}else{
 					var dialogTitle = "Select the Squad to attack :"
 				}
@@ -120,26 +125,34 @@ var OutWorldScreen = me.ScreenObject.extend(
 
 						"Send" : function(){
 							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
-							var idVillageDef = data.idAtkVillage;
-							var userData	 = jsApp.getUserData();
-							var villageOwner = data.villageOwner;
-							var idSquadVillage   = "";
+							var idVillageDef    = data.idAtkVillage;
+							var userData	    = jsApp.getUserData();
+							var villageOwner    = data.villageOwner;
+							var isTemple        = data.isTemple;
+							var idSquadVillage  = "";
 							$("input:checkbox[id*='atkSquad_']:checked").each(function(i, obj){
 								idSquadVillage = idSquadVillage + $(this).val()+",";
 							});
-							
-							//clearing the last char
-							idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
-							//if im attacking a village
-							if(villageOwner != null){
-								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : jsApp.getUserData().userId, "villageOwner" : villageOwner});
+							if(idSquadVillage.length != 0){
+								//clearing the last char
+								idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
+								//if im attacking a village
+								if(villageOwner != null){
+									socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : jsApp.getUserData().userId, "villageOwner" : villageOwner});
+								}else if(isTemple != 'N'){
+									//if im attacking the temple
+									console.log(data);
+									socket.emit('onAtkTemple',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "IdVillagDef" : idVillageDef , "userId" : jsApp.getUserData().userId});
+								}else{
+									//if im attacking a dungeon
+									socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : jsApp.getUserData().userId});
+								}
+								$( "#dialogAtkSquad" ).html('');
+								$( this ).dialog( "close" );
 							}else{
-							//if im attacking a dungeon
-								console.log(data);
-								socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : jsApp.getUserData().userId});
+								alert('No Squads was selected!');
 							}
-							$( "#dialogAtkSquad" ).html('');
-							$( this ).dialog( "close" );
+
 						},
 						
 						Cancel: function() {
@@ -191,6 +204,16 @@ var OutWorldScreen = me.ScreenObject.extend(
 				me.state.change(me.state.OUTWORLD);
 			}
 			socket.on("onAtkQuest",atkQuestFun);
+			///////////////////////////////////////////
+
+			///////////////////////////////////////////
+			//RESULT OF THE ATTACK TEMPLE
+			var atkTempleFun =  function(rows, data){
+				alert(rows[0][0].Msg);
+				me.game.remove(this, true);
+				me.state.change(me.state.OUTWORLD);
+			}
+			socket.on("onAtkTemple",atkTempleFun);
 			///////////////////////////////////////////
 			
             /////////////////
@@ -255,6 +278,23 @@ var OutWorldScreen = me.ScreenObject.extend(
 							}
 						}
 					}
+					//IF IT'S THE TEMPLE
+					if(gameHandler.activeHuds.actionWorldMenu != undefined){
+						//IF I CLICKED IN 'ATTACK TEMPLE' BUTTON
+						if(gameHandler.activeHuds.actionWorldMenu.attackTempleRect != undefined){
+							if(gameHandler.activeHuds.actionWorldMenu.attackTempleRect.containsPoint(~~e.gameWorldX, ~~e.gameWorldY)){
+								var idAtkVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
+								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
+								var x			 = gameHandler.activeHuds.actionWorldMenu.x;
+								var y			 = gameHandler.activeHuds.actionWorldMenu.y;
+								var isTemple     = gameHandler.activeHuds.actionWorldMenu.isTemple;
+								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId, "isTemple" : isTemple});
+								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
+								gameHandler.activeHuds.actionWorldMenu = undefined;								
+							}
+						}
+					}
+					
 					//IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
 					me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 					gameHandler.activeHuds.actionWorldMenu = undefined;
@@ -267,7 +307,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 					var tileid     = buildLayer.getTileId(~~e.gameWorldX, ~~e.gameWorldY);// getting the current tileid we've clicked on
 
 					//IF I CLICKED IN SOMETHING I'LL SEE WHAT IT'S AND CREATE A ACTION MENU
-					if (tileid != null){ //--> FIX ME THIS NEED TO FIND ALSO THE TEMPLE AND THE QUESTS
+					if (tileid != null){ 
 						socket.emit("onVillageSelect",{"idUser" : userData.userId, "x" : tileIs.x, "y" : tileIs.y, "pixelIs" : pixelIs});
 					}
 				}
@@ -350,6 +390,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onListSquadAtk");
 			jsApp.destroy("onAtkVillage");
 			jsApp.destroy("onAtkQuest");
+			jsApp.destroy("onAtkTemple");
 			/////////////////////////////////////////
         }
     });
