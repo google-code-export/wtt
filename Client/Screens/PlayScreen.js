@@ -45,8 +45,9 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onCreateUnitOffer");
 			 jsApp.destroy("onBuyUnitMenu");
 			 jsApp.destroy("onBuyUnitOffer");
-			 
-			 
+			 jsApp.destroy("onSquadMergeView");
+			 jsApp.destroy("onSquadMergeView2");
+			 jsApp.destroy("onMergeSquad");
 			 /////////////////////////////////////////
 			
 			
@@ -64,6 +65,7 @@ var PlayScreen = me.ScreenObject.extend(
 				}
 			}*/
 			/*socket.on("onAlertBuy", AlertBuy);*/
+			
 			//////////////////////////
 			//IF IM BEING ATTACKED //
 			var AlertAtkFun = function(data){
@@ -382,15 +384,20 @@ var PlayScreen = me.ScreenObject.extend(
 								$("input:checkbox:checked").each(function(i, obj){
 									idUnits = idUnits + $(this).val()+",";
 								});
-								//clearing the last char
-								idUnits = idUnits.substring(0,(idUnits.length - 1));
-								
-								//sending to the server
-								socket.emit("onCreateSquad",{"idVillage" : idVillage, "squadName" : squadName, "idUnits" :  idUnits});
-								
-								//clearing the form
-								$( "#dialogArmy" ).html('');
-								$( this ).dialog( "close" );
+								if(idUnits.length != 0){
+									//clearing the last char
+									idUnits = idUnits.substring(0,(idUnits.length - 1));
+									
+									//sending to the server
+									socket.emit("onCreateSquad",{"idVillage" : idVillage, "squadName" : squadName, "idUnits" :  idUnits});
+									
+									//clearing the form
+									$( "#dialogArmy" ).html('');
+									$( this ).dialog( "close" );
+								}else{
+									alert('No unit was selected!');
+								}
+
 							}
 						},
 						Cancel: function() {
@@ -412,7 +419,7 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$.each(rows[0], function(i, obj) {
 					if(rows[0][i].Msg != undefined){
-						squadContent = squadContent + "<br>" + rows[0][i].Msg;
+						squadContent = squadContent + "<br><center>" + rows[0][i].Msg + "</center>";
 					}else{
 						var unit 		   = rows[0][i];
 						var imgStr 		   = unit.Description.replace(" ","_");
@@ -560,15 +567,20 @@ var PlayScreen = me.ScreenObject.extend(
 							$("input:checkbox:checked").each(function(i, obj){
 								idSquads = idSquads + $(this).val()+",";
 							});
-							//clearing the last char
-							idSquads = idSquads.substring(0,(idSquads.length - 1));
-							
-							//sending to the server to list the villages to transfer
-							socket.emit("onListUserVillages",{"idSquads" : idSquads, "userId" : userData.userId});
-							
-							//clearing the form
-							$( "#dialogArmy" ).html('');
-							$( this ).dialog( "close" );
+							if(idSquads.length != 0){
+								//clearing the last char
+								idSquads = idSquads.substring(0,(idSquads.length - 1));
+								
+								//sending to the server to list the villages to transfer
+								socket.emit("onListUserVillages",{"idSquads" : idSquads, "userId" : userData.userId});
+								
+								//clearing the form
+								$( "#dialogArmy" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No Squad was selected!');
+							}
+
 						},
 						Cancel: function() {
 							$( "#dialogTransferSquad" ).html('');
@@ -624,13 +636,17 @@ var PlayScreen = me.ScreenObject.extend(
 							var idVillageTransf   = "";
 							$("input:radio:checked").each(function(i, obj){
 								idVillageTransf = $(this).val();
+							});
+							
+							if(idVillageTransf.length != 0){
 								//sending to the server to list the villages to transfer
 								socket.emit("onTransferSquads",{"idSquads" : data.idSquads, "idVillageTransf" : idVillageTransf});
-							});
-
-							//clearing the form
-							$( "#dialogTransferVillage" ).html('');
-							$( this ).dialog( "close" );
+								//clearing the form
+								$( "#dialogTransferVillage" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No Village was selected!');
+							}
 						},
 						Cancel: function() {
 							$( "#dialogTransferVillage" ).html('');
@@ -650,7 +666,8 @@ var PlayScreen = me.ScreenObject.extend(
 						villageTransfContent = villageTransfContent + "<br>" +rows[0][0].Msg;
 					}else{
 						var village 		 = rows[0][i];
-						if(village.VillageNick == "The Temple"){ var img = 'data/sprite/temple_icon.png';}else{ var img = 'data/sprite/village_icon.png';}
+						var isTemple		 = village.VillageNick.indexOf('Temple');
+						if(isTemple != -1){ var img = 'data/sprite/temple_icon.png';}else{ var img = 'data/sprite/village_icon.png';}
 						var villageSquad     = "<br> <input type='radio' name='transferVillage' id='transferVillage_"+village.idVillage+"' value='"+village.idVillage+"' /> "+village.VillageNick+" <img src='"+img+"' width='32' height='32'/>";
 						villageTransfContent = villageTransfContent + villageSquad;
 					}
@@ -665,9 +682,180 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//AFTER THE TRANSF IT'S DONE
 			 var transfCheckFun = function(rows, data){
-				console.log(rows);
+				alert(rows[0][0].Msg);
+				me.game.remove(this, true);
+				me.state.change(me.state.PLAY); //to redraw the units in the screen
 			 }
 			 socket.on("onTransferSquads", transfCheckFun);
+			 //////////////////////////////////////////
+			
+
+			///////////////////////////////////////////////
+			//creating the window to view the user squads
+			var mergeSquadViewFun = function(rows){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogMergeSquad");
+				div.setAttribute("name","dialogMergeSquad");
+				div.setAttribute("title","Select the units you want to move between your Squads");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogMergeSquad" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
+						"Next": function() {
+							var idUnits   = "";
+							$("input:checkbox:checked").each(function(i, obj){
+								idUnits = idUnits + $(this).val()+",";
+							});
+
+							if(idUnits.length != 0){
+								//clearing the last char
+								idUnits = idUnits.substring(0,(idUnits.length - 1));
+								//sending to the server
+								socket.emit("onSquadMergeView2",{"userId" : userData.userId, "idUnits" :  idUnits});
+								
+								//clearing the form
+								$( "#dialogMergeSquad" ).html('');
+								$( this ).dialog( "close" );									
+							}else{
+								alert('No unit was selected!');
+							}
+						},
+						Cancel: function() {
+							$( "#dialogMergeSquad" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var squadContent = "";
+				squadContent     = squadContent + "<table boder=0 width=100%><tr>";
+				squadContent 	 = squadContent + "<td align='center' width=50%><b>UNIT</b></td>";
+				squadContent 	 = squadContent + "<td align='center' width=20%><b>ATTRIBUTES</b></td>";
+				squadContent 	 = squadContent + "<td align='center' width=30%><b>SQUAD</b></td>";
+				squadContent 	 = squadContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						squadContent = squadContent + "<br>" + rows[0][i].Msg;
+					}else{
+						var unit 		   = rows[0][i];
+						var imgStr 		   = unit.Description.replace(" ","_");
+						
+						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
+						unitFace       	   = $(unitFace).attr("src");
+						
+						var lifeImg        = me.loader.getImage("Life");
+						lifeImg       	   = $(lifeImg).attr("src");
+						
+						var atkImg         = me.loader.getImage("Sword");
+						atkImg       	   = $(atkImg).attr("src");
+						
+						var defImg         = me.loader.getImage("Shield");
+						defImg			   = $(defImg).attr("src");
+						
+						var unitCheckBox   = "<tr><td width=50% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						unitCheckBox       = unitCheckBox + "<td width=20% align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
+						unitCheckBox       = unitCheckBox + "<td width=30% align=center >"+unit.SquadName+"</td></tr>"
+						unitCheckBox       = unitCheckBox + "<tr><td></td><td align=right><img src='data/sprite/division.png' width=60% height=60%/></td><td></td></tr>";
+						squadContent 	   = squadContent + unitCheckBox;
+					}
+				});
+				
+				$("#dialogMergeSquad").append(squadContent);
+				$( "#dialogMergeSquad" ).dialog( "open" );
+			}
+			socket.on("onSquadMergeView", mergeSquadViewFun);			
+			/////////////////////////////////////////////////////////////
+			
+			///////////////////////////////////////////////
+			//creating the window to view the user villages
+			var viewSelectSquadFun = function(rows, data){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+	
+				div.setAttribute("id","dialogSelectSquadMerge");
+				div.setAttribute("name","dialogSelectSquadMerge");
+				div.setAttribute("title","Select the Squad you want to receive the units");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogSelectSquadMerge" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Send" : function(){
+							var idSquadTransf   = "";
+							$("input:radio:checked").each(function(i, obj){
+								idSquadTransf = $(this).val();
+							});
+							
+							if(idSquadTransf.length != 0){
+								//sending to the server to list the villages to transfer
+								console.log(data.idUnits);
+								console.log(idSquadTransf);
+								socket.emit("onMergeSquad",{"idUnits" : data.idUnits, "idSquadTransf" : idSquadTransf});
+								//clearing the form
+								$( "#dialogSelectSquadMerge" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No Squad was selected!');
+							}
+						},
+						Cancel: function() {
+							$( "#dialogSelectSquadMerge" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogSelectSquadMerge").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUADS LINK
+				var userSquadContent = "";
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][0].Msg != undefined){
+						userSquadContent = userSquadContent + "<br>" +rows[0][0].Msg;
+					}else{
+						var squad 		 = rows[0][i];
+						var userSquad    = "<br> <input type='radio' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
+						userSquadContent = userSquadContent + userSquad;
+					}
+				});
+				
+				$("#dialogSelectSquadMerge").append(userSquadContent);
+				$( "#dialogSelectSquadMerge" ).dialog( "open" );
+			}		
+			 socket.on("onSquadMergeView2", viewSelectSquadFun);
+			/////////////////////////////////////////////////////////////	
+			
+			///////////////////////////////////////////
+			//AFTER THE MERGE IT'S DONE
+			 var mergeCheckFun = function(rows, data){
+				alert(rows[0][0].Msg);
+				me.game.remove(this, true);
+				me.state.change(me.state.PLAY); //to redraw the units in the screen
+			 }
+			 socket.on("onMergeSquad", mergeCheckFun);
 			 //////////////////////////////////////////
 			 
             ///////////////////////
@@ -1427,9 +1615,9 @@ var PlayScreen = me.ScreenObject.extend(
 								socket.emit("onViewVillageSquad", {"idVillage" : this.idVillage, "userId" : userData.userId});
                             } else if(menu.changeSquadRect.containsPointV(me.input.changedTouches[0])) {
 								//IF I CLIKED ON SQUAD CHANGE VIEW 
-								socket.emit("onOpenChangeSquad", {"userId" : userData.userId});
+								socket.emit("onSquadMergeView", {"userId" : userData.userId});
                             } else if(menu.transferSquadRect.containsPointV(me.input.changedTouches[0])) {
-								//IF I CLIKED ON SQUAD CHANGE VIEW 
+								//IF I CLIKED ON SQUAD TRANSFER VIEW 
 								socket.emit("onSquadTransferView", {"userId" : userData.userId});
                             } else if(menu.worldRect.containsPointV(me.input.changedTouches[0])) {
 							    //IF I CLIKED ON THE WORLD
@@ -1558,6 +1746,9 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onCreateUnitOffer");
 			 jsApp.destroy("onBuyUnitMenu");
 			 jsApp.destroy("onBuyUnitOffer");
+			 jsApp.destroy("onSquadMergeView");
+			 jsApp.destroy("onSquadMergeView2");
+			 jsApp.destroy("onMergeSquad");
 			/////////////////////////////////////////
         }
     });

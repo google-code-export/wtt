@@ -53,7 +53,6 @@ var jsApp	 =
 	timeScheduler : function(data,time)
 	{
 		timeouts.push(setTimeout(data,time));
-		console.log(data);
 	},
 	
 	clearTimeOuts : function(){	
