@@ -7,35 +7,40 @@
         <meta name="description" content="" />
         <link   rel="stylesheet" href="css/styles.css"      type="text/css" media="screen" />
 		<link   rel="stylesheet" href="css/jquery-ui.css"   type="text/css" media="screen" />
+		<link   rel="stylesheet" href="css/alertify.css"   type="text/css" media="screen" />
+		
 		<script type="text/javascript" src="lib/socket.js"></script>
         <script type="text/javascript" src="lib/jq.js"></script>
 		<script type="text/javascript" src="lib/jquery-ui.js"></script>
         <script type="text/javascript" src="lib/jstorage.js"></script>
 		<script type="text/javascript" src="lib/Melon.js"></script>
-		<script type="text/javascript" src="lib/jquery.alerts.js"></script>
+		<script type="text/javascript" src="lib/alertify.min.js"></script>
+		
         <script type="text/javascript" src="Screens/PlayScreen.js"></script>
         <script type="text/javascript" src="Screens/TitleScreen.js"></script>
 		<script type="text/javascript" src="Screens/OutWorldScreen.js"></script>
         <script type="text/javascript" src="Entity/Unit.js"></script>
         <script type="text/javascript" src="Resources.js"></script>
         <script type="text/javascript" src="App.js"></script>
-        <script type="text/javascript"  src="UnityAI.js"></script>
+        <script type="text/javascript" src="UnityAI.js"></script>
         <script type="text/javascript" src="Screens/ActionMenu.js"></script>
-        <!--script type="text/javascript" src="Screens/SimpleDialog.js"></script-->
+        <script type="text/javascript" src="Screens/TempleTimeOut.js"></script>
         <script type="text/javascript" src="Screens/ResourcesHUD.js"></script>
 		<script type="text/javascript" src="Screens/BuildMenu.js"></script>
-        <script type="text/javascript"  src="Screens/BuildUnitMenu.js"></script>
-        <script type="text/javascript"  src="Screens/GenericMenu.js"></script>
-        <script type="text/javascript"  src="Screens/ListUnitInClass.js"></script>
+        <script type="text/javascript" src="Screens/BuildUnitMenu.js"></script>
+        <script type="text/javascript" src="Screens/GenericMenu.js"></script>
+        <script type="text/javascript" src="Screens/ListUnitInClass.js"></script>
         <script type="text/javascript" src="Screens/BuildArea.js"></script>
 		<script type="text/javascript" src="Screens/BuildingHUD.js"></script>
-        <script type="text/javascript"  src="Screens/VillageUnitsGeneral.js"></script>
+        <script type="text/javascript" src="Screens/VillageUnitsGeneral.js"></script>
 		<script type="text/javascript" src="Screens/ProgressBar.js"></script>
 		<script type="text/javascript" src="Screens/ColectAlert.js"></script>
 		<script type="text/javascript" src="Screens/BuildingDetail.js"></script>
 		<script type="text/javascript" src="Screens/MarketMenu.js"></script>
 		<script type="text/javascript" src="Screens/SellMenu.js"></script>
+		<script type="text/javascript" src="Screens/bootbox.min.js"></script>
 		<script type="text/javascript" src="Screens/WorldNames.js"></script>
+		
 		<script type="text/javascript" src="Screens/WorldBuildingOptions.js"></script>
    </head>
 	
@@ -82,12 +87,18 @@
                socket = jsApp.getSocket();
                var user =  $("#username").val();
                var pass = $("#password").val();
+			   
                socket.emit("login",  { p1:user,p2:pass });
             }
 			
-			/*function alert(msg){
-				JAlert("'"+msg+"'", 'Attention!');
-			}*/
+			function alert(msg){
+				//console.log(msg);
+				alertify.alert(msg);
+				//alertify.error(msg);
+				//alertify.log(msg);
+				//alertify.success(msg);
+
+			}
 		</script>
     	<div id="grad_bg">&nbsp;</div>
 		<div id="wrap">	
