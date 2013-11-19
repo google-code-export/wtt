@@ -562,14 +562,42 @@ io.sockets.on('connection', function (socket) {
 	////////////////////////////
 	
 	//////////////////////////
-    // onListSquadAtk      //
+    // onListSquadAtkQuest //
     ////////////////////////
-	socket.on("onListSquadAtk", function(data){
+	socket.on("onListSquadAtkQuest", function(data){
         connection.query("CALL `ViewUserSquad`("+data.userId+")",function(err, rows, fields){
 			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onListSquadAtk", rows, data);
+                socket.emit("onListSquadAtkQuest", rows, data);
+            }
+        });
+	});	
+	////////////////////////////
+		
+	//////////////////////////
+    // onListSquadAtkUser      //
+    ////////////////////////
+	socket.on("onListSquadAtkUser", function(data){
+        connection.query("CALL `ViewUserSquad`("+data.userId+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListSquadAtkUser", rows, data);
+            }
+        });
+	});	
+	////////////////////////////
+	
+	//////////////////////////
+    // onListSquadAtkTemple      //
+    ////////////////////////
+	socket.on("onListSquadAtkTemple", function(data){
+        connection.query("CALL `ViewUserSquad`("+data.userId+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onListSquadAtkTemple", rows, data);
             }
         });
 	});	
@@ -614,8 +642,10 @@ io.sockets.on('connection', function (socket) {
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
-                socket.emit("onAtkTemple",rows,data);
-				//socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0][0].Msg});
+				connection.query("CALL `TimeCheckTemple`()", function(err2, rows2, fields2){
+					socket.broadcast.emit("onAlertTempleConquest",rows2);
+					socket.emit("onAtkTemple",rows,data);
+				});
             }
         });
 	});	

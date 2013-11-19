@@ -48,6 +48,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadMergeView");
 			 jsApp.destroy("onSquadMergeView2");
 			 jsApp.destroy("onMergeSquad");
+			 jsApp.destroy("onAlertTempleConquest");
 			 /////////////////////////////////////////
 			
 			
@@ -80,6 +81,17 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onAlertUserAtk", AlertAtkFun);
 			////////////////////////
 			
+			/////////////////////////////////
+			//IF THE TEMPLE WAS DOMINATED //
+			var AlertTempleFun = function(rows){
+				console.log(rows);
+				alert('entrei no alert temple');
+				var time = "03:00:00";
+				this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+				me.game.add(this.templeTime,10);
+			}
+			socket.on("onAlertTempleConquest", AlertTempleFun);
+			////////////////////////
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
 			var listVillageBldFun = function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
@@ -1749,6 +1761,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadMergeView");
 			 jsApp.destroy("onSquadMergeView2");
 			 jsApp.destroy("onMergeSquad");
+			 jsApp.destroy("onAlertTempleConquest");
 			/////////////////////////////////////////
         }
     });

@@ -22,6 +22,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onAtkVillage");
 			jsApp.destroy("onAtkQuest");
 			jsApp.destroy("onAtkTemple");
+			jsApp.destroy("onAlertTempleConquest");
+			
 			 /////////////////////////////////////////
 			 
 			 socket.emit("onListWorldVillage");
@@ -41,6 +43,18 @@ var OutWorldScreen = me.ScreenObject.extend(
 				}
 			}
 			socket.on("onAlertUserAtk", alertAtkFun);
+			////////////////////////
+			
+			/////////////////////////////////
+			//IF THE TEMPLE WAS DOMINATED //
+			var AlertTempleFun = function(rows){
+				console.log(rows);
+				alert('entrei no alert temple');
+				var time = "03:00:00";
+				this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+				me.game.add(this.templeTime,10);
+			}
+			socket.on("onAlertTempleConquest", AlertTempleFun);
 			////////////////////////
 			
 			//////////////////////////////////////////////
@@ -95,25 +109,104 @@ var OutWorldScreen = me.ScreenObject.extend(
 			
 			//////////////////////////////////////////////////
 			//LISTING SQUADS TO ATTACK THE VILLAGE OR DUNGEON THAT I CLIKED
-			var listSquadAtkFun = function(rows, data){
+			var listSquadAtkQuestFun = function(rows, data){
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
-				//IF I CLICKED IN AN QUEST
-				if(data.villageOwner == null){
-					var dialogTitle = "Select the Squad to explore :";
-				}else if(isTemple != 'N'){
-					var dialogTitle = "Select the Squad to attack The Temple :"
-				}else{
-					var dialogTitle = "Select the Squad to attack :"
-				}
-				div.setAttribute("id","dialogAtkSquad");
-				div.setAttribute("name","dialogAtkSquad");
-				div.setAttribute("title",dialogTitle);
+				div.setAttribute("id","dialogAtkSquadQuest");
+				div.setAttribute("name","dialogAtkSquadQuest");
+				div.setAttribute("title","Select the Squad to explore :");
 				div.setAttribute("style","display:none");
 				
 				$("body").append(div);
-				$( "#dialogAtkSquad" ).dialog({
+				$( "#dialogAtkSquadQuest" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox[id*='atkSquadQuest_']").attr("checked",true);
+						},
+
+						"Send" : function(){
+							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
+							var idVillageDef    = data.idAtkVillage;
+							var userData	    = jsApp.getUserData();
+							var villageOwner    = data.villageOwner;
+							var isTemple        = "";
+							if(data.isTemple == undefined){isTemple = 'N';}else{isTemple = data.isTemple;}
+							var idSquadVillage  = "";
+							$("input:checkbox[id*='atkSquadQuest_']:checked").each(function(i, obj){
+								idSquadVillage = idSquadVillage + $(this).val()+",";
+							});
+							if(idSquadVillage.length != 0){
+								//clearing the last char
+								idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
+								//if im attacking a dungeon
+								socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : jsApp.getUserData().userId});
+								$( "#dialogAtkSquadQuest" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No Squads was selected!');
+							}
+
+						},
+						
+						Cancel: function() {
+							$( "#dialogAtkSquadQuest" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogAtkSquadQuest").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUAD RADIOBOXES
+				var atkSquadContentQuest = "";
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						var atkSquad = 	rows[0][i].Msg; 
+					}else{
+						var squad 	 = rows[0][i];
+						var atkSquad = "<br> <input type='checkbox' name='atkSquadQuest' id='atkSquadQuest_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					}
+					atkSquadContentQuest  = atkSquadContentQuest + atkSquad;
+				});
+				
+				$("#dialogAtkSquadQuest").append(atkSquadContentQuest);
+				$("#dialogAtkSquadQuest").dialog("open");
+			}
+			socket.on("onListSquadAtkQuest", listSquadAtkQuestFun);
+			
+			//////////////////////////////////////////
+			
+			///////////////////////////////////////////
+			//RESULT OF THE ATTACK QUEST
+			var atkQuestFun =  function(rows, data){
+				console.log(rows);
+				alert(rows[0][0].Msg);
+				me.game.remove(this, true);
+				me.state.change(me.state.OUTWORLD);
+			}
+			socket.on("onAtkQuest",atkQuestFun);
+			///////////////////////////////////////////
+			
+			//////////////////////////////////////////////////
+			//LISTING SQUADS TO ATTACK THE VILLAGE OR DUNGEON THAT I CLIKED
+			var listSquadAtkUserFun = function(rows, data){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+				div.setAttribute("id","dialogAtkSquadUser");
+				div.setAttribute("name","dialogAtkSquadUser");
+				div.setAttribute("title","Select the Squad to attack :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogAtkSquadUser" ).dialog({
 					autoOpen: false,
 					height: 480,
 					width: 600,
@@ -128,26 +221,18 @@ var OutWorldScreen = me.ScreenObject.extend(
 							var idVillageDef    = data.idAtkVillage;
 							var userData	    = jsApp.getUserData();
 							var villageOwner    = data.villageOwner;
-							var isTemple        = data.isTemple;
+							var isTemple        = "";
+							if(data.isTemple == undefined){isTemple = 'N';}else{isTemple = data.isTemple;}
 							var idSquadVillage  = "";
-							$("input:checkbox[id*='atkSquad_']:checked").each(function(i, obj){
+							$("input:checkbox[id*='atkSquadUser_']:checked").each(function(i, obj){
 								idSquadVillage = idSquadVillage + $(this).val()+",";
 							});
 							if(idSquadVillage.length != 0){
 								//clearing the last char
 								idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
 								//if im attacking a village
-								if(villageOwner != null){
-									socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : jsApp.getUserData().userId, "villageOwner" : villageOwner});
-								}else if(isTemple != 'N'){
-									//if im attacking the temple
-									console.log(data);
-									socket.emit('onAtkTemple',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "IdVillagDef" : idVillageDef , "userId" : jsApp.getUserData().userId});
-								}else{
-									//if im attacking a dungeon
-									socket.emit('onAtkQuest',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "userId" : jsApp.getUserData().userId});
-								}
-								$( "#dialogAtkSquad" ).html('');
+								socket.emit('onAtkVillage',{"IdSquadAtk" : idSquadVillage, "IdVillagDef" : idVillageDef, "userId" : jsApp.getUserData().userId, "villageOwner" : villageOwner});
+								$( "#dialogAtkSquadUser" ).html('');
 								$( this ).dialog( "close" );
 							}else{
 								alert('No Squads was selected!');
@@ -156,35 +241,32 @@ var OutWorldScreen = me.ScreenObject.extend(
 						},
 						
 						Cancel: function() {
-							$( "#dialogAtkSquad" ).html('');
+							$( "#dialogAtkSquadUser" ).html('');
 							$( this ).dialog( "close" );
 						}
 					},
 					close: function() {
-						$("#dialogAtkSquad").html('');
+						$("#dialogAtkSquadUser").html('');
 					}
 				});
 				
 				//////////////////////////////////
 				//POPULATING THE SQUAD RADIOBOXES
-				var atkSquadContent = "";
+				var atkUserSquadContent = "";
 				$.each(rows[0], function(i, obj) {
 					if(rows[0][i].Msg != undefined){
 						var atkSquad = 	rows[0][i].Msg; 
 					}else{
 						var squad 	 = rows[0][i];
-						var atkSquad = "<br> <input type='checkbox' name='atkSquad' id='atkSquad_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+						var atkSquad = "<br> <input type='checkbox' name='atkSquadUser' id='atkSquadUser_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
 					}
-					atkSquadContent  = atkSquadContent + atkSquad;
+					atkUserSquadContent  = atkUserSquadContent + atkSquad;
 				});
 				
-				$("#dialogAtkSquad").append(atkSquadContent);
-				$("#dialogAtkSquad").dialog("open");
+				$("#dialogAtkSquadUser").append(atkUserSquadContent);
+				$("#dialogAtkSquadUser").dialog("open");
 			}
-			socket.on("onListSquadAtk", listSquadAtkFun);
-			
-			//////////////////////////////////////////
-			
+			socket.on("onListSquadAtkUser", listSquadAtkUserFun);			
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK VILLAGE
 			var atkVillageFun =  function(rows, data){
@@ -196,16 +278,81 @@ var OutWorldScreen = me.ScreenObject.extend(
 			
 			///////////////////////////////////////////
 			
-			///////////////////////////////////////////
-			//RESULT OF THE ATTACK QUEST
-			var atkQuestFun =  function(rows, data){
-				alert(rows[0][0].Msg);
-				me.game.remove(this, true);
-				me.state.change(me.state.OUTWORLD);
-			}
-			socket.on("onAtkQuest",atkQuestFun);
-			///////////////////////////////////////////
+			//////////////////////////////////////////////////
+			//LISTING SQUADS TO ATTACK THE VILLAGE OR DUNGEON THAT I CLIKED
+			var listSquadAtkTempleFun = function(rows, data){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+				div.setAttribute("id","dialogAtkSquadTemple");
+				div.setAttribute("name","dialogAtkSquadTemple");
+				div.setAttribute("title","Select the Squad to attack The Temple :");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogAtkSquadTemple" ).dialog({
+					autoOpen: false,
+					height: 480,
+					width: 600,
+					modal: true,
+					buttons: {
+						"Check all": function() {
+							$("input:checkbox[id*='atkSquadTemple_']").attr("checked",true);
+						},
 
+						"Send" : function(){
+							//ENGAGING ATTACK IN THE VILLAGE I CLICKED
+							var idVillageDef    = data.idAtkVillage;
+							var userData	    = jsApp.getUserData();
+							var villageOwner    = data.villageOwner;
+							var isTemple        = "";
+							if(data.isTemple == undefined){isTemple = 'N';}else{isTemple = data.isTemple;}
+							var idSquadVillage  = "";
+							$("input:checkbox[id*='atkSquadTemple_']:checked").each(function(i, obj){
+								idSquadVillage = idSquadVillage + $(this).val()+",";
+							});
+							if(idSquadVillage.length != 0){
+								//clearing the last char
+								idSquadVillage = idSquadVillage.substring(0,(idSquadVillage.length - 1));
+								//if im attacking the temple
+								console.log(data);
+								socket.emit('onAtkTemple',{"IdSquadAtk" : idSquadVillage, "x" : data.x, "y" : data.y, "IdVillagDef" : idVillageDef , "userId" : jsApp.getUserData().userId});
+								$( "#dialogAtkSquadTemple" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No Squads was selected!');
+							}
+
+						},
+						
+						Cancel: function() {
+							$( "#dialogAtkSquadTemple" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+						$("#dialogAtkSquadTemple").html('');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUAD RADIOBOXES
+				var atkSquadTempleContent = "";
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						var atkSquad = 	rows[0][i].Msg; 
+					}else{
+						var squad 	 = rows[0][i];
+						var atkSquad = "<br> <input type='checkbox' name='atkSquadTemple' id='atkSquadTemple_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+					}
+					atkSquadTempleContent  = atkSquadTempleContent + atkSquad;
+				});
+				
+				$("#dialogAtkSquadTemple").append(atkSquadTempleContent);
+				$("#dialogAtkSquadTemple").dialog("open");
+			}
+			socket.on("onListSquadAtkTemple", listSquadAtkTempleFun);
+			
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK TEMPLE
 			var atkTempleFun =  function(rows, data){
@@ -244,7 +391,8 @@ var OutWorldScreen = me.ScreenObject.extend(
 							
 								var idAtkVillage = gameHandler.activeHuds.actionWorldMenu.idVillage;
 								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
-								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "userId" : userData.userId});
+								var isTemple     = 'N';
+								socket.emit('onListSquadAtkUser',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "isTemple" : isTemple, "userId" : userData.userId});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}
@@ -272,7 +420,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 								var villageOwner = gameHandler.activeHuds.actionWorldMenu.villageOwner;
 								var x			 = gameHandler.activeHuds.actionWorldMenu.x;
 								var y			 = gameHandler.activeHuds.actionWorldMenu.y;
-								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId});
+								socket.emit('onListSquadAtkQuest',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;
 							}
@@ -288,7 +436,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 								var x			 = gameHandler.activeHuds.actionWorldMenu.x;
 								var y			 = gameHandler.activeHuds.actionWorldMenu.y;
 								var isTemple     = gameHandler.activeHuds.actionWorldMenu.isTemple;
-								socket.emit('onListSquadAtk',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId, "isTemple" : isTemple});
+								socket.emit('onListSquadAtkTemple',{"idUserVillage" : userData.idVillage, "idAtkVillage" : idAtkVillage, "villageOwner" : villageOwner, "x" : x, "y" : y, "userId" : userData.userId, "isTemple" : isTemple});
 								me.game.remove(gameHandler.activeHuds.actionWorldMenu,true);
 								gameHandler.activeHuds.actionWorldMenu = undefined;								
 							}
@@ -391,6 +539,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onAtkVillage");
 			jsApp.destroy("onAtkQuest");
 			jsApp.destroy("onAtkTemple");
+			jsApp.destroy("onAlertTempleConquest");
 			/////////////////////////////////////////
         }
     });
