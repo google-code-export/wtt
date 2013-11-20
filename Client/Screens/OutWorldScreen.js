@@ -23,10 +23,17 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onAtkQuest");
 			jsApp.destroy("onAtkTemple");
 			jsApp.destroy("onAlertTempleConquest");
-			
+			jsApp.destroy("onListSquadAtkTemple");
+			jsApp.destroy("onListSquadAtkUser");
+			jsApp.destroy("onListSquadAtkQuest");
+			jsApp.destroy("onAlertUserAtk");
+			jsApp.destroy("onCheckTempleTime");
+			jsApp.destroy("onAlertBuyResources");
+			jsApp.destroy("onAlertBuyUnit");
 			 /////////////////////////////////////////
 			 
 			 socket.emit("onListWorldVillage");
+			 socket.emit("onCheckTempleTime");
 			////////////////////////////////////
 			//WORLD SOCKETS			         //
 			//////////////////////////////////
@@ -45,17 +52,73 @@ var OutWorldScreen = me.ScreenObject.extend(
 			socket.on("onAlertUserAtk", alertAtkFun);
 			////////////////////////
 			
+			///////////////////////
+			//IF SOMEBODY BUY MY RESOURCE OFFER
+			var AlertBuyRscFun = function(data){
+				if(userData.userId == data.idUserOffert){
+					alertify.success(data.Qtd+" units of "+data.offerDesc+" were sold!");
+					//update resources hud
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				}
+			}
+			socket.on("onAlertBuyResources", AlertBuyRscFun);	
+			/////////////////////////////
+			
+			///////////////////////
+			//IF SOMEBODY BUY MY UNIT OFFER
+			var AlertBuyUnitFun = function(data){
+				if(userData.userId == data.idUserOffer){
+					console.log(data.unitImg);
+					var unitFace 	= data.unitImg.replace(" ","_");
+					var unitFaceImg = me.loader.getImage(unitFace+"_Avatar");
+					unitFace       	= $(unitFaceImg).attr("src");
+					alertify.success("<img src='"+unitFace+"' /> "+data.unitDesc+" was sold!");
+					
+					//update resources hud
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				}
+			}
+			socket.on("onAlertBuyUnit", AlertBuyUnitFun);
+			//////////////////////////////////
+			
 			/////////////////////////////////
 			//IF THE TEMPLE WAS DOMINATED //
 			var AlertTempleFun = function(rows){
-				console.log(rows);
-				alert('entrei no alert temple');
-				var time = "03:00:00";
+				if(this.templeTime != undefined){me.game.remove(this.templeTime);}
+				alert("The Temple Was Dominated! Time it's running out");
+				var time = rows[0].Msg;
 				this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
 				me.game.add(this.templeTime,10);
+				me.game.sort();
 			}
 			socket.on("onAlertTempleConquest", AlertTempleFun);
 			////////////////////////
+			
+			/////////////////////////////////
+			//IF THE TEMPLE STILL DOMINATED //
+			var timeTempleFun = function(rows){
+				if(rows[0][0] != undefined){
+					if(rows[0][0].Msg != null ){
+						if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+						var userTempleId   = rows[0][0].idUser;
+						var userTempleNick = rows[0][0].Nick;
+						if(userData.newLogin == undefined){
+							if(userTempleId == userData.userId){
+								alertify.success("The Temple Still Dominated by you!");
+							}else{
+								alertify.error("The Temple Still Dominated by "+userTempleNick);
+							}
+							userData.newLogin = false;
+						}
+						var time = rows[0][0].Msg;
+						this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+						me.game.add(this.templeTime,10);
+						me.game.sort();
+					}
+				}
+			}
+			socket.on("onCheckTempleTime", timeTempleFun);
+			////////////////////////			
 			
 			//////////////////////////////////////////////
 			//LISTING THE USERS VILLAGES IN THE OUT WORLD
@@ -213,7 +276,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 					modal: true,
 					buttons: {
 						"Check all": function() {
-							$("input:checkbox[id*='atkSquad_']").attr("checked",true);
+							$("input:checkbox[id*='atkSquadUser_']").attr("checked",true);
 						},
 
 						"Send" : function(){
@@ -355,10 +418,17 @@ var OutWorldScreen = me.ScreenObject.extend(
 			
 			///////////////////////////////////////////
 			//RESULT OF THE ATTACK TEMPLE
-			var atkTempleFun =  function(rows, data){
-				alert(rows[0][0].Msg);
-				me.game.remove(this, true);
-				me.state.change(me.state.OUTWORLD);
+			var atkTempleFun =  function(rows, data,rows2){
+				if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+				if(rows[0][0].Msg != undefined){
+					alert(rows[0][0].Msg);
+				}else{
+					alert(rows[1][0].Msg);
+					var time = rows2[0][0].Msg;
+					this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+					me.game.add(this.templeTime,10);
+					me.game.sort();
+				}
 			}
 			socket.on("onAtkTemple",atkTempleFun);
 			///////////////////////////////////////////
@@ -530,6 +600,9 @@ var OutWorldScreen = me.ScreenObject.extend(
 			me.game.remove(gameHandler.activeHuds.worldNames, true);
 			gameHandler.activeHuds.worldNames = undefined;
 			me.game.remove(this.gui,true);
+			if(this.templeTime != undefined){
+				me.game.remove(this.templeTime);
+			}
 			me.game.sort();
 			
 			//Destroying websockets event before create a new one	
@@ -540,6 +613,13 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onAtkQuest");
 			jsApp.destroy("onAtkTemple");
 			jsApp.destroy("onAlertTempleConquest");
+			jsApp.destroy("onListSquadAtkTemple");
+			jsApp.destroy("onListSquadAtkUser");
+			jsApp.destroy("onListSquadAtkQuest");
+			jsApp.destroy("onAlertUserAtk");
+			jsApp.destroy("onCheckTempleTime");
+			jsApp.destroy("onAlertBuyResources");
+			jsApp.destroy("onAlertBuyUnit");
 			/////////////////////////////////////////
         }
     });
