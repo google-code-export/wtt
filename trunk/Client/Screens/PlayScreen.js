@@ -49,23 +49,47 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadMergeView2");
 			 jsApp.destroy("onMergeSquad");
 			 jsApp.destroy("onAlertTempleConquest");
+			 jsApp.destroy("onCheckTempleTime");
+			 jsApp.destroy("onAlertUserAtk");
+			 jsApp.destroy("onAlertBuyResources");
+			 jsApp.destroy("onAlertBuyUnit");
 			 /////////////////////////////////////////
 			
 			
 			//LISTING VILLAGE UNITS AND BUILDINGS
 			socket.emit("onListVillageBuildings", this.idVillage);
 			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
+			socket.emit("onCheckTempleTime");
 			
 			///////////////////////
-			//IF SOMEBODY BUY MY OFFER
-			/*var AlertBuy = function(data){
-				console.log(data);
-				if(userData.userId == data){
+			//IF SOMEBODY BUY MY RESOURCE OFFER
+			var AlertBuyRscFun = function(data){
+				if(userData.userId == data.idUserOffert){
+					alertify.success(data.Qtd+" units of "+data.offerDesc+" were sold!");
 					//update resources hud
 					jsApp.send("onResourcesUpdate", jsApp.getUserData());
 				}
-			}*/
-			/*socket.on("onAlertBuy", AlertBuy);*/
+			}
+			socket.on("onAlertBuyResources", AlertBuyRscFun);
+			//////////////////////////////////
+
+			///////////////////////
+			//IF SOMEBODY BUY MY UNIT OFFER
+			var AlertBuyUnitFun = function(data){
+				if(userData.userId == data.idUserOffer){
+					console.log(data.unitImg);
+					var unitFace 	= data.unitImg.replace(" ","_");
+					var unitFaceImg = me.loader.getImage(unitFace+"_Avatar");
+					unitFace       	= $(unitFaceImg).attr("src");
+					alertify.success("<img src='"+unitFace+"' /> "+data.unitDesc+" was sold!");
+					
+					//update resources hud
+					jsApp.send("onResourcesUpdate", jsApp.getUserData());
+				}
+			}
+			socket.on("onAlertBuyUnit", AlertBuyUnitFun);
+			//////////////////////////////////
+
 			
 			//////////////////////////
 			//IF IM BEING ATTACKED //
@@ -84,14 +108,48 @@ var PlayScreen = me.ScreenObject.extend(
 			/////////////////////////////////
 			//IF THE TEMPLE WAS DOMINATED //
 			var AlertTempleFun = function(rows){
-				console.log(rows);
-				alert('entrei no alert temple');
-				var time = "03:00:00";
-				this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
-				me.game.add(this.templeTime,10);
+				if(rows[0][0] != undefined){
+					if(rows[0][0].Msg != null ){
+						if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+						var userTempleId   = rows[0][0].idUser;
+						var userTempleNick = rows[0][0].Nick;
+						alert("The Temple Was Dominated by "+userTempleNick+"! Time it's running out");
+						var time = rows[0][0].Msg;
+						this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+						me.game.add(this.templeTime,10);
+						me.game.sort();
+					}
+				}
 			}
 			socket.on("onAlertTempleConquest", AlertTempleFun);
 			////////////////////////
+			
+			/////////////////////////////////
+			//IF THE TEMPLE STILL DOMINATED //
+			var timeTempleFun = function(rows){
+				if(rows[0][0] != undefined){
+					if(rows[0][0].Msg != null ){
+						if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+						var userTempleId   = rows[0][0].idUser;
+						var userTempleNick = rows[0][0].Nick;
+						if(userData.newLogin == undefined){
+							if(userTempleId == userData.userId){
+								alertify.success("The Temple Still Dominated by you!");
+							}else{
+								alertify.error("The Temple Still Dominated by "+userTempleNick);
+							}
+							userData.newLogin = false;
+						}
+						var time = rows[0][0].Msg;
+						this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+						me.game.add(this.templeTime,10);
+						me.game.sort();
+					}
+				}
+			}
+			socket.on("onCheckTempleTime", timeTempleFun);
+			////////////////////////
+			
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
 			var listVillageBldFun = function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
@@ -379,8 +437,8 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$( "#dialogArmy" ).dialog({
 					autoOpen: false,
-					height: 480,
-					width: 600,
+					height: 580,
+					width: 450,
 					modal: true,
 					buttons: {
 						"Check all": function() {
@@ -425,8 +483,8 @@ var PlayScreen = me.ScreenObject.extend(
 				//POPULATING THE ARMY CHECKBOXES
 				var squadContent = "<center><b>Squad Name:</b> <input type='text' name='squadName' id='squadName' length='20'></input></center><br><br>";
 				squadContent     = squadContent + "<table boder=0 width=100%><tr>";
-				squadContent 	 = squadContent + "<td align='center' width=80%><b>UNIT</b></td>";
-				squadContent 	 = squadContent + "<td align='center' width=20%><b>ATTRIBUTES</b></td>";
+				squadContent 	 = squadContent + "<td align='left' width=30%><b>UNIT</b></td>";
+				squadContent 	 = squadContent + "<td align='left' width=70%><b>ATTRIBUTES</b></td>";
 				squadContent 	 = squadContent + "</tr>";
 				
 				$.each(rows[0], function(i, obj) {
@@ -448,9 +506,9 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var unitCheckBox   = "<tr><td width=80% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
-						unitCheckBox       = unitCheckBox + "<td width=20% align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
-						unitCheckBox       = unitCheckBox + "<tr><td width=80% align=right><img src='data/sprite/division.png' width=60% height=60%/></td><td></td></tr>";
+						var unitCheckBox   = "<tr><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						unitCheckBox       = unitCheckBox + "<td width=70% align=left ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
+						unitCheckBox       = unitCheckBox + "<tr><td></td><td width=70% align=left><img src='data/sprite/division.png' width=60% height=60%/></td></tr>";
 						squadContent 	   = squadContent + unitCheckBox;
 					}
 				});
@@ -459,7 +517,20 @@ var PlayScreen = me.ScreenObject.extend(
 				$( "#dialogArmy" ).dialog( "open" );
 			}
 			socket.on("onOpenCreateSquad", openSquadFun);
-								
+			///////////////////////////////////////////////
+			
+			///////////////////////
+			//WHEN I CREATE A SQUAD
+			var createSquadFun = function(rows, data){
+				if(rows[0][0].Msg != "Done"){
+					alertify.error(rows[0][0].Msg);
+				}else{
+					alertify.success('The Squad "'+data.squadName+'" was created!');
+				}
+			}
+			socket.on("onCreateSquad", createSquadFun);
+			//////////////////////////////////			
+			
 			///////////////////////////////////////////////
 			//creating the window to view the village squads
 			var viewSquadFun = function(rows, data){
@@ -1062,7 +1133,8 @@ var PlayScreen = me.ScreenObject.extend(
 								if(resource.Description == "gold"){
 								}else{
 									//if it's a valid number, send to the server
-									if( ($("#"+resource.Description+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) && ($("#"+resource.Description+"_prc").val() !="" && $("#"+resource.Description+"_prc").val() !=0) ){
+									if( (($("#"+resource.Description+"_qtd").val() !="") && ($("#"+resource.Description+"_qtd").val() !=0)) && (($("#"+resource.Description+"_prc").val() !="") && ($("#"+resource.Description+"_prc").val() !=0)) ){
+										
 										if((!isNaN($("#"+resource.Description+"_qtd").val())) && (!isNaN($("#"+resource.Description+"_prc").val()))){
 											var qtd = $("#"+resource.Description+"_qtd").val();
 											var prc	= $("#"+resource.Description+"_prc").val();
@@ -1130,7 +1202,11 @@ var PlayScreen = me.ScreenObject.extend(
 				//updating the resources
 				jsApp.send("onResourcesUpdate", jsApp.getUserData());
 				//
-				alert(rows[0][0].Msg);
+				if(rows[0][0].Msg == 'Your Offert Was Created'){
+					alertify.success(rows[0][0].Msg);
+				}else{
+					alertify.error(rows[0][0].Msg);
+				}
 			}
 			socket.on('onCreateOffer', createOfferFun);
 			///////////////////////////////////
@@ -1161,12 +1237,15 @@ var PlayScreen = me.ScreenObject.extend(
 							$.each(rows[0], function(i, obj) {
 								var resource = rows[0][i];
 								//if it's a valid number, send to the server
-								if( ($("#"+resource.idOffert+"_qtd").val() !="" && $("#"+resource.Description+"_qtd").val() !=0) ){
-									if(!isNaN($("#"+resource.Description+"_qtd").val())){
-										var qtd 		= $("#"+resource.idOffert+"_qtd").val();
-										var userData	= jsApp.getUserData(); 
-										socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd});
+								if( ($("#"+resource.idOffert+"_qtd").val() !="") ){
+									if(!isNaN($("#"+resource.idOffert+"_qtd").val())){
+										var qtd 		 = $("#"+resource.idOffert+"_qtd").val();
+										var idUserOffert = $("#"+resource.idOffert+"_idUserOffert").val();
+										var offerDesc    = $("#"+resource.idOffert+"_Description").val();
+										var userData	 = jsApp.getUserData(); 
+										socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd, "idUserOffert" : idUserOffert, "offerDesc" : offerDesc});
 									}else{
+										
 										alert("Invalid type of input!");
 									}
 								}
@@ -1200,6 +1279,7 @@ var PlayScreen = me.ScreenObject.extend(
 				
 				$.each(rows[0], function(i, obj) {
 					var resource = rows[0][i];
+					console.log(resource);
 					resource.img = me.loader.getImage(jsApp.toTitleCase(resource.Description));
 					resource.img = $(resource.img).attr("src");
 					
@@ -1208,6 +1288,8 @@ var PlayScreen = me.ScreenObject.extend(
 					resourceBuy = resourceBuy + "<td align=center width=(100/5)>"+resource.Qty+"</td>";
 					resourceBuy = resourceBuy + "<td align=center width=(100/5)><img src='data/sprite/Gold.png' />"+resource.Money+"</td>";
 					resourceBuy	= resourceBuy + "<td align=center width=(100/5)><input type='number' name='"+resource.idOffert+"_qtd' id='"+resource.idOffert+"_qtd' size=5 /></td>";
+					resourceBuy	= resourceBuy + "<input type='hidden' id='"+resource.idOffert+"_idUserOffert' value='"+resource.idUser+"' />";
+					resourceBuy	= resourceBuy + "<input type='hidden' id='"+resource.idOffert+"_Description' value='"+resource.Description+"' />";
 					resourceBuy = resourceBuy + "<tr><td></td><td></td><td  align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td></td><td></td></tr>";
 					buyContent  = buyContent + resourceBuy + "</tr>";
 					
@@ -1225,8 +1307,9 @@ var PlayScreen = me.ScreenObject.extend(
 			////						/////
 			var buyOfferFun = function(rows,data) {
 				if(rows[0][0].Msg != "Done"){
-					alert(rows[0][0].Msg);
+					alertify.error(rows[0][0].Msg);
 				}else{
+					alertify.success('Transaction Done!');
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData());
 					//
@@ -1261,10 +1344,16 @@ var PlayScreen = me.ScreenObject.extend(
 						"Send": function() {
 							//creating the new offer
 							$("input:checkbox:checked").each(function(i, obj){
-								//sending to the server
 								var idUnit = $(this).val();
 								var prc    = $("#unitPrc_"+idUnit).val();
-								socket.emit("onCreateUnitOffer",{"userId" : userData.userId, "idUnit" : idUnit, "prc" : prc });
+								if( prc !=""){
+									if(!isNaN(prc)){
+										//sending to the server
+										socket.emit("onCreateUnitOffer",{"userId" : userData.userId, "idUnit" : idUnit, "prc" : prc });
+									}else{
+										alert('Invalid Type of Input!');
+									}
+								}
 							});
 							
 							//clearing the form
@@ -1285,9 +1374,9 @@ var PlayScreen = me.ScreenObject.extend(
 				//POPULATING THE ARMY CHECKBOXES
 				var sellUnitContent = '';
 				sellUnitContent     = "<table border=0 width=100%><tr>";
-				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Unit</b></td>";
-				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Attributes</b></td>";
-				sellUnitContent     = sellUnitContent + "<td width=(100/3) align=center><b>Price</b></td>";
+				sellUnitContent     = sellUnitContent + "<td width=33% align=center><b>Unit</b></td>";
+				sellUnitContent     = sellUnitContent + "<td width=33% align=center><b>Attributes</b></td>";
+				sellUnitContent     = sellUnitContent + "<td width=33% align=center><b>Price</b></td>";
 				sellUnitContent     = sellUnitContent + "</tr>";
 				
 				$.each(rows[0], function(i, obj) {
@@ -1309,10 +1398,10 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var sellUnitCheckBox   = "<tr><td><div style='line-height: 55px;'><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</div></td>" ;
-						sellUnitCheckBox       = sellUnitCheckBox + "<td><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
-						sellUnitCheckBox	   = sellUnitCheckBox + "<td><div style='line-height: 55px;'><img src='data/sprite/Gold.png' /> : <input type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 /></div>";
-						//sellUnitCheckBox	   = sellUnitCheckBox + "<tr><td></td><td align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td ></td></tr>";
+						var sellUnitCheckBox   = "<tr><td><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</td>" ;
+						sellUnitCheckBox       = sellUnitCheckBox + "<td align='center'><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
+						sellUnitCheckBox	   = sellUnitCheckBox + "<td align=center><img src='data/sprite/Gold.png' /> : <input type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 />";
+						sellUnitCheckBox	   = sellUnitCheckBox + "<tr><td></td><td align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td ></td></tr>";
 						sellUnitContent 	   = sellUnitContent  + sellUnitCheckBox + "</tr>";
 					}
 				});
@@ -1328,7 +1417,11 @@ var PlayScreen = me.ScreenObject.extend(
 			//after create a unit offer				//
 			////						/////////
 			var createUnitOfferFun = function(rows,data) {
-				alert(rows[0][0].Msg);
+				if(rows[0][0].Msg == 'Your Unit Offert Was Created'){
+					alertify.success(rows[0][0].Msg);
+				}else{
+					alertify.error(rows[0][0].Msg);
+				}
 			}
 			socket.on('onCreateUnitOffer', createUnitOfferFun);
 			///////////////////////////////////
@@ -1363,7 +1456,10 @@ var PlayScreen = me.ScreenObject.extend(
 								//sending to the server
 								var idUnitOffer  = $(this).val();
 								var idVillageDen = data.idVillageDen;
-								socket.emit("onBuyUnitOffer",{"userId" : userData.userId, "idUnitOffer" : idUnitOffer, "idVillageDen" : idVillageDen });
+								var idUserOffer  = $('#'+idUnitOffer+'_idUserOffer').val();
+								var unitDesc     = $('#'+idUnitOffer+'_Description').val();
+								var unitImg      = $('#'+idUnitOffer+'_img').val();
+								socket.emit("onBuyUnitOffer",{"userId" : userData.userId, "idUnitOffer" : idUnitOffer, "idVillageDen" : idVillageDen, "idUserOffer" : idUserOffer, "unitDesc" : unitDesc, "unitImg" : unitImg});
 							});
 							
 							//clearing the form
@@ -1396,6 +1492,7 @@ var PlayScreen = me.ScreenObject.extend(
 						buyUnitContent = buyUnitContent + "<br>" + rows[0][i].Msg;
 					}else{
 						var unit 		   = rows[0][i];
+						console.log(unit);
 						var imgStr 		   = unit.Description.replace(" ","_");
 						
 						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
@@ -1415,6 +1512,9 @@ var PlayScreen = me.ScreenObject.extend(
 						buyUnitCheckBox       = buyUnitCheckBox + "<td width=25 align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</div></td>";
 						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=30 align=center ><img src='data/sprite/Gold.png' /> : "+unit.Money+"</div>";
 						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=15 align=center ><div style='line-height: 55px;'><input type='checkbox' name='idUnitOffer_"+unit.idArmyOffert+"' id='idUnitOffer_"+unit.idArmyOffert+"' value='"+unit.idArmyOffert+"'></div></td>";
+						buyUnitCheckBox		  = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_idUserOffer' value='"+unit.idUser+"' />";
+						buyUnitCheckBox	      = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_Description' value='"+unit.Unit_Name+"("+unit.Description+")' />";
+						buyUnitCheckBox	      = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_img' value='"+unit.Description+"' />";
 						buyUnitContent 	      = buyUnitContent  + buyUnitCheckBox + "</tr>";
 						buyUnitContent		  = buyUnitContent  + "<tr><td></td><td><img src='data/sprite/division.png' width=80% height=80%/></td><td></td><td></td><td></td></tr>";
 					}
@@ -1432,8 +1532,9 @@ var PlayScreen = me.ScreenObject.extend(
 			////						/////////
 			var buyUnitOfferFun = function(rows,data) {
 				if(rows[0][0].Msg != "Done"){
-					alert(rows[0][0].Msg);
+					alertify.error(rows[0][0].Msg);
 				}else{
+					alertify.success('Transaction Done!');
 					//updating the resources
 					jsApp.send("onResourcesUpdate", jsApp.getUserData());
 					//
@@ -1524,17 +1625,27 @@ var PlayScreen = me.ScreenObject.extend(
 								//POPULATING THE UNIT MENU
 								var trainUnitContent = "<table boder=0 width=100%><tr>";
 								trainUnitContent 	 = trainUnitContent + "<td align='center' width=20%><b>UNIT</b></td>";
+								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%><b>ATTRIBUTE</b></td>";
 								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%><b>RESOURCES</b></td>";
-								trainUnitContent 	 = trainUnitContent + "<td align='center' width=40%></td>";
 								trainUnitContent 	 = trainUnitContent + "</tr>";
 								var newUnit;
 								var lastRsc;
 								var lastUnit;
 								$.each(unitsICanMake, function(i, obj) {
 									var unit 	    = unitsICanMake[i];
-									var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></input></p></td>";
+									var lifeImg     = me.loader.getImage("Life");
+									lifeImg       	= $(lifeImg).attr("src");
+									
+									var atkImg      = me.loader.getImage("Sword");
+									atkImg       	= $(atkImg).attr("src");
+									
+									var defImg      = me.loader.getImage("Shield");
+									defImg			= $(defImg).attr("src");
+									
+									var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></p></td>"; 
 									unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
 									unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
+									unitDetail      = unitDetail + "<td width=40% align='center'><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br> <img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</input></td>";
 									unitDetail  	= unitDetail + "<td width=40% align='center'>";
 
 									totalResources = unit.Resources.length;
@@ -1546,13 +1657,12 @@ var PlayScreen = me.ScreenObject.extend(
 										unitDetail = unitDetail + "<p><img src='"+rscImg+"'/>"+rscQty+"</p>";
 									}
 									
-									unitDetail  = unitDetail + "</td><td width=40%>";
-									
 									if(unit.Time_Creat != undefined){
 										var img   = me.loader.getImage('Clock');
 										img       = $(img).attr("src");
 										unitDetail = unitDetail + "<p><img src='"+img+"'/>"+unit.Time_Creat+"</p>";						
 									}
+									unitDetail  = unitDetail + "</td><td width=40%>";
 									
 									unitDetail  = unitDetail + "</td></tr><tr><td width=20%></td><td width=60% align=center><img src='data/sprite/division.png' width=50% height=50%/></td><td width=20%></td></tr>";
 									
@@ -1722,6 +1832,9 @@ var PlayScreen = me.ScreenObject.extend(
             me.input.releasePointerEvent("mousemove", me.game.viewport);
 			me.game.remove(this.hud);
 			me.game.remove(this.gui);
+			if(this.templeTime != undefined){
+				me.game.remove(this.templeTime);
+			}
 			me.game.reset();
 			me.game.sort();
 			//clearing the timeouts set
@@ -1762,6 +1875,10 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onSquadMergeView2");
 			 jsApp.destroy("onMergeSquad");
 			 jsApp.destroy("onAlertTempleConquest");
+			 jsApp.destroy("onCheckTempleTime");
+			 jsApp.destroy("onAlertUserAtk");
+			 jsApp.destroy("onAlertBuyResources");
+			 jsApp.destroy("onAlertBuyUnit");
 			/////////////////////////////////////////
         }
     });

@@ -2,23 +2,18 @@ jsApp.TempleTimeOut = me.Renderable.extend({
 	//INIT OF THE CLASS, TIME = MS AND PIXELIS = X AND Y //
 	init : function init(time)
 	{
-		console.log(time);
-		this.parent(new me.Vector2d(40,gameW/2),64,8);// position on the screen
+		this.parent(new me.Vector2d(gameW/2,30),64,8);// position on the screen
         this.ConquestTime = time;
         this.progressBar  = 0;
-		this.font         = new me.Font("verdana", 14, "lime", "right");
+		this.font         = new me.Font("verdana", 20, "white", "center");
 
         this.floating     = true;
-		this.isPersistent = true;;
+		this.isPersistent = false;
 		this.alwaysUpdate = true;
-        this.pixely = pixelIs.y;
-        this.pixelx = pixelIs.x;
 
 		this.Timer = "";
 		this.timerCountDown = jsApp.timeToMs(time);
 		this.initTime = me.timer.getTime();
-		console.log(this.timerCountDown);
-		console.log(this.initTime);
 	},
 
 
@@ -28,7 +23,7 @@ jsApp.TempleTimeOut = me.Renderable.extend({
         var alpha = context.globalAlpha;
 		var fillStyle = context.fillStyle;
         context.globalAlpha = 1;
-		this.font.draw(context,this.Timer,40, gameW/2);
+		this.font.draw(context,this.Timer,this.pos.x, this.pos.y);
         context.globalAlpha = alpha;
 		context.fillStyle = fillStyle;
 	},

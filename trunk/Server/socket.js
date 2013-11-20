@@ -138,6 +138,8 @@ io.sockets.on('connection', function (socket) {
     ////////////////////
     socket.on('onRequestUnit', function(data) {
         console.log("creating unit id "+data.idUnit+" at building id " + data.idBuildingBuilt);
+		console.log(randomName());
+		console.log(data.faceImg);
         connection.query("CALL `CreateUnit`("+data.idBuildingBuilt+","+data.idUnit+",'"+randomName()+"','"+data.faceImg+"')",function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
@@ -470,6 +472,9 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onBuyOffer",rows,data);
+				if(rows[0][0].Msg == 'Done'){
+					socket.broadcast.emit("onAlertBuyResources",{"idUserOffert" : data.idUserOffert, "Qtd" : data.Qtd, "offerDesc" : data.offerDesc});
+				}
             }
         });
 	});
@@ -527,6 +532,10 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onBuyUnitOffer",rows,data);
+				if(rows[0][0].Msg == 'Done'){
+					socket.broadcast.emit("onAlertBuyUnit",{"idUserOffer" : data.idUserOffer, "unitDesc" : data.unitDesc, "unitImg" : data.unitImg});
+				}
+				
             }
         });
 	});
@@ -613,7 +622,9 @@ io.sockets.on('connection', function (socket) {
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onAtkVillage",rows,data);
-				socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0][0].Msg});
+				if(rows[0][0].Msg != 'Already have a Battle in This Village, You cant Attack Now!'){
+					socket.broadcast.emit("onAlertUserAtk",{"idUser" : data.villageOwner, "Msg" : rows[0][0].Msg});
+				}
             }
         });
 	});	
@@ -644,12 +655,23 @@ io.sockets.on('connection', function (socket) {
             }else{
 				connection.query("CALL `TimeCheckTemple`()", function(err2, rows2, fields2){
 					socket.broadcast.emit("onAlertTempleConquest",rows2);
-					socket.emit("onAtkTemple",rows,data);
+					socket.emit("onAtkTemple",rows,data,rows2);
 				});
             }
         });
 	});	
 	////////////////////////////
+	
+	//////////////////////////
+	// onCheckTempleTime   //
+	////////////////////////
+	socket.on('onCheckTempleTime', function() {
+		connection.query("CALL `TimeCheckTemple`()",function(err, rows, fields){
+			if(rows.length==undefined || rows.length==0)
+				socket.emit("message", {msg:err});
+			socket.emit("onCheckTempleTime", rows);
+		});
+	});
 });
 
 // gotta put some more names here or try to use this:
