@@ -193,7 +193,7 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	/////////////////////////
-    // onViewVillageSquad        //
+    // onViewVillageSquad //
     ///////////////////////
     socket.on('onViewVillageSquad', function(data) {
         console.log(data);

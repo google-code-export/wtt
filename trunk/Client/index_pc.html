@@ -7,7 +7,8 @@
         <meta name="description" content="" />
         <link   rel="stylesheet" href="css/styles.css"      type="text/css" media="screen" />
 		<link   rel="stylesheet" href="css/jquery-ui.css"   type="text/css" media="screen" />
-		<link   rel="stylesheet" href="css/alertify.css"   type="text/css" media="screen" />
+		<link   rel="stylesheet" href="css/alertify.css"    type="text/css" media="screen" />
+		<link   rel="stylesheet" href="css/atooltip.css"    type="text/css" media="screen" />
 		
 		<script type="text/javascript" src="lib/socket.js"></script>
         <script type="text/javascript" src="lib/jq.js"></script>
@@ -15,6 +16,7 @@
         <script type="text/javascript" src="lib/jstorage.js"></script>
 		<script type="text/javascript" src="lib/Melon.js"></script>
 		<script type="text/javascript" src="lib/alertify.js"></script>
+		<script type="text/javascript" src="lib/atooltip.js"></script>
 		
         <script type="text/javascript" src="Screens/PlayScreen.js"></script>
         <script type="text/javascript" src="Screens/TitleScreen.js"></script>
@@ -91,12 +93,27 @@
 			
 			function alert(msg){
 				//console.log(msg);
-				alertify.alert(msg);
+				alertify.log(msg);
 				//alertify.error(msg);
 				//alertify.log(msg);
 				//alertify.success(msg);
 
 			}
+			
+			function onClickSelection(dest,type) {
+				var checkbox = $(dest).find(':'+type);
+				checkbox.prop('checked',!checkbox.prop("checked"));
+			}
+
+			function toolTip(Dest,Obs){
+				$(Dest).aToolTip({
+					fixed : false,
+					tipContent: Obs
+				});  
+				
+			}
+
+				
 		</script>
     	<div id="grad_bg">&nbsp;</div>
 		<div id="wrap">	
