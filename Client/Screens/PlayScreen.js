@@ -420,6 +420,107 @@ var PlayScreen = me.ScreenObject.extend(
 			}
 			socket.on("onUnitCheck", unitChkFun);
 			///////////////////////////////////////////////
+
+			//creating the window to create the squad
+			var onOpenAllocateUnitFun = function(rows, data){
+				console.log(rows);
+				console.log(data);
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  = document.createElement("div");
+				div.setAttribute("id","dialogAllocateUnit");
+				div.setAttribute("name","dialogAllocateUnit");
+				div.setAttribute("title","Allocate Units to Collect ( max: 5)");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				
+				$( "#dialogAllocateUnit" ).dialog({
+					autoOpen: false,
+					height: 500,
+					width: 450,
+					modal: true,
+					buttons: {
+						"Send": function() {
+							var idUnits   = "";
+							$("input:checkbox:checked").each(function(i, obj){
+								idUnits = idUnits + $(this).val()+",";
+							});
+							if(idUnits.length != 0){
+								//clearing the last char
+								idUnits = idUnits.substring(0,(idUnits.length - 1));
+								
+								//sending to the server
+								socket.emit("onAlocateUnit",{"idUnits" : idUnits, "idBuilding" : data.idBuilding});
+								
+								//clearing the form
+								$( "#dialogAllocateUnit" ).html('');
+								$( this ).dialog( "close" );
+							}else{
+								alert('No unit was selected!');
+							}
+						},
+						Cancel: function() {
+							$( "#dialogAllocateUnit" ).html('');
+							$( this ).dialog( "close" );
+						}
+					},
+					close: function() {
+					}
+				});
+
+				//////////////////////////////////
+				//POPULATING THE ARMY CHECKBOXES
+				var allocateUnitContent = "";
+				allocateUnitContent     = allocateUnitContent + "<table boder=0 width=100%><tr>";
+				allocateUnitContent 	= allocateUnitContent + "<td align='left' width=30%><b>UNIT</b></td>";
+				allocateUnitContent 	= allocateUnitContent + "<td align='left' width=70%><b>ATTRIBUTES</b></td>";
+				allocateUnitContent 	= allocateUnitContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					if(rows[0][i].Msg != undefined){
+						allocateUnitContent = allocateUnitContent + "<br><center>" + rows[0][i].Msg + "</center>";
+					}else{
+						var unit 		   = rows[0][i];
+						var imgStr 		   = unit.Description.replace(" ","_");
+						
+						var unitFace       = me.loader.getImage(imgStr+"_Avatar");
+						unitFace       	   = $(unitFace).attr("src");
+						
+						var lifeImg        = me.loader.getImage("Life");
+						lifeImg       	   = $(lifeImg).attr("src");
+						
+						var atkImg         = me.loader.getImage("Sword");
+						atkImg       	   = $(atkImg).attr("src");
+						
+						var defImg         = me.loader.getImage("Shield");
+						defImg			   = $(defImg).attr("src");
+						
+						var allocateCheckBox   = "<tr><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						allocateCheckBox       = allocateCheckBox + "<td width=70% align=left ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
+						allocateCheckBox       = allocateCheckBox + "<tr><td></td><td width=70% align=left><img src='data/sprite/division.png' width=60% height=60%/></td></tr>";
+						allocateUnitContent    = allocateUnitContent + allocateCheckBox;
+					}
+				});
+				
+				$("#dialogAllocateUnit").append(allocateUnitContent);
+				$("#dialogAllocateUnit").dialog( "open" );
+			}
+			socket.on("onAllocateUnitMenu", onOpenAllocateUnitFun);
+			///////////////////////////////////////////////			
+			
+			 ///////////////////////////////////////////
+			 //CHECKING IF THE UPDATE ALREADY IS DONE
+			 var onAlocateUnitFun = function(rows, data){
+				console.log(rows);
+				if(rows[0][0].Msg != "Done"){
+					alertify.error(rows[0][0].Msg);
+				}else{
+					alertify.success('Units Was Allocated!');
+				}
+			 }
+			 socket.on("onAlocateUnit", onAlocateUnitFun);
+			 //////////////////////////////////////////
 			
 
 			//creating the window to create the squad
@@ -1674,7 +1775,15 @@ var PlayScreen = me.ScreenObject.extend(
                             }
                         }
 						///////////////////////////////////
-
+						
+						//IF I CLICKED ON THE ALLOCATE BUTTON
+						if(gameHandler.activeHuds.buildingHUD.allocateVillagerButton != undefined) {
+							if(gameHandler.activeHuds.buildingHUD.allocateVillagerButton.containsPointV(me.input.changedTouches[0])){
+								socket.emit('onAllocateUnitMenu', {"userId" : userData.userId, "idBuilding" : gameHandler.activeHuds.buildingHUD.upInfo.idBuildingBuilt});
+							}
+						}
+						/////////////////////////////////////////
+						
 						//IF I CLICKED ON THE SELL BUTTON ON MARKET
 						if(gameHandler.activeHuds.buildingHUD.sellMarketButton != undefined) {
 							if(gameHandler.activeHuds.buildingHUD.sellMarketButton.containsPointV(me.input.changedTouches[0])){
@@ -1706,6 +1815,9 @@ var PlayScreen = me.ScreenObject.extend(
 							}
 						}
 						/////////////////////////////////////////
+						
+						
+						
                         //IF I CLICKED OUTSIDE THE HUD I'LL REMOVE IT.
                         me.game.remove(gameHandler.activeHuds.buildingHUD,true);
                         gameHandler.activeHuds.buildingHUD = undefined;

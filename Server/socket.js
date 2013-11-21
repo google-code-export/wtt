@@ -337,8 +337,23 @@ io.sockets.on('connection', function (socket) {
 					if(rows2 == undefined ||rows2.length==undefined || rows2.length==0){
 					}else{
 						if(rows2[0] == ""){//-->FIXME
-							rows[0][0].listUnitsCanMake = ""; 
-							socket.emit("onBuildingSelect",rows,data);
+							rows[0][0].listUnitsCanMake = "";
+							
+							if(rows[0][0].Type == 'R'){
+								connection.query("CALL `WorkerAtBuild`("+rows[0][0].idBuildingBuilt+")",function(err3, rows3, fields3){
+									if(rows3 == undefined ||rows3.length==undefined || rows3.length==0){
+										console.log('entrei 1');
+										rows[0][0].workersAllocated = 0;
+										console.log(rows3);
+									}else{
+										console.log('entrei 2');
+										rows[0][0].workersAllocated = rows3[0];
+									}
+									socket.emit("onBuildingSelect",rows,data);
+								});
+							}else{
+								socket.emit("onBuildingSelect",rows,data);
+							}
 						}else{
 							rows[0][0].listUnitsCanMake = rows2[0]; 
 							var ct = rows[0][0].listUnitsCanMake.length;
@@ -353,9 +368,7 @@ io.sockets.on('connection', function (socket) {
 									}
 								});
 							}
-						
 						}
-
 					}
 				});				
 			}
@@ -363,6 +376,36 @@ io.sockets.on('connection', function (socket) {
 	});
 	////////////
 
+
+    /////////////////////////
+    // onAllocateUnitMenu //
+    ///////////////////////
+    socket.on('onAllocateUnitMenu', function(data){
+        connection.query("CALL `ViewWorker`("+data.userId+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onAllocateUnitMenu",rows, data);
+            }
+        });
+    });
+    /////////////////////////
+
+    /////////////////////////
+    // onAlocateUnit //
+    ///////////////////////
+    socket.on('onAlocateUnit', function(data){
+        connection.query("CALL `PutToWork`('"+data.idUnits+"', "+data.idBuilding+")", function(err, rows, fields){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onAlocateUnit",rows, data);
+            }
+        });
+    });
+    /////////////////////////	
+	
+	
     ////////////////////////////
     // onListVillageBuildings //
     ////////////////////////////

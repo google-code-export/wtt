@@ -28,6 +28,22 @@ jsApp.BuildingHUD = me.Renderable.extend({
             )
             ,gameW,128
         )
+		//IF THIS BUILDING IT'S A COLLECTOR
+		if(infoBuild.Type == 'R' ){ 
+			this.workersAllocated = "";
+			this.workersAllocated = infoBuild.workersAllocated.length;
+			if(this.workersAllocated <= 5){
+				this.allocateVillagerButton = new me.Rect(
+					new me.Vector2d(
+						this.pos.x+230,
+						this.pos.y+21
+					),
+					130, 30
+				);		
+			}
+		}
+		
+		//
 		
 		//IF THIS BUILDING IT'S A MARKET
 		if(infoBuild.idBuilding == 11){
@@ -230,6 +246,15 @@ jsApp.BuildingHUD = me.Renderable.extend({
                 }
 		}else{
 			this.font.draw(context,this.DescRect.buildDesc,this.pos.x+128, this.pos.y+64 );
+			
+			//ALLOCATE VILLAGERS BUTTONS
+			if(this.workersAllocated != undefined){
+				this.font.draw(context, this.workersAllocated+" / 5", this.pos.x+132,this.pos.y+22);
+				context.fillStyle = "green";
+				context.fillRect(this.allocateVillagerButton.pos.x, this.allocateVillagerButton.pos.y, this.allocateVillagerButton.width, this.allocateVillagerButton.height);
+				this.font.draw(context,"ALLOCATE",this.allocateVillagerButton.pos.x+1, this.allocateVillagerButton.pos.y +5 );
+			}
+			
 			// BUILD MARKET BUTTONS
 			if( this.sellMarketButton != undefined ) {
 				context.fillStyle = "green";
