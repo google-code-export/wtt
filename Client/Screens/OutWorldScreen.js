@@ -234,7 +234,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 						var atkSquad = 	rows[0][i].Msg; 
 					}else{
 						var squad 	 = rows[0][i];
-						var atkSquad = "<br> <input type='checkbox' name='atkSquadQuest' id='atkSquadQuest_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+						var atkSquad = "<br> <input style='cursor:pointer' type='checkbox' name='atkSquadQuest' id='atkSquadQuest_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
 					}
 					atkSquadContentQuest  = atkSquadContentQuest + atkSquad;
 				});
@@ -321,7 +321,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 						var atkSquad = 	rows[0][i].Msg; 
 					}else{
 						var squad 	 = rows[0][i];
-						var atkSquad = "<br> <input type='checkbox' name='atkSquadUser' id='atkSquadUser_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+						var atkSquad = "<br> <input style='cursor:pointer' type='checkbox' name='atkSquadUser' id='atkSquadUser_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
 					}
 					atkUserSquadContent  = atkUserSquadContent + atkSquad;
 				});
@@ -406,7 +406,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 						var atkSquad = 	rows[0][i].Msg; 
 					}else{
 						var squad 	 = rows[0][i];
-						var atkSquad = "<br> <input type='checkbox' name='atkSquadTemple' id='atkSquadTemple_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
+						var atkSquad = "<br> <input style='cursor:pointer' type='checkbox' name='atkSquadTemple' id='atkSquadTemple_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' >"+squad.SquadName+"</input>";
 					}
 					atkSquadTempleContent  = atkSquadTempleContent + atkSquad;
 				});

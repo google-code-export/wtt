@@ -423,8 +423,6 @@ var PlayScreen = me.ScreenObject.extend(
 
 			//creating the window to create the squad
 			var onOpenAllocateUnitFun = function(rows, data){
-				console.log(rows);
-				console.log(data);
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  = document.createElement("div");
@@ -496,7 +494,7 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var allocateCheckBox   = "<tr><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						var allocateCheckBox   = "<tr onclick='onClickSelection(this,"+'"checkbox"'+");' style='cursor:pointer'><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
 						allocateCheckBox       = allocateCheckBox + "<td width=70% align=left ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
 						allocateCheckBox       = allocateCheckBox + "<tr><td></td><td width=70% align=left><img src='data/sprite/division.png' width=60% height=60%/></td></tr>";
 						allocateUnitContent    = allocateUnitContent + allocateCheckBox;
@@ -607,7 +605,7 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var unitCheckBox   = "<tr><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						var unitCheckBox   = "<tr onclick='onClickSelection(this,"+'"checkbox"'+");' style='cursor:pointer'><td width=30% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
 						unitCheckBox       = unitCheckBox + "<td width=70% align=left ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td></tr>";
 						unitCheckBox       = unitCheckBox + "<tr><td></td><td width=70% align=left><img src='data/sprite/division.png' width=60% height=60%/></td></tr>";
 						squadContent 	   = squadContent + unitCheckBox;
@@ -784,7 +782,7 @@ var PlayScreen = me.ScreenObject.extend(
 						userSquadContent = userSquadContent + "<br>" +rows[0][0].Msg;
 					}else{
 						var squad 		    = rows[0][i];
-						var userSquad    = "<br> <input type='checkbox' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
+						var userSquad    = "<br> <input style='cursor:pointer' type='checkbox' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
 						userSquadContent = userSquadContent + userSquad;
 					}
 				});
@@ -852,7 +850,7 @@ var PlayScreen = me.ScreenObject.extend(
 						var village 		 = rows[0][i];
 						var isTemple		 = village.VillageNick.indexOf('Temple');
 						if(isTemple != -1){ var img = 'data/sprite/temple_icon.png';}else{ var img = 'data/sprite/village_icon.png';}
-						var villageSquad     = "<br> <input type='radio' name='transferVillage' id='transferVillage_"+village.idVillage+"' value='"+village.idVillage+"' /> "+village.VillageNick+" <img src='"+img+"' width='32' height='32'/>";
+						var villageSquad     = "<br> <input style='cursor:pointer' type='radio' name='transferVillage' id='transferVillage_"+village.idVillage+"' value='"+village.idVillage+"' /> "+village.VillageNick+" <img src='"+img+"' width='32' height='32'/>";
 						villageTransfContent = villageTransfContent + villageSquad;
 					}
 				});
@@ -952,7 +950,7 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var unitCheckBox   = "<tr><td width=50% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
+						var unitCheckBox   = "<tr style='cursor:pointer' onclick='onClickSelection(this,"+'"checkbox"'+");'><td width=50% align=left><input type='checkbox' name='squadUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+") </td>";
 						unitCheckBox       = unitCheckBox + "<td width=20% align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
 						unitCheckBox       = unitCheckBox + "<td width=30% align=center >"+unit.SquadName+"</td></tr>"
 						unitCheckBox       = unitCheckBox + "<tr><td></td><td align=right><img src='data/sprite/division.png' width=60% height=60%/></td><td></td></tr>";
@@ -1021,7 +1019,7 @@ var PlayScreen = me.ScreenObject.extend(
 						userSquadContent = userSquadContent + "<br>" +rows[0][0].Msg;
 					}else{
 						var squad 		 = rows[0][i];
-						var userSquad    = "<br> <input type='radio' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
+						var userSquad    = "<br> <input style='cursor:pointer' type='radio' name='transferSquadCbx' id='transferSquadCbx_"+squad.idSquadVillage+"' value='"+squad.idSquadVillage+"' />"+squad.SquadName;
 						userSquadContent = userSquadContent + userSquad;
 					}
 				});
@@ -1101,8 +1099,9 @@ var PlayScreen = me.ScreenObject.extend(
 					var imgStr 		   		  = build.Description.replace(" ","_");
 					var bdlImg      		  = me.loader.getImage(imgStr);
 					bdlImg       	   		  = $(bdlImg).attr("src");
-					
-					var bldDetail  = "<tr><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='"+bdlImg+"' /></input></p></td>";
+
+					var bldDetail  = ""; 			 
+					bldDetail  	   = bldDetail + "<tr  onmouseover='toolTip(this,"+'"'+build.Obs+'"'+");' title='"+build.Obs+"' onclick='onClickSelection(this,"+'"radio"'+");' style='cursor:pointer'><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='"+bdlImg+"' /></input></p></td>";
 					bldDetail  	   = bldDetail + "<td width=40% align='center'>";
 					
 					//PLEASE,FIX ME 
@@ -1499,7 +1498,7 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var sellUnitCheckBox   = "<tr><td><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</td>" ;
+						var sellUnitCheckBox   = "<tr onclick='onClickSelection(this,"+'"checkbox"'+");' style='cursor:pointer'><td><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</td>" ;
 						sellUnitCheckBox       = sellUnitCheckBox + "<td align='center'><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
 						sellUnitCheckBox	   = sellUnitCheckBox + "<td align=center><img src='data/sprite/Gold.png' /> : <input type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 />";
 						sellUnitCheckBox	   = sellUnitCheckBox + "<tr><td></td><td align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td ></td></tr>";
@@ -1608,11 +1607,11 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield"); 
 						defImg			   = $(defImg).attr("src");
 						
-						var buyUnitCheckBox   = "<tr><td width=15 align=center ><div style='line-height: 55px;'>"+unit.idArmyOffert+"</div></td>";
+						var buyUnitCheckBox   = "<tr onclick='onClickSelection(this,"+'"checkbox"'+");' style='cursor:pointer'><td width=15 align=center ><div style='line-height: 55px;'>"+unit.idArmyOffert+"</div></td>";
 						buyUnitCheckBox       = buyUnitCheckBox + "<td width=25 align=center ><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</div></td>";
 						buyUnitCheckBox       = buyUnitCheckBox + "<td width=25 align=center ><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</div></td>";
 						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=30 align=center ><img src='data/sprite/Gold.png' /> : "+unit.Money+"</div>";
-						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=15 align=center ><div style='line-height: 55px;'><input type='checkbox' name='idUnitOffer_"+unit.idArmyOffert+"' id='idUnitOffer_"+unit.idArmyOffert+"' value='"+unit.idArmyOffert+"'></div></td>";
+						buyUnitCheckBox	      = buyUnitCheckBox + "<td width=15 align=center ><input type='checkbox' name='idUnitOffer_"+unit.idArmyOffert+"' id='idUnitOffer_"+unit.idArmyOffert+"' value='"+unit.idArmyOffert+"'></td>";
 						buyUnitCheckBox		  = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_idUserOffer' value='"+unit.idUser+"' />";
 						buyUnitCheckBox	      = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_Description' value='"+unit.Unit_Name+"("+unit.Description+")' />";
 						buyUnitCheckBox	      = buyUnitCheckBox + "<input type='hidden' id='"+unit.idArmyOffert+"_img' value='"+unit.Description+"' />";
@@ -1734,6 +1733,7 @@ var PlayScreen = me.ScreenObject.extend(
 								var lastUnit;
 								$.each(unitsICanMake, function(i, obj) {
 									var unit 	    = unitsICanMake[i];
+									console.log(unit);
 									var lifeImg     = me.loader.getImage("Life");
 									lifeImg       	= $(lifeImg).attr("src");
 									
@@ -1743,7 +1743,7 @@ var PlayScreen = me.ScreenObject.extend(
 									var defImg      = me.loader.getImage("Shield");
 									defImg			= $(defImg).attr("src");
 									
-									var unitDetail  = "<tr><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></p></td>"; 
+									var unitDetail  = "<tr onclick='onClickSelection(this,"+'"radio"'+");' style='cursor:pointer'><td width=20%><b>"+unit.Description+"</b><p><br><input type='radio' name='unitSelect' value='"+unit.idUnit+"' ><img src='data/sprite/Characters/"+unit.Image+"_Front.png' /></p></td>"; 
 									unitDetail      = unitDetail + "<input type='hidden' id='unitImg_"+unit.idUnit+"' value='"+unit.Image+"' />";
 									unitDetail      = unitDetail + "<input type='hidden' id='unitDesc_"+unit.idUnit+"' value='"+unit.Description+"' />";
 									unitDetail      = unitDetail + "<td width=40% align='center'><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br> <img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</input></td>";
