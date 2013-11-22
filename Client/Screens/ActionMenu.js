@@ -1,11 +1,12 @@
 jsApp.ActionMenu = me.Renderable.extend({
 	//Aqui na verdade inicia o role
-    "init" : function init(type) {
+    "init" : function init(type, villageName) {
         this.parent(new me.Vector2d(0, gameH-40), gameW, 40);
-        this.floating = true;
+        this.floating     = true;
         this.isPersistent = false;
-		this.mouseAction = undefined;
-        gameHandler.activeHuds.actionMenu = this;
+		this.mouseAction  = undefined;
+		this.villageName  = villageName;
+		
         // options that are displayed on the screen
         this.options = new Array();
 
@@ -133,8 +134,6 @@ jsApp.ActionMenu = me.Renderable.extend({
 			//this.mainOptions.push(this.sellRect);//incluindo os botões no vetor
 			this.mainOptions.push(this.worldRect);//incluindo os botões no vetor
 			this.options = this.mainOptions;
-			this.font = new me.Font("verdana", 14, "lime", "right");
-			this.font.textBaseline = "bottom";
 		}
 		
 		if(type == "World"){
@@ -153,10 +152,14 @@ jsApp.ActionMenu = me.Renderable.extend({
 		    this.buildRect.buttonText = "Build";
 			this.mainOptions.push(this.buildRect);//incluindo os botões no vetor
 			this.options = this.mainOptions;
-			this.font = new me.Font("verdana", 14, "lime", "right");
-			this.font.textBaseline = "bottom";
 		}
-		this.background = me.loader.getImage("WoodTexture");
+		
+		this.background 				  = me.loader.getImage("WoodTexture");
+		this.font 						  = new me.Font("verdana", 14, "lime", "right");
+		this.font.textBaseline            = "bottom";
+		this.villageFont                  = new me.Font("verdana", 20, "white", "right");
+		this.villageFont.textBaseline     = "bottom";
+		gameHandler.activeHuds.actionMenu = this;
     },
 
     "destroy" : function destroy() {
@@ -193,7 +196,8 @@ jsApp.ActionMenu = me.Renderable.extend({
                 }
             }
         }
-
+		
+		this.villageFont.draw(context, this.villageName, gameW - 35, gameH - 10);		
 
         context.globalAlpha = alpha;
 
