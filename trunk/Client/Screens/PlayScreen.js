@@ -458,6 +458,9 @@ var PlayScreen = me.ScreenObject.extend(
 					width: 450,
 					modal: true,
 					buttons: {
+						"Check all": function() {
+							$("input:checkbox").attr("checked",true);
+						},
 						"Send": function() {
 							var idUnits   = "";
 							$("input:checkbox:checked").each(function(i, obj){
@@ -1458,7 +1461,7 @@ var PlayScreen = me.ScreenObject.extend(
 					modal: true,
 					buttons: {
 						"Check all": function() {
-							$("input:checkbox").attr("checked",true);
+							$("input:checkbox").prop("checked",!$("input:checkbox").prop("checked"));
 						},
 						"Send": function() {
 							//creating the new offer
@@ -1517,9 +1520,9 @@ var PlayScreen = me.ScreenObject.extend(
 						var defImg         = me.loader.getImage("Shield");
 						defImg			   = $(defImg).attr("src");
 						
-						var sellUnitCheckBox   = "<tr onclick='onClickSelection(this,"+'"checkbox"'+");' style='cursor:pointer'><td><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</td>" ;
+						var sellUnitCheckBox   = "<tr id='unitTr_"+unit.idArmy+"'  style='cursor:pointer'><td><input type='checkbox' name='idUnit' value='"+unit.idArmy+"'><img src='"+unitFace+"' /></input>"+unit.Unit_Name+"("+unit.Description+")</td>" ;
 						sellUnitCheckBox       = sellUnitCheckBox + "<td align='center'><img src='"+atkImg+"' alt='Attack' /> : "+unit.Attack+" <br><img src='"+defImg+"' alt='Defense' /> : "+unit.Defense+" <br><img src='"+lifeImg+"' alt='Life' /> : "+unit.Life+"</td>";
-						sellUnitCheckBox	   = sellUnitCheckBox + "<td align=center><img src='data/sprite/Gold.png' /> : <input type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 />";
+						sellUnitCheckBox	   = sellUnitCheckBox + "<td align=center><img src='data/sprite/Gold.png' /> : <input onfocus='onClickSelection(unitTr_"+unit.idArmy+","+'"checkbox"'+");' type='number' name='unitPrc_"+unit.idArmy+"' id='unitPrc_"+unit.idArmy+"' size=4 />";
 						sellUnitCheckBox	   = sellUnitCheckBox + "<tr><td></td><td align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td ></td></tr>";
 						sellUnitContent 	   = sellUnitContent  + sellUnitCheckBox + "</tr>";
 					}
