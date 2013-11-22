@@ -2,10 +2,13 @@ var PlayScreen = me.ScreenObject.extend(
     {
         onResetEvent: function () {
 			me.game.reset();
-			var socket = jsApp.getSocket();
-			var userData = jsApp.getUserData();
-            this.idVillage = userData.idVillage;
-			this.TMXTileMap = "VillageArea";
+			var socket       = jsApp.getSocket();
+			var userData     = jsApp.getUserData();
+            this.idVillage   = userData.idVillage;
+			this.villageName = "";
+			this.TMXTileMap  = "VillageArea";
+			this.font        = new me.Font("verdana", 20, "white", "right");
+			this.font.textBaseline = "bottom";
 			//////////////////////////////////////////
 			// LOADS THE MAIN MAP (DEBUG, WILL CHANGE)
             loadMap("VillageArea");
@@ -53,6 +56,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onAlertUserAtk");
 			 jsApp.destroy("onAlertBuyResources");
 			 jsApp.destroy("onAlertBuyUnit");
+			 jsApp.destroy("onCheckVillageName");
 			 /////////////////////////////////////////
 			
 			
@@ -60,6 +64,7 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.emit("onListVillageBuildings", this.idVillage);
 			socket.emit("onListVillageUnits", {"idVillage" : this.idVillage});
 			socket.emit("onCheckTempleTime");
+			socket.emit("onCheckVillageName", { "userId" : userData.userId});
 			
 			///////////////////////
 			//IF SOMEBODY BUY MY RESOURCE OFFER
@@ -150,6 +155,20 @@ var PlayScreen = me.ScreenObject.extend(
 			socket.on("onCheckTempleTime", timeTempleFun);
 			////////////////////////
 			
+			///////////////////////
+			//GETTING THIS VILLAGE NAME
+			var villageNameFun = function(rows){
+				$.each(rows[0], function(i, obj) {
+					var village = rows[0][i];
+					if(userData.idVillage == village.idVillage){
+						this.gui = new jsApp.ActionMenu("Village", village.VillageNick);
+						me.game.add(this.gui, 1000);
+						me.game.sort();
+					}
+				});
+			}
+			socket.on("onCheckVillageName", villageNameFun);
+			//////////////////////////////////
             //HERE WE VERIFY THE BUILDINGS OF THE VILLAGE AND THEIR POSITION
 			var listVillageBldFun = function(data){
                 var buildLayer =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
@@ -1100,8 +1119,8 @@ var PlayScreen = me.ScreenObject.extend(
 					var bdlImg      		  = me.loader.getImage(imgStr);
 					bdlImg       	   		  = $(bdlImg).attr("src");
 
-					var bldDetail  = ""; 			 
-					bldDetail  	   = bldDetail + "<tr  onmouseover='toolTip(this,"+'"'+build.Obs+'"'+");' title='"+build.Obs+"' onclick='onClickSelection(this,"+'"radio"'+");' style='cursor:pointer'><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='"+bdlImg+"' /></input></p></td>";
+					var bldDetail  = ""; 			 //
+					bldDetail  	   = bldDetail + "<tr title='"+'<b>'+build.Obs+'</b>'+"' onclick='onClickSelection(this,"+'"radio"'+");toolTip(this);' style='cursor:pointer'><td width=20%><b>"+build.Description+"</b><p><br><input type='radio' name='bldSelect' value='"+build.idBuilding+"' ><img src='"+bdlImg+"' /></input></p></td>";
 					bldDetail  	   = bldDetail + "<td width=40% align='center'>";
 					
 					//PLEASE,FIX ME 
@@ -1902,10 +1921,9 @@ var PlayScreen = me.ScreenObject.extend(
 
             // ADDING THE GAME GUI
             this.hud = new jsApp.ResourcesHUD();
-            this.gui = new jsApp.ActionMenu("Village");
-
+           // this.gui = new jsApp.ActionMenu("Village", this.villageName);
             me.game.add(this.hud, 1000);
-            me.game.add(this.gui, 1000);
+            //me.game.add(this.gui, 1000);
             // SORT GRAPHICS RENDERED TO THE SCREEN (SO IT CAN REDRAW IN THE RIGHT ORDER)
             me.game.sort();
         },
@@ -1917,6 +1935,8 @@ var PlayScreen = me.ScreenObject.extend(
             context.fillStyle = "#000";
             context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
             context.globalAlpha = alpha;
+			
+			
         },
 
         onUpdateFrame: function () {
@@ -1991,6 +2011,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onAlertUserAtk");
 			 jsApp.destroy("onAlertBuyResources");
 			 jsApp.destroy("onAlertBuyUnit");
+			 jsApp.destroy("onCheckVillageName");
 			/////////////////////////////////////////
         }
     });

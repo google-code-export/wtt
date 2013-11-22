@@ -8,15 +8,15 @@
         <link   rel="stylesheet" href="css/styles.css"      type="text/css" media="screen" />
 		<link   rel="stylesheet" href="css/jquery-ui.css"   type="text/css" media="screen" />
 		<link   rel="stylesheet" href="css/alertify.css"    type="text/css" media="screen" />
-		<link   rel="stylesheet" href="css/atooltip.css"    type="text/css" media="screen" />
-		
+		<link   rel="stylesheet" href="css/tooltipster.css"    type="text/css" media="screen" />
+
 		<script type="text/javascript" src="lib/socket.js"></script>
         <script type="text/javascript" src="lib/jq.js"></script>
 		<script type="text/javascript" src="lib/jquery-ui.js"></script>
         <script type="text/javascript" src="lib/jstorage.js"></script>
 		<script type="text/javascript" src="lib/Melon.js"></script>
 		<script type="text/javascript" src="lib/alertify.js"></script>
-		<script type="text/javascript" src="lib/atooltip.js"></script>
+		<script type="text/javascript" src="lib/jquery.tooltipster.js"></script>
 		
         <script type="text/javascript" src="Screens/PlayScreen.js"></script>
         <script type="text/javascript" src="Screens/TitleScreen.js"></script>
@@ -42,6 +42,7 @@
 		<script type="text/javascript" src="Screens/SellMenu.js"></script>
 		<script type="text/javascript" src="Screens/WorldNames.js"></script>
 		<script type="text/javascript" src="Screens/WorldBuildingOptions.js"></script>
+		
    </head>
 	
     <body background="css/chinesetemple1.jpg" bgcolor="#333333" style="margin:0;padding:0">
@@ -105,12 +106,9 @@
 				checkbox.prop('checked',!checkbox.prop("checked"));
 			}
 
-			function toolTip(Dest,Obs){
-				$(Dest).aToolTip({
-					fixed : false,
-					tipContent: Obs
-				});  
-				
+			function toolTip(Dest){
+				var title = $(Dest).attr("title");
+				alertify.log(title);
 			}
 
 				

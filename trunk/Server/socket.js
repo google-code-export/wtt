@@ -120,6 +120,20 @@ io.sockets.on('connection', function (socket) {
     });
 
 
+
+	///////////////////////////////
+    // onCheckVillageName      //
+    /////////////////////////////
+    socket.on('onCheckVillageName', function(data) {
+        connection.query("CALL `getUserVillages`("+data.userId+")",function(err, rows, fields){
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
+                socket.emit("message", {msg:"ERROR:"+ err});
+            }else{
+                socket.emit("onCheckVillageName", rows, data);
+            }
+        });
+    });
+	
 	///////////////////////////////
     // onListUserVillages      //
     /////////////////////////////
