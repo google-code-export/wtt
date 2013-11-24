@@ -36,8 +36,10 @@ jsApp.TempleTimeOut = me.Renderable.extend({
             var progressTime = me.timer.getTime() - this.initTime;
             if(progressTime <= total){
                 this.Timer = jsApp.msToTime(total - progressTime);
-			}else{
+			}else{				
 				me.game.remove(this);
+				alert('The time has end! Congrats for the player who on!');
+				location.replace('http://wtt.esy.es');
 			}
         }
         return true;
