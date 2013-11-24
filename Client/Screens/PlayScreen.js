@@ -104,10 +104,10 @@ var PlayScreen = me.ScreenObject.extend(
 			var AlertAtkFun = function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
-					//socket.emit("onListWorldVillage");
+					alert(data.Msg);
 					me.game.remove(this, true);
 					me.state.change(me.state.OUTWORLD);
-					alert(data.Msg);	
+						
 				}
 			}
 			socket.on("onAlertUserAtk", AlertAtkFun);
