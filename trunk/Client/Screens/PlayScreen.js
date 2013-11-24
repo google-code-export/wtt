@@ -57,6 +57,9 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onAlertBuyResources");
 			 jsApp.destroy("onAlertBuyUnit");
 			 jsApp.destroy("onCheckVillageName");
+			 jsApp.destroy("onAllocateUnitMenu");
+			 jsApp.destroy("onAlocateUnit");
+			 
 			 /////////////////////////////////////////
 			
 			
@@ -2015,6 +2018,8 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onAlertBuyResources");
 			 jsApp.destroy("onAlertBuyUnit");
 			 jsApp.destroy("onCheckVillageName");
+			 jsApp.destroy("onAllocateUnitMenu");
+			 jsApp.destroy("onAlocateUnit");
 			/////////////////////////////////////////
         }
     });
