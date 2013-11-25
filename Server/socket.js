@@ -151,11 +151,12 @@ io.sockets.on('connection', function (socket) {
     // onRequestUnit  //
     ////////////////////
     socket.on('onRequestUnit', function(data) {
-        console.log("creating unit id "+data.idUnit+" at building id " + data.idBuildingBuilt);
-		console.log(randomName());
-		console.log(data.faceImg);
+        console.log("creating unit id "+data.idUnit+" at building id " + data.idBuildingBuilt + " name :" + randomName() +"face : " + data.faceImg);
         connection.query("CALL `CreateUnit`("+data.idBuildingBuilt+","+data.idUnit+",'"+randomName()+"','"+data.faceImg+"')",function(err, rows, fields){
-            if(rows == undefined ||rows.length==undefined || rows.length==0){
+           console.log(rows);
+		   console.log(err);
+		   console.log(fields);
+			if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onRequestUnit", rows, data);
@@ -691,7 +692,6 @@ io.sockets.on('connection', function (socket) {
     // onAtkQuest        //
     //////////////////////
 	socket.on("onAtkQuest", function(data){
-		console.log(data);
 		connection.query("CALL `CreatHorde`('"+data.IdSquadAtk+"',"+data.x+","+data.y+","+data.userId+")", function(err, rows, fields){
             if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
@@ -729,13 +729,49 @@ io.sockets.on('connection', function (socket) {
 			socket.emit("onCheckTempleTime", rows);
 		});
 	});
+	//////////////////////////////////
+
+	//////////////////
+	// onGameEnd   //
+	////////////////
+	socket.on('onGameEnd', function() {
+		connection.query("CALL `Winners`()",function(err, rows, fields){
+			if(rows.length==undefined || rows.length==0)
+				socket.emit("message", {msg:err});
+			socket.emit("onGameEnd", rows);
+		});
+	});
+	/////////////////
+	
+	////////////////////
+	// onGameSumary  //
+	//////////////////
+	socket.on('onGameSumary', function() {
+		connection.query("CALL `SeasonResource`()",function(err, rows, fields){
+			if(rows.length==undefined || rows.length==0)
+				socket.emit("message", {msg:err});
+			socket.emit("onGameSumary", rows);
+		});
+	});
+		
+	///////////////////
+	// onGameReset  //
+	/////////////////
+	socket.on('onGameReset', function(data) {
+		connection.query("CALL `EndSeason`("+data.IdSeason+")",function(err, rows, fields){
+			if(rows == undefined || rows.length==undefined || rows.length==0)
+				socket.emit("message", {msg:err});
+			socket.emit("onGameReset", rows);
+		});
+	});
+	
 });
 
 // gotta put some more names here or try to use this:
 // http://deron.meranda.us/data/census-dist-male-first.txt
 var nomes = [
-    "Jhony", "Manolo", "Dirceu", "Castro","Tod","Ted","Toky", "Texugo","Minot","Valor","Valdemir","Vlad","Tzao","Forcas","Dorias","Warren", "Leon", "Leonidas","Leonard",
-    "Dolgare", "Denim","Cloud","Mario","Bone","Vice","Lans","Gildus","Guido","Mildain","Mondain","Wallace", "William", "Merlin","Sephiroth","Bob","Bilbo", "Bager","Toey"
+	"Ai","An","Ayra","Bai","Bao","Bo","Chang","Chao","Chen","Cheng","Chun","Cong","Da","De","Deshi","Dewei","Dishi","Enlai","Fa","Fang","Fen","Fu","Gang","Guo","Hai","He","Heng","Hong","Hua","Huan","Huang","Hui","Jia","Jian","Jiang","Jin","Jing","Ju","Jun","Kaikai","Kun","Lan","Lanlan","Li","Lian","Lie","Lili","Lin","Ling","Lonlon","Mei","Meimei","Min","Ming","Minmin","Mu","Na","Ning","Nuan","Nuo","Ping","Qing","Qiu","Rong","Ru","Shao","Shi","Shu","Shui","Shun","Su","Tai",
+	"Tu","Wei","Wen","Wu","Xiang","Xiu","Xue","Xun","Ya","Yi","Yin","Yong","Yu","Yun","Zan","Zhen","Zheng","Zhi","Zhong","Zhou"
 ]
 
 var randomName = function() {

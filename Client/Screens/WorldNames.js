@@ -8,7 +8,6 @@ jsApp.WorldNames = me.Renderable.extend({
 		this.isPersistent = false;
 		this.alwaysUpdate = true;
 		this.villageInfo  = villageInfo;
-		console.log(this.villageInfo.playerName);
 		if(this.villageInfo.playerName == null){this.villageInfo.playerName = "";}
 	},
 

@@ -59,7 +59,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onCheckVillageName");
 			 jsApp.destroy("onAllocateUnitMenu");
 			 jsApp.destroy("onAlocateUnit");
-			 
+			 jsApp.destroy("onBuyOffer");
 			 /////////////////////////////////////////
 			
 			
@@ -104,10 +104,9 @@ var PlayScreen = me.ScreenObject.extend(
 			var AlertAtkFun = function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
-					alert(data.Msg);
 					me.game.remove(this, true);
 					me.state.change(me.state.OUTWORLD);
-						
+					alertify.confirm(data.Msg);
 				}
 			}
 			socket.on("onAlertUserAtk", AlertAtkFun);
@@ -137,21 +136,23 @@ var PlayScreen = me.ScreenObject.extend(
 			var timeTempleFun = function(rows){
 				if(rows[0][0] != undefined){
 					if(rows[0][0].Msg != null ){
-						if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
-						var userTempleId   = rows[0][0].idUser;
-						var userTempleNick = rows[0][0].Nick;
-						if(userData.newLogin == undefined){
-							if(userTempleId == userData.userId){
-								alertify.success("The Temple Still Dominated by you!");
-							}else{
-								alertify.error("The Temple Still Dominated by "+userTempleNick);
+						if(rows[0][0].Msg != "Timeout" && rows[0][0].Msg != "00:00:00"){
+							if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+							var userTempleId   = rows[0][0].idUser;
+							var userTempleNick = rows[0][0].Nick;
+							if(userData.newLogin == undefined){
+								if(userTempleId == userData.userId){
+									alertify.success("The Temple Still Dominated by you!");
+								}else{
+									alertify.error("The Temple Still Dominated by "+userTempleNick);
+								}
+								userData.newLogin = false;
 							}
-							userData.newLogin = false;
+							var time = rows[0][0].Msg;
+							this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+							me.game.add(this.templeTime,10);
+							me.game.sort();
 						}
-						var time = rows[0][0].Msg;
-						this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
-						me.game.add(this.templeTime,10);
-						me.game.sort();
 					}
 				}
 			}
@@ -749,7 +750,6 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////////
 			//creating the window to view the user squads
 			var transferSquadFun = function(rows){
-				console.log(rows);
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
@@ -821,8 +821,6 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////////
 			//creating the window to view the user villages
 			var viewVillagesFun = function(rows, data){
-				console.log(rows);
-				console.log(data);
 				//////////////////////////
 				//CREATING THE MODAL FORM
 				var div 	  	   = document.createElement("div");
@@ -890,7 +888,6 @@ var PlayScreen = me.ScreenObject.extend(
 			//AFTER THE TRANSF IT'S DONE
 			 var transfCheckFun = function(rows, data){
 				alert(rows[0][0].Msg);
-				me.game.remove(this, true);
 				me.state.change(me.state.PLAY); //to redraw the units in the screen
 			 }
 			 socket.on("onTransferSquads", transfCheckFun);
@@ -1059,9 +1056,8 @@ var PlayScreen = me.ScreenObject.extend(
 			//AFTER THE MERGE IT'S DONE
 			 var mergeCheckFun = function(rows, data){
 				alert(rows[0][0].Msg);
-				me.game.remove(this, true);
 				me.state.change(me.state.PLAY); //to redraw the units in the screen
-			 }
+			}
 			 socket.on("onMergeSquad", mergeCheckFun);
 			 //////////////////////////////////////////
 			 
@@ -2020,6 +2016,7 @@ var PlayScreen = me.ScreenObject.extend(
 			 jsApp.destroy("onCheckVillageName");
 			 jsApp.destroy("onAllocateUnitMenu");
 			 jsApp.destroy("onAlocateUnit");
+			 jsApp.destroy("onBuyOffer");
 			/////////////////////////////////////////
         }
     });
