@@ -2,6 +2,8 @@ jsApp.TempleTimeOut = me.Renderable.extend({
 	//INIT OF THE CLASS, TIME = MS AND PIXELIS = X AND Y //
 	init : function init(time)
 	{
+		var socket        = jsApp.getSocket();
+		console.log(time);
 		this.parent(new me.Vector2d(gameW/2,30),64,8);// position on the screen
         this.ConquestTime = time;
         this.progressBar  = 0;
@@ -34,12 +36,12 @@ jsApp.TempleTimeOut = me.Renderable.extend({
         if(this.initTime != undefined){
             var total = this.timerCountDown;
             var progressTime = me.timer.getTime() - this.initTime;
-            if(progressTime <= total){
+            if(progressTime < total){
                 this.Timer = jsApp.msToTime(total - progressTime);
 			}else{				
-				me.game.remove(this);
-				alert('The time has end! Congrats for the player who on!');
-				location.replace('http://wtt.esy.es');
+				me.game.remove(this, true);
+				socket.emit('onGameEnd');
+				me.state.change(me.state.OUTWORLD);
 			}
         }
         return true;
@@ -48,7 +50,7 @@ jsApp.TempleTimeOut = me.Renderable.extend({
 	
 	destroy : function()
 	{
-	
+
 	}
 
 });

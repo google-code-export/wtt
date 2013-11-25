@@ -30,6 +30,9 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onCheckTempleTime");
 			jsApp.destroy("onAlertBuyResources");
 			jsApp.destroy("onAlertBuyUnit");
+			jsApp.destroy("onBuyOffer");
+			jsApp.destroy("onGameEnd");
+			jsApp.destroy("onGameSumary");
 			 /////////////////////////////////////////
 			 
 			 socket.emit("onListWorldVillage");
@@ -38,15 +41,93 @@ var OutWorldScreen = me.ScreenObject.extend(
 			//WORLD SOCKETS			         //
 			//////////////////////////////////
 			
+			
+			//ENDING THE SEASON!
+			var endGameFun = function(rows){
+				alertify.confirm(rows[0][0].Msg, function(e){
+					if (e) {
+						// user clicked "ok"
+						socket.emit("onGameSumary");
+					} else {
+						// user clicked "cancel"
+					}				
+				});
+			}
+			socket.on("onGameEnd", endGameFun);
+			/////////////////////////////////
+			
+			//////////////////////////
+			//END GAME SUMARY      //
+			var sumaryFun = function(rows){
+				//////////////////////////
+				//CREATING THE MODAL FORM
+				var div 	  	   = document.createElement("div");
+				div.setAttribute("id","dialogSumary");
+				div.setAttribute("name","dialogSumary");
+				div.setAttribute("title","Game Summary");
+				div.setAttribute("style","display:none");
+				
+				$("body").append(div);
+				$( "#dialogSumary" ).dialog({
+					autoOpen: false,
+					height: 600,
+					width: 800,
+					modal: true,
+					buttons: {
+
+
+						"Ok" : function(){
+							alertify.confirm("The game has ended! A new game will begin in 15 minutes");
+							socket.emit("onGameReset",{"idSeason" : userData.idSeason});
+							//location.replace('http://wtt.esy.es');
+						},
+						
+					},
+					close: function() {
+						$("#dialogSumary").html('');
+						alertify.confirm("The game has ended! A new game will begin in 15 minutes");
+						socket.emit("onGameReset",{"idSeason" : userData.idSeason});
+						//location.replace('http://wtt.esy.es');
+					}
+				});
+				
+				//////////////////////////////////
+				//POPULATING THE SQUAD RADIOBOXES
+				var summaryContent = "";
+				summaryContent     = summaryContent + "<table boder=0 width=100%><tr>";
+				summaryContent 	   = summaryContent + "<td align='left'   width='25'><b>PLAYER</b></td>";
+				summaryContent     = summaryContent + "<td align='center' width='15'><b>GOLD</b></td>";
+				summaryContent     = summaryContent + "<td align='center' width='15'><b>WOOD</b></td>";
+				summaryContent     = summaryContent + "<td align='center' width='15'><b>IRON</b></td>";
+				summaryContent     = summaryContent + "<td align='center' width='15'><b>STONE</b></td>";
+				summaryContent     = summaryContent + "<td align='center' width='15'><b>FOOD</b></td>";
+				summaryContent 	   = summaryContent + "</tr>";
+				
+				$.each(rows[0], function(i, obj) {
+					var player 	 = rows[0][i];
+					var playerContent = "<tr><td align='left'>"+player.Nick+"</td>";
+					playerContent     = playerContent + "<td align='center'>"+player.gold+"</td>";
+					playerContent     = playerContent + "<td align='center'>"+player.wood+"</td>";
+					playerContent     = playerContent + "<td align='center'>"+player.iron+"</td>";
+					playerContent     = playerContent + "<td align='center'>"+player.stone+"</td>";
+					playerContent     = playerContent + "<td align='center'>"+player.food+"</td>";
+					summaryContent    = summaryContent + playerContent + "</tr>";
+				});
+				summaryContent = summaryContent + "</table>";
+				$("#dialogSumary").append(summaryContent);
+				$("#dialogSumary").dialog("open");				
+			}
+			socket.on("onGameSumary", sumaryFun);
+			////////////////////////		
+			
 			//////////////////////////
 			//IF IM BEING ATTACKED //
 			var alertAtkFun = function(data){
 				//if im the user being attacked
 				if(userData.userId == data.idUser){
-					socket.emit("onListWorldVillage");
 					me.game.remove(this, true);
 					me.state.change(me.state.OUTWORLD);
-					alert(data.Msg);
+					alertify.confirm(data.Msg);
 				}
 			}
 			socket.on("onAlertUserAtk", alertAtkFun);
@@ -85,6 +166,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			//IF THE TEMPLE WAS DOMINATED //
 			var AlertTempleFun = function(rows){
 				if(this.templeTime != undefined){me.game.remove(this.templeTime);}
+				console.log(rows);
 				alert("The Temple Was Dominated! Time it's running out");
 				var time = rows[0].Msg;
 				this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
@@ -97,23 +179,26 @@ var OutWorldScreen = me.ScreenObject.extend(
 			/////////////////////////////////
 			//IF THE TEMPLE STILL DOMINATED //
 			var timeTempleFun = function(rows){
+				console.log(rows[0][0].Msg);
 				if(rows[0][0] != undefined){
 					if(rows[0][0].Msg != null ){
-						if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
-						var userTempleId   = rows[0][0].idUser;
-						var userTempleNick = rows[0][0].Nick;
-						if(userData.newLogin == undefined){
-							if(userTempleId == userData.userId){
-								alertify.success("The Temple Still Dominated by you!");
-							}else{
-								alertify.error("The Temple Still Dominated by "+userTempleNick);
+						if(rows[0][0].Msg != "Timeout" && rows[0][0].Msg != "00:00:00"){
+							if(this.templeTime != undefined){ me.game.remove(this.templeTime); }
+							var userTempleId   = rows[0][0].idUser;
+							var userTempleNick = rows[0][0].Nick;
+							if(userData.newLogin == undefined){
+								if(userTempleId == userData.userId){
+									alertify.success("The Temple Still Dominated by you!");
+								}else{
+									alertify.error("The Temple Still Dominated by "+userTempleNick);
+								}
+								userData.newLogin = false;
 							}
-							userData.newLogin = false;
+							var time = rows[0][0].Msg;
+							this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
+							me.game.add(this.templeTime,10);
+							me.game.sort();
 						}
-						var time = rows[0][0].Msg;
-						this.templeTime = new jsApp.TempleTimeOut(time);// creating a new instance of the class TempleTimeOut
-						me.game.add(this.templeTime,10);
-						me.game.sort();
 					}
 				}
 			}
@@ -127,7 +212,6 @@ var OutWorldScreen = me.ScreenObject.extend(
                 var buildLayer    =  me.game.currentLevel.getLayerByName("Transp");//getting the correct map layer to tile changes
                 for (var i in rows[0]){
                     if (i!="remove"){
-						console.log(rows[0][i]);
                         var idTile      = rows[0][i].idTile + 1; // NEED TO SEE THIS BETTER VERY QUICK!
 						var pixelIs     = jsApp.getTileForPixels(rows[0][i].posX,rows[0][i].posY);
 						var x		    = rows[0][i].posX;
@@ -331,6 +415,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 			}
 			socket.on("onListSquadAtkUser", listSquadAtkUserFun);			
 			///////////////////////////////////////////
+			
 			//RESULT OF THE ATTACK VILLAGE
 			var atkVillageFun =  function(rows, data){
 				alert(rows[0][0].Msg);
@@ -620,6 +705,9 @@ var OutWorldScreen = me.ScreenObject.extend(
 			jsApp.destroy("onCheckTempleTime");
 			jsApp.destroy("onAlertBuyResources");
 			jsApp.destroy("onAlertBuyUnit");
+			jsApp.destroy("onBuyOffer");
+			jsApp.destroy("onGameEnd");
+			jsApp.destroy("onGameSumary");
 			/////////////////////////////////////////
         }
     });
