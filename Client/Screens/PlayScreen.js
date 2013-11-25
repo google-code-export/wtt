@@ -887,7 +887,7 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//AFTER THE TRANSF IT'S DONE
 			 var transfCheckFun = function(rows, data){
-				alert(rows[0][0].Msg);
+				alertify.confirm(rows[0][0].Msg);
 				me.state.change(me.state.PLAY); //to redraw the units in the screen
 			 }
 			 socket.on("onTransferSquads", transfCheckFun);
@@ -1055,7 +1055,7 @@ var PlayScreen = me.ScreenObject.extend(
 			///////////////////////////////////////////
 			//AFTER THE MERGE IT'S DONE
 			 var mergeCheckFun = function(rows, data){
-				alert(rows[0][0].Msg);
+				alertify.confirm(rows[0][0].Msg);
 				me.state.change(me.state.PLAY); //to redraw the units in the screen
 			}
 			 socket.on("onMergeSquad", mergeCheckFun);
