@@ -758,7 +758,7 @@ io.sockets.on('connection', function (socket) {
 	// onGameReset  //
 	/////////////////
 	socket.on('onGameReset', function(data) {
-		connection.query("CALL `EndSeason`("+data.IdSeason+")",function(err, rows, fields){
+		connection.query("CALL `EndSeason`("+data.idSeason+")",function(err, rows, fields){
 			if(rows == undefined || rows.length==undefined || rows.length==0)
 				socket.emit("message", {msg:err});
 			socket.emit("onGameReset", rows);

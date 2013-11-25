@@ -79,7 +79,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 						"Ok" : function(){
 							alertify.confirm("The game has ended! A new game will begin in 15 minutes");
 							socket.emit("onGameReset",{"idSeason" : userData.idSeason});
-							//location.replace('http://wtt.esy.es');
+							location.replace('http://wtt.esy.es');
 						},
 						
 					},
@@ -87,7 +87,7 @@ var OutWorldScreen = me.ScreenObject.extend(
 						$("#dialogSumary").html('');
 						alertify.confirm("The game has ended! A new game will begin in 15 minutes");
 						socket.emit("onGameReset",{"idSeason" : userData.idSeason});
-						//location.replace('http://wtt.esy.es');
+						location.replace('http://wtt.esy.es');
 					}
 				});
 				
