@@ -33,7 +33,7 @@ io.sockets.on('connection', function (socket) {
   // onCreateNewUser //
   ////////////////////
 	socket.on('onCreateNewUser', function(data) {
-		connection.query("CALL `RegisterUser`('"+data.firstName+"','"+data.lastName+"','"+data.email+"','"+data.nick+"','"+data.password+"')", function(err, rows, fields){
+		connection.query("CALL `RegisterUser`('"+data.firstName+"','"+data.lastName+"','"+data.email+"','"+data.nick+"','"+data.password+"','"+data.key+"')", function(err, rows, fields){
 			socket.emit("onCreateNewUser", rows, data);
 		});
 	});
@@ -43,7 +43,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('login', function (data) {
 		console.log("logging user "+data.p1+" with passw "+data.p2);
 		connection.query("call Auth('"+data.p1+"','"+data.p2+"');", function(err, rows, fields) {
-            console.log(err);
             if(err) throw err;
 			if(rows==undefined || rows.length==undefined || rows.length==0)
 				socket.emit("message", {msg:"Wrong username and/or Passworde!"});
@@ -75,9 +74,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('onResourcesUpdate', function(data) {
       console.log("getting resources from idUser ="+data.userId);
       connection.query("CALL `getResources`('"+data.userId+"')",function(err, rows, fields){
-          if(rows.length==undefined || rows.length==0)
+          if(rows.length==undefined || rows.length==0){
               socket.emit("message", {msg:"Player not found!"});
-          socket.emit("onResourcesUpdate", rows);
+          }else{
+              socket.emit("onResourcesUpdate", rows);
+          }
      });
   });
   
@@ -91,6 +92,7 @@ io.sockets.on('connection', function (socket) {
 				//socket.emit("message", {msg:"Error!"});
 			socket.emit("onResourcesCollect", rows, data);
 		});
+        connection.query("CALL `BigUpdate_Resource`('"+data.userId+"')",function(err2, rows2, fields2){});
 	});
 
     //////////////////////////
@@ -156,7 +158,7 @@ io.sockets.on('connection', function (socket) {
            console.log(rows);
 		   console.log(err);
 		   console.log(fields);
-			if(rows == undefined ||rows.length==undefined || rows.length==0){
+            if(rows == undefined ||rows.length==undefined || rows.length==0){
                 socket.emit("message", {msg:"ERROR:"+ err});
             }else{
                 socket.emit("onRequestUnit", rows, data);
