@@ -120,7 +120,6 @@ var jsApp	 =
     // this method is called when the app is initialized
     onload: function()
     {
-
         // Game engine settings.
         me.sys.gravity = 0;
         me.sys.dirtyRegion = true; // Be fast!
@@ -138,6 +137,7 @@ var jsApp	 =
         me.loader.onload = this.loaded.bind(this);
         me.loader.preload(g_resources);
         me.state.change(me.state.LOADING);
+		$( "#dialogoLoding" ).dialog( "close" );
     },
 
     loaded: function ()
@@ -150,7 +150,7 @@ var jsApp	 =
 		me.state.set(me.state.OUTWORLD, new OutWorldScreen());
         // adicionando os tipos de entidade na POOL de memória
         me.entityPool.add("unit", Unit);
-
+		
         //me.entityPool.add("entity", entity);
         me.state.change(me.state.PLAY);
     },

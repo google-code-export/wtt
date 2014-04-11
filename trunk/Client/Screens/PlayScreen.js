@@ -1363,15 +1363,27 @@ var PlayScreen = me.ScreenObject.extend(
 										var qtd 		 = $("#"+resource.idOffert+"_qtd").val();
 										var idUserOffert = $("#"+resource.idOffert+"_idUserOffert").val();
 										var offerDesc    = $("#"+resource.idOffert+"_Description").val();
+										var offerPrice   = $("#"+resource.idOffert+"_prc").val();
 										var userData	 = jsApp.getUserData(); 
-										socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd, "idUserOffert" : idUserOffert, "offerDesc" : offerDesc});
-									}else{
+										var valorTotal   = qtd*offerPrice;
+										var totalMsg     = "It will cost <img src='data/sprite/Gold.png' />"+valorTotal+". Buy this much of "+offerDesc+" ?";
+										// confirm dialog
+										alertify.confirm(totalMsg, function (e) {
+											if (e) {
+												// user clicked "ok"
+												socket.emit('onBuyOffer',{"userId" : userData.userId, "idOffert" : resource.idOffert, "Qtd" : qtd, "idUserOffert" : idUserOffert, "offerDesc" : offerDesc});
+												//clearing the form
+											} else {
+												// user clicked "cancel"
+												
+											}
+										});
 										
+									}else{
 										alert("Invalid type of input!");
 									}
 								}
 							});
-							//clearing the form
 							$( "#dialogBuy" ).html('');
 							$( this ).dialog( "close" );
 						},
@@ -1411,6 +1423,7 @@ var PlayScreen = me.ScreenObject.extend(
 					resourceBuy	= resourceBuy + "<td align=center width=(100/5)><input type='number' name='"+resource.idOffert+"_qtd' id='"+resource.idOffert+"_qtd' size=5 /></td>";
 					resourceBuy	= resourceBuy + "<input type='hidden' id='"+resource.idOffert+"_idUserOffert' value='"+resource.idUser+"' />";
 					resourceBuy	= resourceBuy + "<input type='hidden' id='"+resource.idOffert+"_Description' value='"+resource.Description+"' />";
+					resourceBuy	= resourceBuy + "<input type='hidden' id='"+resource.idOffert+"_prc' value='"+resource.Money+"' />";
 					resourceBuy = resourceBuy + "<tr><td></td><td></td><td  align=center><img src='data/sprite/division.png' width=70% height=70%/></td><td></td><td></td></tr>";
 					buyContent  = buyContent + resourceBuy + "</tr>";
 					
