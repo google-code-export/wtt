@@ -18,6 +18,16 @@
 	
     <body background="css/chinesetemple1.jpg" bgcolor="#333333" style="margin:0;padding:0">
 		<script>
+			function chama_loding(){
+				$( "#dialogoLoding" ).dialog({
+					autoOpen: false,
+					height: 150,
+					width: 300,
+					modal: true,
+				});
+				
+				$( "#dialogoLoding" ).dialog( "open" );
+			}
 			function include(filename)
 			{
 				var head = document.getElementsByTagName('head')[0];
@@ -70,6 +80,7 @@
                var pass = $("#password").val();
 			   
                socket.emit("login",  { p1:user,p2:pass });
+			   chama_loding();
             }
 			
 			function alert(msg){
@@ -143,5 +154,16 @@
 		        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="http://validator.w3.org/check/referer" title="This page validates as XHTML 1.0 Transitional"><abbr title="eXtensible HyperText Markup Language">XHTML</abbr></a> | <a href="http://jigsaw.w3.org/css-validator/check/referer" title="This page validates as CSS"><abbr title="Cascading Style Sheets">CSS</abbr></a></p>
 			</div>
 		</div> <!-- FIM ID = WRAP -->
+	<!-- PARTE DOS DIALOGOS -->
+		<div name="dialogoLoding" id="dialogoLoding" title="Please Wait..." style="display:none">
+			<form>
+				<fieldset>
+				  <div class="box">
+						<h1>LOADING...</h1>
+				 </div>
+				</fieldset>
+			</form>
+		</div>
+	<!-- FIM DOS DIALOGOS --->
     </body>
 </html>
